@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="stylesheets/bootstrap.min.css" rel="stylesheet">
+    <title>Skyrim Mod Watcher</title>
+
+    <style type="text/css">
+      body {
+        font-family:"Open Sans", sans-serif;
+        color:#000000;
+        text-align:center;
+        background:#ebebeb;
+      }
+    </style>
+
+  </head>
+
+  <body>
+
+    <h3 id="username"></h3>
+    <ul class="list-group" id="modList"></ul>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="javascripts/bootstrap.min.js"></script>
+    <script type="text/javascript">
+      var list = <%- lists %>.split("<%-delimiter%>");
+      var username = "<%- username %>";
+      var listBody = "";
+      for(var i = 0; i < list.length; i++) {
+        if(list[i] != '') {
+          listBody += "<li class='list-group-item'>"+list[i]+"</li>";
+        }
+      }
+      $('#username').append(username);
+      $('#modList').append(listBody);
+    </script>
+        
+  </body>
+</html>

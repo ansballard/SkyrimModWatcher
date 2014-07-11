@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="stylesheets/bootstrap.min.css" rel="stylesheet">
+    <title>Skyrim Mod Watcher</title>
+
+    <style type="text/css">
+      body {
+        font-family:"Open Sans", sans-serif;
+        color:#000000;
+        text-align:center;
+        background:#ebebeb;
+      }
+      .input-group {
+      	margin: auto;
+      }
+    </style>
+</head>
+<body>
+	<h3>Search for a user</h3>
+	<form class="input-group" action="/usersearch" method="post">
+		<input type="text" class="form-control" name="username"/>
+		<input class="btn" type="submit"/>
+	</form>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="javascripts/bootstrap.min.js"></script>
+</body>
+</html>
