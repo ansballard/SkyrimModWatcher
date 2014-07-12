@@ -22,4 +22,4 @@ modlistSchema.methods.validPassword = function(_password) {
 	return bcrypt.compareSync(_password, this.password);
 };
 
-module.exports = mongoose.model('modlist', modlistSchema);
+module.exports = mongoose.model('Modlist', modlistSchema);

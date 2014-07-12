@@ -30,23 +30,24 @@ module.exports = function(app) {
 		Modlist.findOne({'username' : req.body.username}, function(err, _modlist) {
 
 			if(_modlist) { // if the username exists in the db
-				if(req.body.password == _modlist.password) {
-					console.log("correct");
+				if(_modlist.validPassword(req.body.password)) {
+					console.log("Updated "+req.body.username+"'s Modlist Successfully");
 					res.writeHead('200');
 					res.end();
 				}
 				else {
-					console.log("wrong pass");
+					console.log("Wrong Password for "+req.body.username);
 					res.writeHead('403');
 					res.end();
 				}
 			}
 			else { // if the username does not exist
-				var modlist = new Modlist({
-					list: req.body.modlist,
-					username: req.body.username,
-					password: req.body.password
-				});
+
+				var modlist = new Modlist();
+				modlist.list = req.body.modlist;
+				modlist.username = req.body.username;
+				modlist.password = modlist.generateHash(req.body.password);
+
 				modlist.save(function(err) {
 					if(err) {
 						console.log("Save Error: "+err);
@@ -55,7 +56,7 @@ module.exports = function(app) {
 						throw err;
 					}
 					else {
-						console.log("success");
+						console.log("New Modlist Uploaded By "+req.body.username);
 						res.writeHead('200');
 						res.end();
 					}
