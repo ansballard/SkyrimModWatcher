@@ -22,6 +22,17 @@ module.exports = function(app) {
 			}
 		});
 	});
+	app.get('/json/:username', function(req, res) {
+		Modlist.findOne({'username' : req.params.username}, function(err, _modlist) {
+			if(_modlist) {
+				var arr = _modlist.list.split('@#$');
+				res.send(JSON.stringify(arr));
+			} else {
+				res.writeHead('404');
+				res.end();
+			}
+		});
+	});
 	app.post('/usersearch', function(req, res) {
 		res.redirect('/'+req.body.username);
 	});

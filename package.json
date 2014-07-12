@@ -1,14 +1,18 @@
 {
   "name": "application-name",
-  "version": "0.0.1",
+  "version": "0.0.1-2",
   "private": true,
   "scripts": {
     "start": "node app.js"
   },
   "dependencies": {
     "express": "3.4.8",
-    "ejs" : "*",
-    "mongoose":"*",
-    "bcrypt-nodejs" : "latest"
+    "ejs": "*",
+    "mongoose": "*",
+    "bcrypt-nodejs": "latest"
+  },
+  "subdomain": "skyrimmodwatcher",
+  "engines": {
+    "node": "0.10.x"
   }
 }

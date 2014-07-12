@@ -35,11 +35,10 @@ params = urllib.urlencode({'modlist': modsToSend, 'username': user_pass[0], 'pas
 #	print i
 headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
 
-localURL = open('./localURL.private', 'r')
-
-conn = httplib.HTTPConnection(localURL.read() + ":3000")
-
-localURL.close()
+#localURL = open('./localURL.private', 'r')
+#conn = httplib.HTTPConnection(localURL.read() + ":3000")
+#localURL.close()
+conn = httplib.HTTPConnection('skyrimmodwatcher.jit.su')
 
 print user_pass[0] + ' ' + user_pass[1]
 conn.request("POST", "/loadorder", params, headers)
