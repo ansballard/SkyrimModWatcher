@@ -23,7 +23,12 @@ try:
 except IOError as e:
 	user_pass = populateAuth()
 
-infile = open(home+'\AppData\Local\Skyrim\loadorder.txt', 'r')
+# Reads mods that are installed, checked or not?
+#infile = open(home+'\AppData\Local\Skyrim\loadorder.txt', 'r')
+
+# Reads only checked mods in correct order?
+infile = open(home+'\AppData\Local\Skyrim\plugins.txt', 'r')
+
 mods = infile.read().split('\n')
 infile.close()
 modsToSend = ''
