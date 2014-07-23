@@ -1,3 +1,4 @@
 *.private
 /config/*
 /node_modules/*
+/python/auth.dat
