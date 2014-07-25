@@ -23,27 +23,23 @@ try:
 except IOError as e:
 	user_pass = populateAuth()
 
-# Reads mods that are installed, checked or not?
-#infile = open(home+'\AppData\Local\Skyrim\loadorder.txt', 'r')
+if len(user_pass) != 2:
+	user_pass = populateAuth()
 
-# Reads only checked mods in correct order?
-infile = open(home+'\AppData\Local\Skyrim\plugins.txt', 'r')
+infile = open(home+'\AppData\Local\Skyrim\loadorder.txt', 'r')
 
 mods = infile.read().split('\n')
 infile.close()
-modsToSend = ''
+modsToSend = '['
 for i in mods:
-	modsToSend = modsToSend + i + '@#$'
-modsToSend = modsToSend[:-3]
+	if i != "":
+		modsToSend = modsToSend + "\"" + i + "\","
+modsToSend = modsToSend[:-1]
+modsToSend += "]"
 params = urllib.urlencode({'modlist': modsToSend, 'username': user_pass[0], 'password': user_pass[1]})
-#for i in params:
-#	print i
 headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
 
-#localURL = open('./localURL.private', 'r')
-#conn = httplib.HTTPConnection(localURL.read() + ":3000")
-#localURL.close()
-conn = httplib.HTTPConnection('skyrimmodwatcher.jit.su')
+conn = httplib.HTTPConnection('localhost:3000')
 
 print user_pass[0] + ' ' + user_pass[1]
 conn.request("POST", "/loadorder", params, headers)

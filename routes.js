@@ -15,9 +15,8 @@ module.exports = function(app) {
 					_lists = "";
 				}
 				res.render('index.ejs', {
-					lists : JSON.stringify(_lists.list),
-					username: _lists.username,
-					delimiter : '@#$'
+					list : _lists.list,
+					username: _lists.username
 				});
 			}
 		});
@@ -25,8 +24,22 @@ module.exports = function(app) {
 	app.get('/json/:username', function(req, res) {
 		Modlist.findOne({'username' : req.params.username}, function(err, _modlist) {
 			if(_modlist) {
-				var arr = _modlist.list.split('@#$');
-				res.send(JSON.stringify(arr));
+				res.send({"username": req.params.username, "mods": _modlist.list});
+			} else {
+				res.writeHead('404');
+				res.end();
+			}
+		});
+	});
+	app.get('/reddit/:username', function(req, res) {
+		Modlist.findOne({'username' : req.params.username}, function(err, _modlist) {
+			if(_modlist) {
+				var markdown = "# "+req.params.username+"  ";
+				var list = JSON.parse(_modlist.list);
+				for(var i = 0; i < list.length; i++) {
+					markdown += (i+1)+". "+list[i]+"  ";
+				}
+				res.send(markdown);
 			} else {
 				res.writeHead('404');
 				res.end();
@@ -38,11 +51,20 @@ module.exports = function(app) {
 	});
 	app.post('/loadorder', function(req, res) {
 
+		console.log(req.body.modlist);
+
 		Modlist.findOne({'username' : req.body.username}, function(err, _modlist) {
 
 			if(_modlist) { // if the username exists in the db
 				if(_modlist.validPassword(req.body.password)) {
-					console.log("Updated "+req.body.username+"'s Modlist Successfully");
+					_modlist.list = req.body.modlist;
+					_modlist.save(function(err) {
+						if(err) {
+							console.log('error on update');
+						} else {
+							console.log('Updated Successfully!');
+						}
+					});
 					res.writeHead('200');
 					res.end();
 				}

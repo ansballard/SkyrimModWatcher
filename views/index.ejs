@@ -22,19 +22,19 @@
   <body>
 
     <h3 id="username"></h3>
-    <ul class="list-group" id="modList"></ul>
+    <ul class="list-group" id="modList">
+    </ul>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="javascripts/bootstrap.min.js"></script>
     <script type="text/javascript">
-      var list = <%- lists %>.split("<%-delimiter%>");
       var username = "<%- username %>";
+      var list = <%-list%>;
       var listBody = "";
       for(var i = 0; i < list.length; i++) {
-        if(list[i] != '') {
-          listBody += "<li class='list-group-item'>"+list[i]+"</li>";
-        }
+        listBody += "<li class='list-group-item'>"+list[i]+"</li>";
       }
+      
       $('#username').append(username);
       $('#modList').append(listBody);
     </script>
