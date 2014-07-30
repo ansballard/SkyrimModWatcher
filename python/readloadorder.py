@@ -52,7 +52,7 @@ modsToSend += "]"
 params = urllib.urlencode({'modlist': modsToSend, 'username': user_pass_path[0], 'password': user_pass_path[1]})
 headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
 
-conn = httplib.HTTPConnection('localhost:3000')
+conn = httplib.HTTPConnection('http://skyrimmodwatcher.jit.su:3000')
 
 print 'Uploading to http://skyrimmodwatcher.jit.su/' + user_pass_path[0] + '...'
 conn.request("POST", "/loadorder", params, headers)
