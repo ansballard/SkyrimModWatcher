@@ -12,8 +12,26 @@
       body {
         font-family:"Open Sans", sans-serif;
         color:#000000;
-        text-align:center;
         background:#ebebeb;
+      }
+      span#list-container {
+        width: 50%;
+        margin: 2.5% 5% 2.5% 5%;
+        vertical-align: top;
+        display: inline-block;
+      }
+      span#search-container {
+        text-align: center;
+        width: 30%;
+        max-width: 300px;
+        margin: 5% 10% 0px 5%;
+        vertical-align: top;
+        display: inline-block;
+        position: fixed;
+      }
+      div#main-container {
+        max-width: 1000px;
+        margin: auto;
       }
     </style>
 
@@ -21,22 +39,43 @@
 
   <body>
 
-    <h3 id="username"></h3>
-    <ul class="list-group" id="modList">
-    </ul>
+    <div id="main-container">
+      <span id="list-container">
+        <ul class="list-group" id="mod-list"></ul>
+      </span>
+      <span id="search-container">
+        <h3 id="username"></h3>
+        <input type="text" class="form-control" id="filter-mods" placeholder="Filter by..."/>
+      </span>
+    </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="javascripts/bootstrap.min.js"></script>
     <script type="text/javascript">
+
       var username = "<%- username %>";
       var list = <%-list%>;
       var listBody = "";
+
       for(var i = 0; i < list.length; i++) {
         listBody += "<li class='list-group-item'>"+list[i]+"</li>";
       }
       
-      $('#username').append(username);
-      $('#modList').append(listBody);
+      $('#username').append(username + "\'s load order");
+      $('#mod-list').append(listBody);
+
+      $('#filter-mods').keyup(function(){
+        var filterText = $(this).val();
+        $('#mod-list > li').each(function(){
+          var text = $(this).text().toLowerCase();
+          if(filterText[0] == '^') {
+            (text.indexOf(filterText.substr(1)) == 0) ? $(this).slideDown() : $(this).slideUp();
+            console.log(filterText.substr(1));
+          } else {
+            (text.indexOf(filterText) >= 0) ? $(this).slideDown() : $(this).slideUp();
+          }
+        });
+      });
     </script>
 
     <script>
