@@ -6,23 +6,28 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="stylesheets/bootstrap.min.css" rel="stylesheet">
-    <title>Skyrim Mod Watcher</title>
+    <title><%= username %>'s Load Order</title>
 
     <style type="text/css">
       body {
-        font-family:"Open Sans", sans-serif;
+        font-family:"Lucida Console", monospace;
+        font-size: 12px;
         color:#000000;
         background:#ebebeb;
       }
       span#list-container {
-        width: 50%;
-        margin: 2.5% 5% 2.5% 5%;
+        width: 60%;
+        min-width: 435px;
+        margin: 2.5% 0% 2.5% 0%;
         vertical-align: top;
         display: inline-block;
+        border-radius: 25px;
+        background-color: #E0E0E0;
       }
       span#search-container {
         text-align: center;
         width: 30%;
+        min-width: 220px;
         max-width: 300px;
         margin: 5% 10% 0px 5%;
         vertical-align: top;
@@ -33,6 +38,44 @@
         max-width: 1000px;
         margin: auto;
       }
+      ul#mod-list {
+        list-style-type: none;
+        padding: 40px;
+      }
+      li {
+        padding: 3px 0px 3px 3px;
+        border-left: 1px solid #B0B0B0;
+        border-right: 1px solid #B0B0B0;
+      }
+      li.grayed {
+        background-color: #E0E0E0;
+      }
+      li.whited {
+        background-color: #FFFFFF;
+      }
+      span.row-header {
+        display: inline-block;
+        text-align: right;
+        width: 50px;
+        padding: 0px 10px;
+      }
+      span.row-body {
+        display: inline-block;
+      }
+      span.row-footer {
+        border-radius: 10px;
+        display: inline-block;
+        text-align: center;
+        width: 40px;
+        margin-right: 10px;
+        float: right;
+      }
+      span.esp {
+        background-color: rgba(0,140,0,0.25);
+      }
+      span.esm {
+        background-color: rgba(0,0,140,0.25);
+      }
     </style>
 
   </head>
@@ -41,11 +84,12 @@
 
     <div id="main-container">
       <span id="list-container">
-        <ul class="list-group" id="mod-list"></ul>
+        <ul class="" id="mod-list"></ul>
       </span>
       <span id="search-container">
         <h3 id="username"></h3>
         <input type="text" class="form-control" id="filter-mods" placeholder="Filter by..."/>
+        <h3 id="num-mods">Number of Files</h3>
       </span>
     </div>
 
@@ -58,24 +102,38 @@
       var listBody = "";
 
       for(var i = 0; i < list.length; i++) {
-        listBody += "<li class='list-group-item'>"+list[i]+"</li>";
+        listBody += "<li class='";
+        if(i%2 == 1) {
+          listBody += " grayed";
+        } else {
+          listBody += " whited";
+        }
+        listBody += "'><span class='row-header'>"+(i+1)+".</span><span class='row-body'>"+list[i]+"</span><span class='row-footer "+list[i].substr(-3,3)+"'>"+list[i].substr(-3,3)+"</span></li>";
       }
       
       $('#username').append(username + "\'s load order");
+      $('#num-mods').html(list.length + " files");
       $('#mod-list').append(listBody);
 
       $('#filter-mods').keyup(function(){
         var filterText = $(this).val();
+        var iterator = 0;
         $('#mod-list > li').each(function(){
           var text = $(this).text().toLowerCase();
           if(filterText[0] == '^') {
             (text.indexOf(filterText.substr(1)) == 0) ? $(this).slideDown() : $(this).slideUp();
-            console.log(filterText.substr(1));
           } else {
-            (text.indexOf(filterText) >= 0) ? $(this).slideDown() : $(this).slideUp();
+            if(text.indexOf(filterText) >= 0) {
+              (iterator%2 == 0) ? $(this)[0].className = 'whited' : $(this)[0].className = 'grayed';
+              iterator++;
+              $(this).slideDown();
+            } else {
+              $(this).slideUp();
+            }
           }
         });
       });
+
     </script>
 
     <script>
