@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -56,15 +55,21 @@
       span.row-header {
         display: inline-block;
         text-align: right;
+        vertical-align: top;
         width: 50px;
         padding: 0px 10px;
       }
       span.row-body {
+        max-width: 75%;
         display: inline-block;
+        vertical-align: top;
+        overflow: ellipsis;
+        white-space: nowrap;
       }
       span.row-footer {
         border-radius: 10px;
         display: inline-block;
+        vertical-align: top;
         text-align: center;
         width: 40px;
         margin-right: 10px;
@@ -101,19 +106,50 @@
       var list = <%-list%>;
       var listBody = "";
 
-      for(var i = 0; i < list.length; i++) {
-        listBody += "<li class='";
-        if(i%2 == 1) {
-          listBody += " grayed";
-        } else {
-          listBody += " whited";
+      $(document).ready(function() {
+        for(var i = 0; i < list.length; i++) {
+          listBody += "<li class='";
+          if(i%2 == 1) {
+            listBody += " grayed";
+          } else {
+            listBody += " whited";
+          }
+          listBody += "'><span class='row-header'>"+(i+1)+".</span><span class='row-body'>"+list[i]+"</span><span class='row-footer "+list[i].substr(-3,3)+"'>"+list[i].substr(-3,3)+"</span></li>";
         }
-        listBody += "'><span class='row-header'>"+(i+1)+".</span><span class='row-body'>"+list[i]+"</span><span class='row-footer "+list[i].substr(-3,3)+"'>"+list[i].substr(-3,3)+"</span></li>";
-      }
+
+        $('#username').append(username + "\'s load order");
+        $('#num-mods').html(list.length + " files");
+        $('#mod-list').append(listBody);
+
+        $('#filter-mods').keyup(function(){
+          var filterText = $(this).val();
+          var iterator = 0;
+          $('#mod-list > li').each(function(){
+            var text = $(this).text().toLowerCase();
+            if(filterText[0] == '^') {
+              (text.indexOf(filterText.substr(1)) == 0) ? $(this).slideDown() : $(this).slideUp();
+            } else {
+              if(text.indexOf(filterText) >= 0) {
+                (iterator%2 == 0) ? $(this)[0].className = 'whited' : $(this)[0].className = 'grayed';
+                iterator++;
+                $(this).slideDown();
+              } else {
+                $(this).slideUp();
+              }
+            }
+          });
+        });
+
+        $('.row-body').css('max-width', ($('#mod-list').width() - 130)+'px');
+      });
+
+  $(window).resize(function() {
+    $('.row-body').css('max-width', ($('#mod-list').width() - 130)+'px');
+  });
+
       
-      $('#username').append(username + "\'s load order");
-      $('#num-mods').html(list.length + " files");
-      $('#mod-list').append(listBody);
+      
+      
 
       $('#filter-mods').keyup(function(){
         var filterText = $(this).val();
