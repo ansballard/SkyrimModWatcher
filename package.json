@@ -12,6 +12,10 @@
     "bcrypt-nodejs": "latest"
   },
   "subdomain": "skyrimmodwatcher",
+  "domains": [
+    "modwat.ch",
+    "www.modwat.ch"
+  ],
   "engines": {
     "node": "0.10.x"
   }
