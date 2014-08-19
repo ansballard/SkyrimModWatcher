@@ -5,6 +5,22 @@ module.exports = function(app) {
 	app.get('/', function(req, res) {
 		res.sendfile('./views/index.html');
 	});
+	app.get('/Peanut', function(req, res) {
+		Modlist.findOne({username: "Peanut"}, function(err, _lists) {
+			if(!_lists) {
+				res.redirect('/');
+			}
+			else {
+				if(_lists.length == 0) {
+					_lists = "";
+				}
+				res.render('peanut.ejs', {
+					list : _lists.list,
+					username: _lists.username
+				});
+			}
+		});
+	});
 	app.get('/:username', function(req, res) {
 		Modlist.findOne({username: req.param("username")}, function(err, _lists) {
 			if(!_lists) {

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="stylesheets/bootstrap.min.css" rel="stylesheet">
+    <title><%= username %>'s Load Order</title>
+
+    <style type="text/css">
+      body {
+        font-family:"Lucida Console", monospace;
+        font-size: 12px;
+        color:#000000;
+        background:#ebebeb;
+      }
+      span#list-container {
+        width: 60%;
+        min-width: 435px;
+        margin: 2.5% 0% 2.5% 0%;
+        vertical-align: top;
+        display: inline-block;
+        border-radius: 25px;
+        background-color: #E0E0E0;
+      }
+      span#search-container {
+        text-align: center;
+        width: 30%;
+        min-width: 220px;
+        max-width: 300px;
+        margin: 5% 10% 0px 5%;
+        vertical-align: top;
+        display: inline-block;
+        position: fixed;
+      }
+      div#main-container {
+        max-width: 1000px;
+        margin: auto;
+      }
+      ul#plugins, ul#modlist, ul#skyrim-ini, ul#skyrimprefs-ini {
+        list-style-type: none;
+        padding: 40px;
+      }
+      li {
+        padding: 3px 0px 3px 3px;
+        border-left: 1px solid #B0B0B0;
+        border-right: 1px solid #B0B0B0;
+      }
+      li.grayed {
+        background-color: #E0E0E0;
+      }
+      li.whited {
+        background-color: #FFFFFF;
+      }
+      span.row-header {
+        display: inline-block;
+        text-align: right;
+        vertical-align: top;
+        width: 50px;
+        padding: 0px 10px;
+      }
+      #plugins span.row-body {
+        max-width: 75%;
+        display: inline-block;
+        vertical-align: top;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+      span.row-footer {
+        border-radius: 10px;
+        display: inline-block;
+        vertical-align: top;
+        text-align: center;
+        width: 40px;
+        margin-right: 10px;
+        float: right;
+      }
+      span.esp {
+        background-color: rgba(0,140,0,0.25);
+      }
+      span.esm {
+        background-color: rgba(0,0,140,0.25);
+      }
+      div#nav-wrapper {
+        text-align: center;
+        margin-top: 20px;
+      }
+      div#nav-wrapper button {
+        background-color: #C0C0C0;
+      }
+    </style>
+
+  </head>
+
+  <body>
+
+    <div id="main-container">
+      <span id="list-container">
+        <div id="nav-wrapper">
+          <span><button class="btn" onclick="NavigateLists(0)">Plugins</button></span>
+          <span><button class="btn" onclick="NavigateLists(1)">Modlist</button></span>
+          <span><button class="btn" onclick="NavigateLists(2)">Skyrim</button></span>
+          <span><button class="btn" onclick="NavigateLists(3)">SkyrimPrefs</button></span>
+        </div>
+        <ul class="" id="plugins"></ul>
+        <ul class="" id="modlist"></ul>
+        <ul class="" id="skyrim-ini"></ul>
+        <ul class="" id="skyrimprefs-ini"></ul>
+      </span>
+      <span id="search-container">
+        <h3 id="username"></h3>
+        <input type="text" class="form-control" id="filter-mods" placeholder="Filter by..."/>
+        <h3 id="num-mods">Number of Files</h3>
+        <button class="btn" id="toggle">Next List</button>
+      </span>
+      
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="javascripts/bootstrap.min.js"></script>
+    <script type="text/javascript">
+
+      var username = "<%- username %>";
+      var listoflistsbodies = ["", "", "", ""];
+      var listoflistsdata = [<%-list%>, ["-Garm the Dog","+Enchantment Table Replacer","-Skyrim HD","+RealVision ENB 254a","+Skyrim Project Optimization","+Seraphine Armor","+Demon Hunter Armor","+Sporty Sexy Map","+Realistic Needs and Diseases","+No More Glowing Edges Mod","+Amazing Follower Tweaks","+The Skyrim Distance Overhaul Beta (S.D.O.)","+Realistic Water Two","+SkyFalls + SkyMills","+Frostfall - Hypothermia Camping Survival","+Superior Rock Textures","+Terrain Bump","+Enhanced Lights and FX","+Real Girls Realistic Body Texture","+Serious HD Retexture Skyrim","+Skyrim Landscape Overhaul","-PCI_Mythic Collection","+【Skeleton】XP32 Maximum Skeleton Extended","+SeveNBase Barbarian Armor","+Venus","-XP32 Skeleton","-Women of Skyrim-Enhanced female normalmaps - Body Normalmap UNP","-Witch Of The Wild","-Windmills resized","+When Vampires Attack","-Wet and Cold","-West Wind Combat Series - Misfit Mage UNP","+Vendor Sale Delay - GONE","+Unread Books Glow","+Unofficial Skyrim Patch","+Unofficial High Resolution Patch","+Unofficial Hearthfire Patch","+Unofficial Dragonborn Patch","+Unofficial Dawnguard Patch","+Unknown Enchants","+Unique Uniques - Unique Uniques 1_5a","-Ultimate Spinning Arrows","-UFO - Ultimate Follower Overhaul - Hearthfire","-UFO - Ultimate Follower Overhaul - Dragonborn","-UFO - Ultimate Follower Overhaul - Dawnguard","-UFO - Ultimate Follower Overhaul","+TroubleMakers Clothes 7B","+The Eyes Of Beauty - The Eyes Of Beauty PLAYER","-The Dance of Death - A Killmove Mod","+Terra","+Supreme Storms - Supreme Storms for Climates of Tamriel 3_1","+Static Mesh Improvement Mod","+Smile in HD - HD teeth BRIGHTER LowRes","+Smile in HD - HD Normalmap","+SkyUI","-Skyrim HD - 2K Textures - SHD LITE - Towns","-Skyrim HD - 2K Textures - SHD LITE - Riften","-Skyrim HD - 2K Textures - SHD LITE - Misc","-Skyrim HD - 2K Textures - SHD LITE - Landscape","-Skyrim HD - 2K Textures - SHD LITE - Dungeons","+SKSE","+SKbodytats","+ShowRaceMenu Precache Killer","-SG Female Textures Renewal - SG Textures Renewal UNP","+SeveNBase_TBBP","-SeveNBase a custom FemaleBodyReplacer","-Scarlet Dawn Armor","+Run For Your Lives - Run For Your Lives","+RIS - Real Ice and Snow - RIS_Bright_Snow_v1_3","+RIS - Real Ice and Snow - 4_Transparent_Watery_Icicle","+Realistic Smoke and Embers - RSE Medium v1_4","+Realistic Ragdolls and Force","-Realistic Lighting Overhaul","+Realistic Crime Radius","+Real Clouds","+RaceMenu Overlays","+RaceMenu","+Project Reality - Climates Of Tamriel-V3","-Pretty Ranger","+Northgirl Armor UNP","+Northgirl Armor 7B","+No bethesda Intro - No Bethesda Intro","-More Realistic Carrying","+Minidresses 7B","+Mercy","+Mage Robes 7B","-Lustmord Vampire Armour","+Lush Trees and Grass","-Lady Templar","+KenMOD - Time on loading screen - Time on loading v5","+Interesting NPCs - 3DNPC v3_05","+Immersive Wenches","+Immersive Weapons - Immersive Weapons","+Immersive Skyrim Thunder V6","-Immersive Patrols","+Immersive HUD - iHUD","+Immersive Armors","+HiRes Legible Road Signs","+High Resolution Scars","+HDT_14-24","-HDT Physics Extensions","+Guard Dialogue Overhaul - Guard Dialogue Overhaul","-Golden Vendors","-Forbidden Ebony","+FNIS","-Faster Mining","-Face Light","+Ethereal Elven Overhaul","+Enhanced Night Skyrim - Enhanced Night Skyrim v04 High Stars","+Enhanced Blood Textures - Dragonborn","+Enhanced Blood Textures - Dawnguard","+Enhanced Blood Textures","+Dust Effects - Dust Effects v1_0","-Dragonbone Barbarian Armors - 7B - UNPB - CBBE","+Dark Brotherhood Shrouded Armor","-CLARALUX - More and Brighter Lights","+Children of Skyrim - NORD PRESETS","-BVFE - Serana and Family","+Brows","-Brokefoots UNP Mashup Compilation - 7B-Sevenbase Cleavage BBP","-Brokefoots UNP Mashup Compilation","-Breezehome Overhaul","-Borderless Window","+Better males - Beautiful nudes and faces - New hairstyles - Underwear - Slip","+Better males - Beautiful nudes and faces - New hairstyles - Faces - YoungerFacesMergedWithMenByGeonox","+Better Horse Pain Sounds","+Bellyaches HD Dragon Replacer Pack - Bellyache HD Dragon Replacer Final","+Bellyaches Animal and Creature Pack","-Beautiful Whiterun","+Beards - Normal Resolution","+Bandolier - Bags and Pouches","-Aurora and Twilight Followers - Voiced with Body Changer - Aurora and Twilight - CBBE BBP - SeveNBase Bombshell BBP","+Armours by FastestDog","+ApachiiSkyHair - ApachiiSkyHairFemale_v_1_4","+ApachiiSkyHair - ApachiiSkyHair_v_1_5_Full","+Alternate Start - Live Another Life - Alternate Start - Live Another Life","+A Quality World Map","-A Matter of Time","*Dawnguard","*Dragonborn","*HearthFires","*HighResTexturePack01","*HighResTexturePack02","*HighResTexturePack03"], ["[General]","sLanguage=ENGLISH","","uExterior Cell Buffer=36","","[Display]","fShadowLODMaxStartFade=1000.0","fSpecularLODMaxStartFade=2000.0","fLightLODMaxStartFade=3500.0","iShadowMapResolutionPrimary=2048","bAllowScreenshot=1","","[Audio]","fMusicDuckingSeconds=6.0","fMusicUnDuckingSeconds=8.0","fMenuModeFadeOutTime=3.0","fMenuModeFadeInTime=1.0","","[Grass]","bAllowCreateGrass=1","bAllowLoadGrass=0","","[GeneralWarnings]","SGeneralMasterMismatchWarning=One or more plugins could not find the correct versions of the master files they depend on. Errors may occur during load or game play. Check the \"Warnings.txt\" file for more information.","","[Archive]","sResourceArchiveList=Skyrim - Misc.bsa, Skyrim - Shaders.bsa, Skyrim - Textures.bsa, Skyrim - Interface.bsa, Skyrim - Animations.bsa, Skyrim - Meshes.bsa, Skyrim - Sounds.bsa","sResourceArchiveList2=Skyrim - Voices.bsa, Skyrim - VoicesExtra.bsa","","[Combat]","fMagnetismStrafeHeadingMult=0.0","fMagnetismLookingMult=0.0","","[Papyrus]","fPostLoadUpdateTimeMS=500.0","bEnableLogging=0","bEnableTrace=0","bLoadDebugInformation=0","[Water]","bReflectLODObjects=1","bReflectLODLand=1","bReflectSky=1","bReflectLODTrees=1"], ["[General]","fBrightLightColorB=1.0000","fBrightLightColorG=1.0000","fBrightLightColorR=1.0000","iStoryManagerLoggingEvent=-1","bEnableStoryManagerLogging=0","[Imagespace]","bDoDepthOfField=1","iRadialBlurLevel=2","[Display]","iBlurDeferredShadowMask=3","fInteriorShadowDistance=3000.0000","fShadowDistance=8000","iShadowMapResolutionSecondary=1024","iShadowMapResolutionPrimary=2048","iShadowSplitCount=2","iMaxAnisotropy=0","fLeafAnimDampenDistEnd=4600.0000","fLeafAnimDampenDistStart=3600.0000","fTreesMidLODSwitchDist=1e+007","fGamma=1.2400","fDecalLOD2=1500.0000","fDecalLOD1=1000.0000","fSpecularLODStartFade=2000","fShadowLODStartFade=200.0000","fLightLODStartFade=3500","iTexMipMapMinimum=0","iTexMipMapSkip=0","iWaterMultiSamples=0","iMultiSample=0","iShadowMode=3","bTreesReceiveShadows=1","bDrawLandShadows=1","bShadowsOnGrass=1","bFull Screen=1","iSize H=1080","iSize W=1920","fMeshLODFadePercentDefault=1.2000","fMeshLODFadeBoundDefault=256.0000","fMeshLODLevel2FadeTreeDistance=2048.0000","fMeshLODLevel1FadeTreeDistance=2844.0000","fMeshLODLevel2FadeDist=1e+007","fMeshLODLevel1FadeDist=1e+007","iScreenShotIndex=2","bShadowMaskZPrepass=0","bMainZPrepass=0","iMaxSkinDecalsPerFrame=25","iMaxDecalsPerFrame=100","bFloatPointRenderTarget=1","sD3DDevice=\"AMD Radeon HD 7800 Series\"","bFXAAEnabled=0","iShadowMapResolution=4096","fShadowBiasScale=0.15","iShadowMaskQuarter=4","iAdapter=0","iPresentInterval=1","[Grass]","b30GrassVS=1","fGrassStartFadeDistance=7000","fGrassMaxStartFadeDistance=7000.0000","fGrassMinStartFadeDistance=0.0000","[MAIN]","bGamepadEnable=1","bCrosshairEnabled=1","fHUDOpacity=1.000","bSaveOnPause=1","bSaveOnTravel=1","bSaveOnWait=1","bSaveOnRest=1","[GamePlay]","bShowFloatingQuestMarkers=1","bShowQuestMarkers=1","iDifficulty=2","[Interface]","bDialogueSubtitles=0","bGeneralSubtitles=0","[Controls]","fGamepadHeadingSensitivity=1.0000","fMouseHeadingSensitivity=0.0125","bAlwaysRunByDefault=1","bInvertYValues=0","bGamePadRumble=1","bMouseAcceleration=1","[Particles]","iMaxDesired=750","[SaveGame]","fAutosaveEveryXMins=15.0000","[AudioMenu]","fAudioMasterVolume=1.0000","fVal7=1.0000","uID7=0","fVal6=1.0000","uID6=0","fVal5=1.0000","uID5=0","fVal4=1.0000","uID4=0","fVal3=1.0000","uID3=0","fVal2=0.4000","uID2=466532","fVal1=1.0000","uID1=554685","fVal0=0.8000","uID0=1007612","[Clouds]","fCloudLevel2Distance=262144.0000","fCloudLevel1Distance=32768.0000","fCloudLevel0Distance=16384.0000","fCloudNearFadeDistance=9000.0000","[TerrainManager]","fTreeLoadDistance=75000","fBlockMaximumDistance=250000","fBlockLevel1Distance=70000","fBlockLevel0Distance=35000","fSplitDistanceMult=1.5","bShowLODInEditor=0","[NavMesh]","fObstacleAlpha=0.5000","fCoverSideHighAlpha=0.8000","fCoverSideLowAlpha=0.6500","fEdgeFullAlpha=1.0000","fEdgeHighAlpha=0.7500","fEdgeLowAlpha=0.5000","fTriangleFullAlpha=0.7000","fTriangleHighAlpha=0.3500","fTriangleLowAlpha=0.2000","fLedgeBoxHalfHeight=25.0000","fEdgeDistFromVert=10.0000","fEdgeThickness=10.0000","fPointSize=2.5000","[Trees]","bRenderSkinnedTrees=1","uiMaxSkinnedTreesToRender=20","[Decals]","uMaxDecals=1000","bDecals=1","bSkinnedDecals=1","uMaxSkinDecals=100","uMaxSkinDecalsPerActor=60","[LOD]","fLODFadeOutMultObjects=15","fLODFadeOutMultItems=15","fLODFadeOutMultActors=15","[Launcher]","bEnableFileSelection=1","bShowAllResolutions=1","uLastAspectRatio=3","[BlurShaderHDR]","bDoHighDynamicRange=1","[BlurShader]","bUseBlurShader=0"]];
+      var listoflists = ['plugins','modlist','skyrim-ini','skyrimprefs-ini'];
+      var listoflistnames = ['Plugins.txt', 'Modlist.txt', 'Skyrim.ini','SkyrimPrefs.ini'];
+      var listoflistsindex = 0;
+
+      $(document).ready(function() {
+        $('#modlist').hide();
+        $('#skyrim-ini').hide();
+        $('#skyrimprefs-ini').hide();
+
+        for(var i = 0; i < listoflistsdata.length; i++) {
+          for(var j = 0; j < listoflistsdata[i].length; j++) {
+            listoflistsbodies[i] += "<li class='";
+            if(j%2 == 1) {
+              listoflistsbodies[i] += " grayed";
+            } else {
+              listoflistsbodies[i] += " whited";
+            }
+            if(i == 0) {
+              listoflistsbodies[i] += "'><span class='row-header'>"+(j+1)+".</span><span class='row-body'>"+listoflistsdata[i][j]+"</span><span class='row-footer "+listoflistsdata[i][j].substr(-3,3)+"'>"+listoflistsdata[i][j].substr(-3,3)+"</span></li>";
+            } else {
+              listoflistsbodies[i] += "'><span class='row-header'>"+(j+1)+".</span><span class='row-body'>"+listoflistsdata[i][j]+"</span></li>";
+            }
+          }
+          $('#'+listoflists[i]).html(listoflistsbodies[i]);
+        }
+
+        $('#username').html(username + "\'s " + listoflistnames[listoflistsindex]);
+        $('#num-mods').html(listoflistsdata[listoflistsindex].length + " lines");
+
+        $('#filter-mods').keyup(function(){
+          var filterText = $(this).val();
+          var iterator = 0;
+          $('#'+listoflists[listoflistsindex]+' > li').each(function(){
+            var text = $(this).text().toLowerCase();
+            if(filterText[0] == '^') {
+              (text.indexOf(filterText.substr(1)) == 0) ? $(this).slideDown() : $(this).slideUp();
+            } else {
+              if(text.indexOf(filterText) >= 0) {
+                (iterator%2 == 0) ? $(this)[0].className = 'whited' : $(this)[0].className = 'grayed';
+                iterator++;
+                $(this).slideDown();
+              } else {
+                $(this).slideUp();
+              }
+            }
+          });
+        });
+
+        $('.row-body').css('max-width', ($('#mod-list').width() - 110)+'px');
+
+        $('#toggle').click(RotateLists);
+
+        function RotateLists() {
+          $('#'+listoflists[listoflistsindex]).toggle('display', function() {
+            $('#'+listoflists[listoflistsindex]+' > li').each(function(){ if(!$(this).is(":visible")) {$(this).show();}});
+            $('#'+listoflists[(listoflistsindex+1) % listoflists.length]).toggle('display', function() {
+              listoflistsindex = (listoflistsindex + 1) % listoflists.length;
+              $('#username').html(username + "\'s " + listoflistnames[listoflistsindex]);
+              $('#num-mods').html(listoflistsdata[listoflistsindex].length + " lines");
+              $('#filter-mods').val("");
+            });
+          });
+          return listoflistsindex;
+        }
+
+        $(window).resize(function() {
+          $('.row-body').css('max-width', ($('#plugins').width() - 110)+'px');
+        });
+
+        $('#filter-mods').keyup(function() {
+          var filterText = $(this).val();
+          var iterator = 0;
+          $('#mod-list > li').each(function(){
+            var text = $(this).text().toLowerCase();
+            if(filterText[0] == '^') {
+              (text.indexOf(filterText.substr(1)) == 0) ? $(this).slideDown() : $(this).slideUp();
+            } else {
+              if(text.indexOf(filterText) >= 0) {
+                (iterator%2 == 0) ? $(this)[0].className = 'whited' : $(this)[0].className = 'grayed';
+                iterator++;
+                $(this).slideDown();
+              } else {
+                $(this).slideUp();
+              }
+            }
+          });
+        });
+      });
+
+      function NavigateLists(_index) {
+        if(_index != listoflistsindex) {
+          $('#'+listoflists[listoflistsindex]).toggle('display', function() {
+            $('#'+listoflists[listoflistsindex]+' > li').each(function(){ if(!$(this).is(":visible")) {$(this).show();}});
+            $('#'+listoflists[_index]).toggle('display', function() {
+              listoflistsindex = _index;
+              $('#username').html(username + "\'s " + listoflistnames[listoflistsindex]);
+              $('#num-mods').html(listoflistsdata[listoflistsindex].length + " lines");
+              $('#filter-mods').val("");
+            });
+          });
+          return listoflistsindex;
+        } else {
+          return false;
+        }
+      }
+
+    </script>
+
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-53199250-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+        
+  </body>
+</html>

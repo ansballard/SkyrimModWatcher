@@ -63,7 +63,7 @@
         max-width: 75%;
         display: inline-block;
         vertical-align: top;
-        overflow: ellipsis;
+        overflow: hidden;
         white-space: nowrap;
       }
       span.row-footer {
@@ -144,7 +144,7 @@
       });
 
   $(window).resize(function() {
-    $('.row-body').css('max-width', ($('#mod-list').width() - 130)+'px');
+    $('.row-body').css('max-width', ($('#mod-list').width() - 110)+'px');
   });
 
       
