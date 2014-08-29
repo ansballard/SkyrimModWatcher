@@ -9,7 +9,7 @@ module.exports = function(passport) {
 	});
 
 	passport.deserializeUser(function(id, done) {
-	  User.findById(id, function(err, usadminer) {
+	  Admin.findById(id, function(err, admin) {
 	    done(err, admin);
 	  });
 	});
@@ -23,18 +23,18 @@ module.exports = function(passport) {
 	function(req, username, password, done) {
 		process.nextTick(function() {
 			console.log(req.body);
-			User.findOne({'username' : username }, function(err, admin) {
+			Admin.findOne({'username' : username }, function(err, admin) {
 				if(err) {
 					return done(err);
 				}
-				if(user) {
+				if(admin) {
 					return done(null, false, console.log("username already taken"));
 				}
 				else {
 					var admin = new Admin(); // a change
 
 					admin.username = username;
-					admin.local.password = admin.generateHash(password);
+					admin.password = admin.generateHash(password);
 
 					admin.save(function(err) {
 						if(err) {

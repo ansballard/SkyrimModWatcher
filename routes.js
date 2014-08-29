@@ -1,10 +1,60 @@
-module.exports = function(app) {
-
-	var Modlist = require('./models/modlist');
+module.exports = function(app, passport) {
 
 	app.get('/', function(req, res) {
-		res.sendfile('./views/index.html');
+		Blog.findOne({'newest': true}, function(err, _blog) {
+			res.render('home.ejs', {
+				title : _blog.title,
+				author: _blog.author,
+				thumbnailurl: _blog.thumbnail,
+				date: _blog.date.getMonth()+"/"+_blog.date.getDate()+"/"+_blog.date.getYear(),
+				content: _blog.body,
+				login: false,
+				admin: false
+			});
+		});
 	});
+	app.get('/admin', isLoggedIn, function(req, res) {
+		Blog.findOne({'newest': true}, function(err, _blog) {
+			res.render('home.ejs', {
+				title : _blog.title,
+				author: _blog.author,
+				thumbnailurl: _blog.thumbnail,
+				date: _blog.date.getMonth()+"/"+_blog.date.getDate()+"/"+_blog.date.getYear(),
+				content: _blog.body,
+				login: false,
+				admin: true
+			});
+		});
+	});
+	app.get('/login', function(req, res) {
+		Blog.findOne({'newest': true}, function(err, _blog) {
+			res.render('home.ejs', {
+				title : _blog.title,
+				author: _blog.author,
+				thumbnailurl: _blog.thumbnail,
+				date: _blog.date.getMonth()+"/"+_blog.date.getDate()+"/"+_blog.date.getYear(),
+				content: _blog.body,
+				login: true,
+				admin: false
+			});
+		});
+	});
+	app.get('/logout', function(req, res) {
+		req.logout();
+		res.redirect('/');
+	});
+	app.get('/blog/:title', function(req, res) {
+		Blog.findOne({'title': req.params.title}, function(err, _blog) {
+			res.render('home.ejs', {
+				title : _blog.title,
+				author: _blog.author,
+				thumbnailurl: _blog.thumbnail,
+				date: _blog.date.parse(),
+				content: _blog.body
+			});
+		});
+	});
+	// andonthethirdday,godcreated...
 	app.get('/Peanut', function(req, res) {
 		Modlist.findOne({username: "Peanut"}, function(err, _lists) {
 			if(!_lists) {
@@ -62,8 +112,47 @@ module.exports = function(app) {
 			}
 		});
 	});
+
+	app.get('/logout', function(req, res) {
+		req.logout();
+		res.redirect('/');
+	});
+	app.post('/login', passport.authenticate('login', {
+		successRedirect: '/admin',
+		failureRedirect: '/login'
+	}));
+	// COMMENT OUT, ONLY NEED 1 ADMIN FOR NOW
+	/*app.post('/register', passport.authenticate('register', {
+		successRedirect : '/admin',
+		failureRedirect : '/'
+	}));*/
+
 	app.post('/usersearch', function(req, res) {
 		res.redirect('/'+req.body.username);
+	});
+	app.post('/postnewblog', isLoggedIn, function(req, res) {
+		console.log("swag");
+		var blog = new Blog();
+		blog.title = req.body.title;
+		blog.thumbnail = req.body.thumbnail;
+		blog.body = req.body.content.replace(new RegExp('\r?\n','g'), '<br />');
+		blog.author = req.body.author;
+		blog.save(function(err) {
+			if(err) {
+				console.log("Post Error: "+err);
+				res.writeHead('500');
+				res.end();
+				throw err;
+			}
+			else {
+				console.log("New Blog Entry Uploaded By "+req.body.author);
+				Blog.findOne({'newest': true}, function(err, _blog) {
+					_blog.newest = false;
+					_blog.save();
+				});
+				res.redirect('/');
+			}
+		});
 	});
 	app.post('/loadorder', function(req, res) {
 
@@ -113,38 +202,20 @@ module.exports = function(app) {
 			}
 		});
 	});
+};
+
+var Modlist = require('./models/modlist');
+var Blog = require('./models/blog');
+var Admin = require('./models/admin');
+
+function isLoggedIn(req, res, next) {
+
+	if(req.isAuthenticated()) {
+		console.log("logged in as "+req.user.username);
+		return next();
+	}
+	else {
+		console.log("login redirect");
+		res.redirect('/login');
+	}
 }
-
-
-	/*
-
-
-	if(_existing) {
-						Modlist.findOneAndRemove({username: req.body.username}, function(err) {console.log(err);});
-
-						var temp = req.body.modlist.split('&%#');
-						for(var i = 0; i < temp.length; i++) {
-							console.log(temp[i]);
-						}
-
-						var modlist = new Modlist({
-							list: req.body.modlist,
-							username: req.body.username
-						});
-						modlist.save(function(err) {
-							if(err) {
-								console.log(err);
-								throw err;
-							}
-							else {
-								console.log("success");
-							}
-						});
-					}
-					else {
-						res.statusCode('403');
-						res.end();
-					}
-
-
-					*/

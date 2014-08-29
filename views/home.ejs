@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width">
+    <link href="/stylesheets/bootstrap.min.css" rel="stylesheet">
+    <title>Modwat.ch</title>
+
+    <style type="text/css">
+      body {
+        font-family:"Open Sans", sans-serif;
+        color:#000000;
+        text-align:center;
+        background:#ebebeb;
+        background-image: url("/images/smooth-red-texture.jpg");
+      }
+      .input-group {
+      	margin: auto;
+      }
+	  #header {
+		width:100%;
+		height: 200px;
+		padding-bottom: 20px;
+		font-size: 100px;
+		font-weight: bold;
+	  }
+	  #content-wrapper {
+	  	text-align: left;
+		width: 70%;
+		padding-left: 50px;
+		margin-right: 5%;
+		margin-bottom: 50px;
+		display: inline-block;
+		vertical-align: top;
+		border-radius: 10px;
+		background-color: #D0D0D0;
+	  }
+	  #sidebar-wrapper {
+		width: 20%;
+		max-width: 200px;
+		display: inline-block;
+		vertical-align: top;
+	  }
+	  #full-wrapper {
+		width:90%;
+		max-width: 1000px;
+		min-width: 500px;
+		margin:auto;
+	  }
+	  #sidebar-links {
+	  	width: 100%;
+	  	padding-top: 20px;
+	  	margin-bottom:50px;
+	  }
+	  .sidebar-link {
+	  	padding-top: 10px;
+	  	width: 100%;
+	  }
+	  .post-thumbnail {
+	  	width: 150px;
+	  	border-radius: 5px;
+	  	margin-right: 25px;
+	  	margin-top: 10px;
+	  	display: inline-block;
+	  }
+	  .post-title {
+	  	display: inline-block;
+	  	font-weight: bold;
+	  }
+	  .post-body {
+	  	padding-top: 25px;
+	  	padding-right: 10px;
+	  	font-size: 20px;
+	  }
+	  .post-sig {
+	  	padding-top: 15px;
+	  	padding-left: 15px;
+	  }
+    </style>
+</head>
+<body>
+	<div id="full-wrapper">
+		<h1 id="header"><span style="color: rgba(0,140,0,0.5)">Modwat.</span><span style="color: rgba(0,0,140,0.5)">ch</span></h1>
+		<span id="content-wrapper">
+			<div class="update-block"><span><% if(thumbnailurl != "") { %><img src="<%- thumbnailurl %>" class="post-thumbnail"/><%}%><h3 class="post-title"><%- title %></h3></span><p class="post-body"><%- content %></p><p class="post-sig">-<%-author %>, <%-date%></p></div>
+		</span>
+		<span id="sidebar-wrapper">
+			<form class="input-group" action="/usersearch" method="post">
+				<input type="text" style="margin-bottom:10px" class="form-control" name="username" placeholder="Username"/>
+				<input class="btn" type="submit" value="Find a load order!"/>
+			</form>
+			<div id="sidebar-links">
+				<a href="https://github.com/ansballard/SkyrimModWatcher" target="_blank"><img id="github-link" src="/images/GitHub-Logo.png" class="sidebar-link" alt="Github repository link" title="Github Repo"/></a>
+				<a href="http://www.nexusmods.com/skyrim/mods/56640/?" target="_blank"><img id="nexus-link" src="/images/FNV_NEXUS.png" class="sidebar-link" alt="Nexus link" title="Nexus Page"/></a>
+				<a href="www.reddit.com/user/PeanuttheGuru/" target="_blank"><img id="reddit-link" src="/images/reddit-logo.png" class="sidebar-link" alt="Reddit link" title="Contact Me on Reddit"/></a>
+			</div>
+		</span>
+	</div>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="/javascripts/bootstrap.min.js"></script>
+    <% if (login == true) { %>
+    <form action="/login" method="post">
+    	<input type="text" name="username" placeholder="username"/>
+    	<input type="text" name="password" placeholder="password"/>
+    	<input type="submit"/>
+    </form>
+    <% } else if (admin == true) { %>
+    <form method="post" action="http://192.168.1.69:3000/postnewblog">
+		<input type="text" name="title" placeholder="Title"/>
+		<input type="text" name="thumbnail" placeholder="Thumbnail URL"/>
+		<input type="text" name="author" placeholder="Author"/>
+		<input type="password" name="pass" placeholder="Password"/>
+		<textarea name="content" placeholder="Content"></textarea>
+		<input type="Submit"/>
+	</form>
+	<a href="/logout">LOGOUT</a>
+	<% } %>
+    <script>
+  /*(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-53199250-1', 'auto');
+  ga('send', 'pageview');*/
+
+</script>
+</body>
+</html>
