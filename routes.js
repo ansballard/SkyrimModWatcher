@@ -2,14 +2,21 @@ module.exports = function(app, passport) {
 
 	app.get('/', function(req, res) {
 		Blog.findOne({'newest': true}, function(err, _blog) {
-			res.render('home.ejs', {
-				title : _blog.title,
-				author: _blog.author,
-				thumbnailurl: _blog.thumbnail,
-				date: _blog.date.getMonth()+"/"+_blog.date.getDate()+"/"+_blog.date.getYear(),
-				content: _blog.body,
-				login: false,
-				admin: false
+			Modlist.find({}, function(err, _mods) {
+				var mods_ = [];
+				for(var i = _mods.length-1, j = 0; i > _mods.length-6; i--, j++) {
+					mods_[j] = _mods[i].username;
+				}
+				res.render('home.ejs', {
+					title : _blog.title,
+					author: _blog.author,
+					thumbnailurl: _blog.thumbnail,
+					date: _blog.date.getMonth()+"/"+_blog.date.getDate()+"/"+_blog.date.getYear(),
+					content: _blog.body,
+					login: false,
+					admin: false,
+					mods: mods_
+				});
 			});
 		});
 	});
@@ -74,6 +81,7 @@ module.exports = function(app, passport) {
 	app.get('/:username', function(req, res) {
 		Modlist.findOne({username: req.param("username")}, function(err, _lists) {
 			if(!_lists) {
+				console.log(" no lists for "+req.param("username"));
 				res.redirect('/');
 			}
 			else {
@@ -128,6 +136,7 @@ module.exports = function(app, passport) {
 	}));*/
 
 	app.post('/usersearch', function(req, res) {
+		console.log(req.body.username);
 		res.redirect('/'+req.body.username);
 	});
 	app.post('/postnewblog', isLoggedIn, function(req, res) {

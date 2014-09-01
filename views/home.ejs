@@ -88,13 +88,20 @@
 		</span>
 		<span id="sidebar-wrapper">
 			<form class="input-group" action="/usersearch" method="post">
-				<input type="text" style="margin-bottom:10px" class="form-control" name="username" placeholder="Username"/>
-				<input class="btn" type="submit" value="Find a load order!"/>
+				<input type="text" class="form-control" name="username" placeholder="Username"/>
+				<input class="btn" type="submit" value="Find a load order!" style="margin:10px 0px"/>
+			</form>
+			<form class="input-group" action="/usersearch" method="post">
+				<select class="form-control" onchange="document.getElementById('recent').value = 'View '+this.options[this.selectedIndex].value+'\'s Mods'" name="username">
+					<% for (var i = 0; i < mods.length; i++) { %>
+						<option value="<%-mods[i]%>"><%-mods[i]%></option><%
+					} %>
+				</select>
+				<input class="btn" type="submit" value="View <%-mods[0]%>'s Mods" id="recent" style="margin:10px 0px"/>
 			</form>
 			<div id="sidebar-links">
 				<a href="https://github.com/ansballard/SkyrimModWatcher" target="_blank"><img id="github-link" src="/images/GitHub-Logo.png" class="sidebar-link" alt="Github repository link" title="Github Repo"/></a>
 				<a href="http://www.nexusmods.com/skyrim/mods/56640/?" target="_blank"><img id="nexus-link" src="/images/FNV_NEXUS.png" class="sidebar-link" alt="Nexus link" title="Nexus Page"/></a>
-				<a href="www.reddit.com/user/PeanuttheGuru/" target="_blank"><img id="reddit-link" src="/images/reddit-logo.png" class="sidebar-link" alt="Reddit link" title="Contact Me on Reddit"/></a>
 			</div>
 		</span>
 	</div>
