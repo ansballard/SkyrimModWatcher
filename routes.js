@@ -22,27 +22,41 @@ module.exports = function(app, passport) {
 	});
 	app.get('/admin', isLoggedIn, function(req, res) {
 		Blog.findOne({'newest': true}, function(err, _blog) {
-			res.render('home.ejs', {
-				title : _blog.title,
-				author: _blog.author,
-				thumbnailurl: _blog.thumbnail,
-				date: _blog.date.getMonth()+"/"+_blog.date.getDate()+"/"+_blog.date.getYear(),
-				content: _blog.body,
-				login: false,
-				admin: true
+			Modlist.find({}, function(err, _mods) {
+				var mods_ = [];
+				for(var i = _mods.length-1, j = 0; i > _mods.length-6; i--, j++) {
+					mods_[j] = _mods[i].username;
+				}
+				res.render('home.ejs', {
+					title : _blog.title,
+					author: _blog.author,
+					thumbnailurl: _blog.thumbnail,
+					date: _blog.date.getMonth()+"/"+_blog.date.getDate()+"/"+_blog.date.getYear(),
+					content: _blog.body,
+					login: false,
+					admin: true,
+					mods: mods_
+				});
 			});
 		});
 	});
 	app.get('/login', function(req, res) {
 		Blog.findOne({'newest': true}, function(err, _blog) {
-			res.render('home.ejs', {
-				title : _blog.title,
-				author: _blog.author,
-				thumbnailurl: _blog.thumbnail,
-				date: _blog.date.getMonth()+"/"+_blog.date.getDate()+"/"+_blog.date.getYear(),
-				content: _blog.body,
-				login: true,
-				admin: false
+			Modlist.find({}, function(err, _mods) {
+				var mods_ = [];
+				for(var i = _mods.length-1, j = 0; i > _mods.length-6; i--, j++) {
+					mods_[j] = _mods[i].username;
+				}
+				res.render('home.ejs', {
+					title : _blog.title,
+					author: _blog.author,
+					thumbnailurl: _blog.thumbnail,
+					date: _blog.date.getMonth()+"/"+_blog.date.getDate()+"/"+_blog.date.getYear(),
+					content: _blog.body,
+					login: true,
+					admin: false,
+					mods: mods_
+				});
 			});
 		});
 	});
@@ -52,12 +66,19 @@ module.exports = function(app, passport) {
 	});
 	app.get('/blog/:title', function(req, res) {
 		Blog.findOne({'title': req.params.title}, function(err, _blog) {
-			res.render('home.ejs', {
-				title : _blog.title,
-				author: _blog.author,
-				thumbnailurl: _blog.thumbnail,
-				date: _blog.date.parse(),
-				content: _blog.body
+			Modlist.find({}, function(err, _mods) {
+				var mods_ = [];
+				for(var i = _mods.length-1, j = 0; i > _mods.length-6; i--, j++) {
+					mods_[j] = _mods[i].username;
+				}
+				res.render('home.ejs', {
+					title : _blog.title,
+					author: _blog.author,
+					thumbnailurl: _blog.thumbnail,
+					date: _blog.date.parse(),
+					content: _blog.body,
+					mods: mods_
+				});
 			});
 		});
 	});
