@@ -82,7 +82,7 @@ module.exports = function(app, passport) {
 			});
 		});
 	});
-	// andonthethirdday,godcreated...
+	// 
 	app.get('/Peanut', function(req, res) {
 		Modlist.findOne({username: "Peanut"}, function(err, _lists) {
 			if(!_lists) {
