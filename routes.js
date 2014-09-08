@@ -90,10 +90,15 @@ module.exports = function(app, passport) {
 			}
 			else {
 				if(_lists.length == 0) {
+					console.log("empty?");
 					_lists = "";
 				}
+				console.log(_lists.skyrimini);
 				res.render('peanut.ejs', {
 					list : _lists.list,
+					modlist : _lists.modlisttxt,
+					skyrimini : _lists.skyrimini,
+					skyrimprefsini : _lists.skyrimprefsini,
 					username: _lists.username
 				});
 			}
@@ -226,6 +231,59 @@ module.exports = function(app, passport) {
 					else {
 						console.log("New Modlist Uploaded By "+req.body.username);
 						res.writeHead('200');
+						res.end();
+					}
+				});
+			}
+		});
+	});
+	app.post('/fullloadorder', function(req, res) {
+		Modlist.findOne({'username' : req.body.username}, function(err, _modlist) {
+
+			if(_modlist) { // if the username exists in the db
+				if(_modlist.validPassword(req.body.password)) {
+					console.log(req.body.skyrimini);
+					_modlist.list = req.body.plugins;
+					_modlist.modlisttxt = req.body.modlisttxt;
+					_modlist.skyrimini = req.body.skyrimini;
+					_modlist.skyrimprefsini = req.body.skyrimprefsini;
+					_modlist.save(function(err) {
+						if(err) {
+							console.log('error on update');
+						} else {
+							console.log(_modlist.list);
+							console.log('Updated Successfully!');
+						}
+					});
+					res.statusCode = 200;
+					res.end();
+				}
+				else {
+					console.log("Wrong Password for "+req.body.username);
+					res.statusCode = 403;
+					res.end();
+				}
+			}
+			else { // if the username does not exist
+
+				var modlist = new Modlist();
+				modlist.list = req.body.plugins;
+				modlist.modlisttxt = req.body.modlisttxt;
+				modlist.skyrimini = req.body.skyrimini;
+				modlist.skyrimprefsini = req.body.skyrimprefsini;
+				modlist.username = req.body.username;
+				modlist.password = modlist.generateHash(req.body.password);
+
+				modlist.save(function(err) {
+					if(err) {
+						console.log("Save Error: "+err);
+						res.statusCode = 500;
+						res.end();
+						throw err;
+					}
+					else {
+						console.log("New Modlist Uploaded By "+req.body.username);
+						res.statusCode = 200;
 						res.end();
 					}
 				});

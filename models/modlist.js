@@ -5,6 +5,9 @@ var Schema = mongoose.Schema;
 
 var modlistSchema = new Schema({
 	list: String,
+	modlisttxt: String,
+	skyrimini: String,
+	skyrimprefsini: String,
 	username: String,
 	password: String
 }, {
