@@ -3,6 +3,8 @@ from Tkinter import *
 from tkFileDialog import askopenfilename
 from os.path import expanduser, isfile
 home = expanduser("~")
+game = "skyrim"
+loadorderexists = true
 
 user_pass_path = []
 
@@ -41,25 +43,41 @@ if len(user_pass_path) != 3:
 	user_pass_path = populateAuth()
 	user_pass_path[2] = getPluginsFile()
 
-infile = open(user_pass_path[2]+"plugins.txt", 'r')
-plugins = infile.read()
-plugins = string.replace(plugins,"\"","\'").split('\n')
-infile.close()
+try:
+	infile = open(user_pass_path[2]+"plugins.txt", 'r')
+	plugins = infile.read()
+	plugins = string.replace(plugins,"\"","\'").split('\n')
+	infile.close()
+except IOError as e:
+	raw_input("Error reading plugins.txt, Press enter to quit")
+	exit()
 
-infile = open(user_pass_path[2]+"modlist.txt", 'r')
-modlisttxt = infile.read()
-modlisttxt = string.replace(modlisttxt,"\"","\'").split('\n')
-infile.close()
+try:
+	infile = open(user_pass_path[2]+"modlist.txt", 'r')
+	modlisttxt = infile.read()
+	modlisttxt = string.replace(modlisttxt,"\"","\'").split('\n')
+	infile.close()
+except IOError as e:
+	raw_input("Error reading modlist.txt, Press enter to quit")
+	exit()
 
-infile = open(user_pass_path[2]+"skyrim.ini", 'r')
-skyrimini = infile.read()
-skyrimini = string.replace(skyrimini,"\"","\'").split('\n')
-infile.close()
+try:
+	infile = open(user_pass_path[2]+game+".ini", 'r')
+	ini = infile.read()
+	ini = string.replace(ini,"\"","\'").split('\n')
+	infile.close()
+except IOError as e:
+	raw_input("Error reading "+game+".ini, Press enter to quit")
+	exit()
 
-infile = open(user_pass_path[2]+"skyrimprefs.ini", 'r')
-skyrimprefsini = infile.read()
-skyrimprefsini = string.replace(skyrimprefsini,"\"","\'").split('\n')
-infile.close()
+try:
+	infile = open(user_pass_path[2]+game+"skyrimprefs.ini", 'r')
+	prefsini = infile.read()
+	prefsini = string.replace(prefsini,"\"","\'").split('\n')
+	infile.close()
+except IOError as e:
+	raw_input("Error reading "+game+"prefs.ini, Press enter to quit")
+	exit()
 
 pluginsToSend = '['
 for i in plugins:
@@ -68,8 +86,6 @@ for i in plugins:
 pluginsToSend = pluginsToSend[:-1]
 pluginsToSend += "]"
 
-print pluginsToSend
-
 modlisttxtToSend = '['
 for i in modlisttxt:
 	if i != "" and i[0] != "#":
@@ -77,28 +93,21 @@ for i in modlisttxt:
 modlisttxtToSend = modlisttxtToSend[:-1]
 modlisttxtToSend += "]"
 
-print modlisttxtToSend
-
-skyrimsToSend = '['
-for i in skyrimini:
+iniToSend = '['
+for i in ini:
 	if i != "" and i[0] != "#":
-		skyrimsToSend = skyrimsToSend + "\\\"" + i + "\\\","
-skyrimsToSend = skyrimsToSend[:-1]
-skyrimsToSend += "]"
+		iniToSend = iniToSend + "\\\"" + i + "\\\","
+iniToSend = iniToSend[:-1]
 
-print skyrimsToSend
-
-skyrimprefsToSend = '['
-for i in skyrimprefsini:
+prefsiniToSend = '['
+for i in prefsini:
 	if i != "" and i[0] != "#":
-		skyrimprefsToSend = skyrimprefsToSend + "\\\"" + i + "\\\","
-skyrimprefsToSend = skyrimprefsToSend[:-1]
-skyrimprefsToSend += "]"
+		prefsiniToSend = prefsiniToSend + "\\\"" + i + "\\\","
+prefsiniToSend = prefsiniToSend[:-1]
+prefsiniToSend += "]"
 
-fullParams = "{\"plugins\": \""+pluginsToSend+"\",\"modlisttxt\": \""+modlisttxtToSend+"\",\"skyrimini\": \""+skyrimsToSend+"\",\"skyrimprefsini\": \""+skyrimprefsToSend+"\", \"username\": \""+user_pass_path[0]+"\", \"password\": \""+user_pass_path[1]+"\"}"
-#print fullParams
+fullParams = "{\"plugins\": \""+pluginsToSend+"\",\"modlisttxt\": \""+modlisttxtToSend+"\",\""+game+"ini\": \""+iniToSend+"\",\""+game+"prefsini\": \""+prefsiniToSend+"\", \"username\": \""+user_pass_path[0]+"\", \"password\": \""+user_pass_path[1]+"\"}"
 
-#fullParams = json.dumps(fullParams)
 url = "http://127.0.0.1:3000/fullloadorder"
 
 req = urllib2.Request(url, fullParams, {'Content-Type':'application/json'})
@@ -107,16 +116,7 @@ f = urllib2.urlopen(req)
 response = f.getcode()
 print response
 f.close()
-#params = urllib.urlencode({'modlist': pluginsToSend, 'username': user_pass_path[0], 'password': user_pass_path[1]})
-#headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
 
-#conn = httplib.HTTPConnection('localhost:3000')
-
-
-#conn.request("POST", "/fullloadorder", params, headers)
-#response = conn.getresponse()
-#print response.status, response.reason
-#data = response.read()
 if(response == 200):
 	print "Your load order was successfully uploaded!"
 else:
