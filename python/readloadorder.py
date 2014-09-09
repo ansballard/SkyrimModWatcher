@@ -132,17 +132,21 @@ fullParams = "{\"plugins\": \""+pluginsToSend+"\",\"modlisttxt\": \""+modlisttxt
 #url to post to
 url = "http://modwat.ch/fullloadorder"
 
-#Fancy urllib2 things
-req = urllib2.Request(url, fullParams, {'Content-Type':'application/json'})
-print 'Uploading to http://modwat.ch/' + user_pass_path[0] + '...'
-f = urllib2.urlopen(req)
-response = f.getcode()
-print response
-f.close()
+try:
+	#Fancy urllib2 things
+	req = urllib2.Request(url, fullParams, {'Content-Type':'application/json'})
+	print 'Uploading to http://modwat.ch/' + user_pass_path[0] + '...'
+	f = urllib2.urlopen(req)
+	response = f.getcode()
+	print response
+	f.close()
 
-#If response is OK, print happy message, else show error code and press enter to confirm
-if(response == 200):
-	print "Your load order was successfully uploaded!"
-else:
-	print "Something went wrong!\nError Code:",response
-	raw_input("\nPress Enter To Continue")
+	#If response is OK, print happy message, else show error code and press enter to confirm
+	if(response == 200):
+		print "Your load order was successfully uploaded!"
+	else:
+		print "Something went wrong!\nError Code:",response
+		raw_input("\nPress Enter To Continue")
+except urllib2.HTTPError as e:
+	print "Incorrect password in auth.dat for",user_pass_path[0]
+	raw_input("Press Enter to Quit\n")
