@@ -11,7 +11,7 @@ module.exports = function(app, passport) {
 					title : _blog.title,
 					author: _blog.author,
 					thumbnailurl: _blog.thumbnail,
-					date: _blog.date.getMonth()+"/"+_blog.date.getDate()+"/"+_blog.date.getYear(),
+					date: (_blog.date.getMonth()+1)+"/"+_blog.date.getDate()+"/"+_blog.date.getFullYear(),
 					content: _blog.body,
 					login: false,
 					admin: false,
@@ -31,7 +31,7 @@ module.exports = function(app, passport) {
 					title : _blog.title,
 					author: _blog.author,
 					thumbnailurl: _blog.thumbnail,
-					date: _blog.date.getMonth()+"/"+_blog.date.getDate()+"/"+_blog.date.getYear(),
+					date: (_blog.date.getMonth()+1)+"/"+_blog.date.getDate()+"/"+_blog.date.getFullYear(),
 					content: _blog.body,
 					login: false,
 					admin: true,
@@ -51,7 +51,7 @@ module.exports = function(app, passport) {
 					title : _blog.title,
 					author: _blog.author,
 					thumbnailurl: _blog.thumbnail,
-					date: _blog.date.getMonth()+"/"+_blog.date.getDate()+"/"+_blog.date.getYear(),
+					date: (_blog.date.getMonth()+1)+"/"+_blog.date.getDate()+"/"+_blog.date.getFullYear(),
 					content: _blog.body,
 					login: true,
 					admin: false,
@@ -83,7 +83,7 @@ module.exports = function(app, passport) {
 		});
 	});
 	// 
-	app.get('/Peanut', function(req, res) {
+	/*app.get('/Peanut', function(req, res) {
 		Modlist.findOne({username: "Peanut"}, function(err, _lists) {
 			if(!_lists) {
 				res.redirect('/');
@@ -103,19 +103,40 @@ module.exports = function(app, passport) {
 				});
 			}
 		});
-	});
+	});*/
 	app.get('/:username', function(req, res) {
 		Modlist.findOne({username: req.param("username")}, function(err, _lists) {
 			if(!_lists) {
-				console.log(" no lists for "+req.param("username"));
 				res.redirect('/');
 			}
 			else {
-				if(_lists.length == 0) {
-					_lists = "";
+				var save = false;
+				if(_lists.list == null) {
+					_lists.list = "[]";
+					save = true;
 				}
+				if(_lists.modlisttxt == null) {
+					_lists.modlisttxt = "[]";
+					save = true;
+				}
+				if(_lists.skyrimini == null) {
+					_lists.skyrimini = "[]";
+					save = true;
+				}
+				if(_lists.skyrimprefsini == null) {
+					_lists.skyrimprefsini = "[]";
+					save = true;
+				}
+				if(save) {
+					console.log("saved");
+					_lists.save();
+				}
+				console.log(_lists.list+"\n\n"+_lists.modlisttxt+"\n\n"+_lists.skyrimini+"\n\n"+_lists.skyrimprefsini);
 				res.render('index.ejs', {
 					list : _lists.list,
+					modlist : _lists.modlisttxt,
+					skyrimini : _lists.skyrimini,
+					skyrimprefsini : _lists.skyrimprefsini,
 					username: _lists.username
 				});
 			}
@@ -162,7 +183,6 @@ module.exports = function(app, passport) {
 	}));*/
 
 	app.post('/usersearch', function(req, res) {
-		console.log(req.body.username);
 		res.redirect('/'+req.body.username);
 	});
 	app.post('/postnewblog', isLoggedIn, function(req, res) {
@@ -200,16 +220,15 @@ module.exports = function(app, passport) {
 					_modlist.list = req.body.modlist;
 					_modlist.save(function(err) {
 						if(err) {
-							console.log('error on update');
+
 						} else {
-							console.log('Updated Successfully!');
+
 						}
 					});
 					res.writeHead('200');
 					res.end();
 				}
 				else {
-					console.log("Wrong Password for "+req.body.username);
 					res.writeHead('403');
 					res.end();
 				}
@@ -223,13 +242,11 @@ module.exports = function(app, passport) {
 
 				modlist.save(function(err) {
 					if(err) {
-						console.log("Save Error: "+err);
 						res.writeHead('500');
 						res.end();
 						throw err;
 					}
 					else {
-						console.log("New Modlist Uploaded By "+req.body.username);
 						res.writeHead('200');
 						res.end();
 					}
@@ -239,27 +256,24 @@ module.exports = function(app, passport) {
 	});
 	app.post('/fullloadorder', function(req, res) {
 		Modlist.findOne({'username' : req.body.username}, function(err, _modlist) {
-
 			if(_modlist) { // if the username exists in the db
+				console.log(req.body.modlisttxt);
 				if(_modlist.validPassword(req.body.password)) {
-					console.log(req.body.skyrimini);
 					_modlist.list = req.body.plugins;
 					_modlist.modlisttxt = req.body.modlisttxt;
 					_modlist.skyrimini = req.body.skyrimini;
 					_modlist.skyrimprefsini = req.body.skyrimprefsini;
 					_modlist.save(function(err) {
 						if(err) {
-							console.log('error on update');
+
 						} else {
-							console.log(_modlist.list);
-							console.log('Updated Successfully!');
+
 						}
 					});
 					res.statusCode = 200;
 					res.end();
 				}
 				else {
-					console.log("Wrong Password for "+req.body.username);
 					res.statusCode = 403;
 					res.end();
 				}
@@ -276,13 +290,11 @@ module.exports = function(app, passport) {
 
 				modlist.save(function(err) {
 					if(err) {
-						console.log("Save Error: "+err);
 						res.statusCode = 500;
 						res.end();
 						throw err;
 					}
 					else {
-						console.log("New Modlist Uploaded By "+req.body.username);
 						res.statusCode = 200;
 						res.end();
 					}
@@ -299,11 +311,9 @@ var Admin = require('./models/admin');
 function isLoggedIn(req, res, next) {
 
 	if(req.isAuthenticated()) {
-		console.log("logged in as "+req.user.username);
 		return next();
 	}
 	else {
-		console.log("login redirect");
 		res.redirect('/login');
 	}
 }

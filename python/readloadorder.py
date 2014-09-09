@@ -4,7 +4,6 @@ from tkFileDialog import askopenfilename
 from os.path import expanduser, isfile
 home = expanduser("~")
 game = "skyrim"
-loadorderexists = true
 
 user_pass_path = []
 
@@ -23,6 +22,7 @@ def getPluginsFile():
 	root = Tk()
 	root.withdraw()
 	filename = askopenfilename(parent=root, initialdir= (home+"\AppData\Local\Skyrim"))
+	user_pass_path[2] = user_pass_path[2].split("plugins.txt")[0]
 	root.destroy()
 	authfile = open('./auth.dat', 'a')
 	authfile.write('\n' + filename)
@@ -32,84 +32,107 @@ def getPluginsFile():
 try:
 	authfile = open('./auth.dat', 'r')
 	user_pass_path = authfile.read().split('\n')
-	if "plugins.txt" in user_pass_path[2] : user_pass_path[2] = user_pass_path[2].split("plugins.txt")[0]
-	print user_pass_path[2]
 	authfile.close()
 except IOError as e:
 	user_pass_path = populateAuth()
 	user_pass_path[2] = getPluginsFile()
 
+#Incorrect format in auth.dat
 if len(user_pass_path) != 3:
 	user_pass_path = populateAuth()
 	user_pass_path[2] = getPluginsFile()
 
+if "plugins.txt" in user_pass_path[2] : user_pass_path[2] = user_pass_path[2].split("plugins.txt")[0]
+
+#Read plugins.txt
 try:
 	infile = open(user_pass_path[2]+"plugins.txt", 'r')
 	plugins = infile.read()
 	plugins = string.replace(plugins,"\"","\'").split('\n')
 	infile.close()
 except IOError as e:
+	print e.errno
 	raw_input("Error reading plugins.txt, Press enter to quit")
 	exit()
 
+#Read modlist.txt
 try:
 	infile = open(user_pass_path[2]+"modlist.txt", 'r')
 	modlisttxt = infile.read()
 	modlisttxt = string.replace(modlisttxt,"\"","\'").split('\n')
 	infile.close()
 except IOError as e:
-	raw_input("Error reading modlist.txt, Press enter to quit")
-	exit()
+	raw_input("Error reading modlist.txt, continuing...")
+	modlisttxt = ""
 
+#Read 'game'.ini
 try:
 	infile = open(user_pass_path[2]+game+".ini", 'r')
 	ini = infile.read()
 	ini = string.replace(ini,"\"","\'").split('\n')
 	infile.close()
 except IOError as e:
-	raw_input("Error reading "+game+".ini, Press enter to quit")
-	exit()
+	raw_input("Error reading "+game+".ini, continuing...")
+	ini = ""
 
+#Read 'game'prefs.ini
 try:
-	infile = open(user_pass_path[2]+game+"skyrimprefs.ini", 'r')
+	infile = open(user_pass_path[2]+game+"prefs.ini", 'r')
 	prefsini = infile.read()
 	prefsini = string.replace(prefsini,"\"","\'").split('\n')
 	infile.close()
 except IOError as e:
-	raw_input("Error reading "+game+"prefs.ini, Press enter to quit")
-	exit()
+	raw_input("Error reading "+game+"prefs.ini, continuing...")
+	prefsini = ""
 
-pluginsToSend = '['
+#Build plugins.txt JSON
+pluginsToSend = "["
 for i in plugins:
 	if i != "" and i[0] != "#":
 		pluginsToSend = pluginsToSend + "\\\"" + i + "\\\","
 pluginsToSend = pluginsToSend[:-1]
 pluginsToSend += "]"
 
-modlisttxtToSend = '['
-for i in modlisttxt:
-	if i != "" and i[0] != "#":
-		modlisttxtToSend = modlisttxtToSend + "\\\"" + i + "\\\","
-modlisttxtToSend = modlisttxtToSend[:-1]
-modlisttxtToSend += "]"
+#Build modlist.txt JSON
+if modlisttxt != "":
+	modlisttxtToSend = "["
+	for i in modlisttxt:
+		if i != "" and i[0] != "#":
+			modlisttxtToSend = modlisttxtToSend + "\\\"" + i + "\\\","
+	modlisttxtToSend = modlisttxtToSend[:-1]
+	modlisttxtToSend += "]"
+else:
+	modlisttxtToSend = "[]"
 
-iniToSend = '['
-for i in ini:
-	if i != "" and i[0] != "#":
-		iniToSend = iniToSend + "\\\"" + i + "\\\","
-iniToSend = iniToSend[:-1]
+#Build 'game'.ini JSON
+if ini != "":
+	iniToSend = "["
+	for i in ini:
+		if i != "" and i[0] != "#":
+			iniToSend = iniToSend + "\\\"" + i + "\\\","
+	iniToSend = iniToSend[:-1]
+	iniToSend += "]"
+else:
+	iniToSend = "[]"
 
-prefsiniToSend = '['
-for i in prefsini:
-	if i != "" and i[0] != "#":
-		prefsiniToSend = prefsiniToSend + "\\\"" + i + "\\\","
-prefsiniToSend = prefsiniToSend[:-1]
-prefsiniToSend += "]"
+#Build 'game'prefs.ini JSON
+if prefsini != "":
+	prefsiniToSend = "["
+	for i in prefsini:
+		if i != "" and i[0] != "#":
+			prefsiniToSend = prefsiniToSend + "\\\"" + i + "\\\","
+	prefsiniToSend = prefsiniToSend[:-1]
+	prefsiniToSend += "]"
+else:
+	prefsiniToSend = "[]"
 
+#Build full JSON, including all files, username, password
 fullParams = "{\"plugins\": \""+pluginsToSend+"\",\"modlisttxt\": \""+modlisttxtToSend+"\",\""+game+"ini\": \""+iniToSend+"\",\""+game+"prefsini\": \""+prefsiniToSend+"\", \"username\": \""+user_pass_path[0]+"\", \"password\": \""+user_pass_path[1]+"\"}"
 
-url = "http://127.0.0.1:3000/fullloadorder"
+#url to post to
+url = "http://modwat.ch/fullloadorder"
 
+#Fancy urllib2 things
 req = urllib2.Request(url, fullParams, {'Content-Type':'application/json'})
 print 'Uploading to http://modwat.ch/' + user_pass_path[0] + '...'
 f = urllib2.urlopen(req)
@@ -117,6 +140,7 @@ response = f.getcode()
 print response
 f.close()
 
+#If response is OK, print happy message, else show error code and press enter to confirm
 if(response == 200):
 	print "Your load order was successfully uploaded!"
 else:
