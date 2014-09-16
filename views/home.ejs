@@ -84,7 +84,7 @@
 </head>
 <body>
 	<div id="full-wrapper">
-		<h1 id="header"><span style="color: rgba(0,140,0,0.5)">Modwat.</span><span style="color: rgba(0,0,140,0.5)">ch</span></h1>
+		<h1 id="header"><span style="color: rgba(0,140,0,0.5)">Modwat.</span><span style="color: rgba(0,0,140,0.5)">ch<a href="/rss" target="_blank"><img id="rss-link" src="/images/rss.png" style="padding-left:10px;height:62px" alt="RSS Feed" title="RSS Feed"/></a></span></h1>
 		<span id="content-wrapper">
 			<div class="update-block"><span><% if(thumbnailurl != "") { %><a href="<%- thumbnailurl %>" target="_blank"><img src="<%- thumbnailurl %>" class="post-thumbnail"/></a><%}%><h3 class="post-title"><%- title %></h3></span><p class="post-body"><%- content %></p><p class="post-sig">-<%-author %>, <%-date%></p></div>
 		</span>
@@ -120,6 +120,7 @@
 		<input type="text" name="title" placeholder="Title" maxlength="80"/>
 		<input type="text" name="thumbnail" placeholder="Thumbnail URL"/>
 		<input type="text" name="author" placeholder="Author"/>
+		<input type="text" name="desc" placeholder="Description"/>
 		<textarea name="content" placeholder="Content"></textarea>
 		<input type="Submit"/>
 	</form>

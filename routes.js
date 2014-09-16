@@ -40,6 +40,27 @@ module.exports = function(app, passport) {
 			});
 		});
 	});
+	app.get('/rss', function(req, res) {
+		Blog.find({}, function(err, _blogs) {
+			if(_blogs) {
+				var rsstext = "<rss version=\"2.0\"><channel><title>Modwat.ch Feed</title>";
+				rsstext += "<description>An RSS feed to keep up with updates to Modwat.ch, a load order uploader.</description>";
+				rsstext += "<link>http://modwat.ch</link>";
+				rsstext += "<language>en-us</language>";
+				for(var i = 0; i < _blogs.length; i++) {
+					rsstext += "<item><title>"+_blogs[i].title+"</title><description>"+_blogs[i].desc+"</description>";
+					rsstext += "<link>http://modwat.ch/blogs/"+_blogs[i].title+"</link><image>"+_blogs[i].thumbnail+"</image></item>";
+					rsstext += "<pubDate>"+_blogs[i].date+"</pubDate>";
+				}
+				rsstext += "</channel></rss>";
+				res.set('Content-Type','text/xml');
+				res.send(rsstext);
+			} else {
+				res.writeHead('404');
+				res.end();
+			}
+		});
+	});
 	app.get('/login', function(req, res) {
 		Blog.findOne({'newest': true}, function(err, _blog) {
 			Modlist.find({}, function(err, _mods) {
@@ -214,6 +235,7 @@ module.exports = function(app, passport) {
 		blog.title = req.body.title;
 		blog.thumbnail = req.body.thumbnail;
 		blog.body = req.body.content.replace(new RegExp('\r?\n','g'), '<br />');
+		blod.desc = req.body.desc;
 		blog.author = req.body.author;
 		blog.save(function(err) {
 			if(err) {

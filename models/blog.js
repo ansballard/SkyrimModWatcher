@@ -7,6 +7,7 @@ var blogSchema = new Schema({
 	thumbnail: String,
 	title: String,
 	body: String,
+	desc: String,
 	date: { type: Date, default: Date.now },
 	author: String,
 	newest: { type: Boolean, default: true }
