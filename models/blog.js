@@ -10,7 +10,8 @@ var blogSchema = new Schema({
 	desc: String,
 	date: { type: Date, default: Date.now },
 	author: String,
-	newest: { type: Boolean, default: true }
+	newest: { type: Boolean, default: true },
+	unique: String
 }, {
 	collection: 'blog'
 });

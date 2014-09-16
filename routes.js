@@ -49,7 +49,7 @@ module.exports = function(app, passport) {
 				rsstext += "<language>en-us</language>";
 				for(var i = 0; i < _blogs.length; i++) {
 					rsstext += "<item><title>"+_blogs[i].title+"</title><description>"+_blogs[i].desc+"</description>";
-					rsstext += "<link>http://modwat.ch/blogs/"+_blogs[i].title+"</link><image>"+_blogs[i].thumbnail+"</image></item>";
+					rsstext += "<link>http://modwat.ch/blog/"+_blogs[i].unique+"</link><image>"+_blogs[i].thumbnail+"</image></item>";
 					rsstext += "<pubDate>"+_blogs[i].date+"</pubDate>";
 				}
 				rsstext += "</channel></rss>";
@@ -85,8 +85,8 @@ module.exports = function(app, passport) {
 		req.logout();
 		res.redirect('/');
 	});
-	app.get('/blog/:title', function(req, res) {
-		Blog.findOne({'title': req.params.title}, function(err, _blog) {
+	app.get('/blog/:unique', function(req, res) {
+		Blog.findOne({'unique': req.params.unique}, function(err, _blog) {
 			Modlist.find({}, function(err, _mods) {
 				var mods_ = [];
 				for(var i = _mods.length-1, j = 0; i > _mods.length-6; i--, j++) {
@@ -96,9 +96,11 @@ module.exports = function(app, passport) {
 					title : _blog.title,
 					author: _blog.author,
 					thumbnailurl: _blog.thumbnail,
-					date: _blog.date.parse(),
+					date: (_blog.date.getMonth()+1)+"/"+_blog.date.getDate()+"/"+_blog.date.getFullYear(),
 					content: _blog.body,
-					mods: mods_
+					mods: mods_,
+					login: false,
+					admin: false
 				});
 			});
 		});
@@ -230,13 +232,13 @@ module.exports = function(app, passport) {
 		res.redirect('/'+req.body.username);
 	});
 	app.post('/postnewblog', isLoggedIn, function(req, res) {
-		console.log("swag");
 		var blog = new Blog();
 		blog.title = req.body.title;
 		blog.thumbnail = req.body.thumbnail;
 		blog.body = req.body.content.replace(new RegExp('\r?\n','g'), '<br />');
 		blod.desc = req.body.desc;
 		blog.author = req.body.author;
+		blog.unique = req.body.thumbnail.split('/')[1].split('.')[0];
 		blog.save(function(err) {
 			if(err) {
 				console.log("Post Error: "+err);
