@@ -131,7 +131,7 @@ module.exports = function(app, passport) {
 					console.log("saved");
 					_lists.save();
 				}
-				console.log(_lists.list+"\n\n"+_lists.modlisttxt+"\n\n"+_lists.skyrimini+"\n\n"+_lists.skyrimprefsini);
+				//console.log(_lists.list+"\n\n"+_lists.modlisttxt+"\n\n"+_lists.skyrimini+"\n\n"+_lists.skyrimprefsini);
 				res.render('index.ejs', {
 					list : _lists.list,
 					modlist : _lists.modlisttxt,

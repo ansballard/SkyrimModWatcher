@@ -77,26 +77,29 @@
 	  	padding-top: 15px;
 	  	padding-left: 15px;
 	  }
+	  .btn {
+	  	background-color: #E0E0E0;
+	  }
     </style>
 </head>
 <body>
 	<div id="full-wrapper">
 		<h1 id="header"><span style="color: rgba(0,140,0,0.5)">Modwat.</span><span style="color: rgba(0,0,140,0.5)">ch</span></h1>
 		<span id="content-wrapper">
-			<div class="update-block"><span><% if(thumbnailurl != "") { %><img src="<%- thumbnailurl %>" class="post-thumbnail"/><%}%><h3 class="post-title"><%- title %></h3></span><p class="post-body"><%- content %></p><p class="post-sig">-<%-author %>, <%-date%></p></div>
+			<div class="update-block"><span><% if(thumbnailurl != "") { %><a href="<%- thumbnailurl %>" target="_blank"><img src="<%- thumbnailurl %>" class="post-thumbnail"/></a><%}%><h3 class="post-title"><%- title %></h3></span><p class="post-body"><%- content %></p><p class="post-sig">-<%-author %>, <%-date%></p></div>
 		</span>
 		<span id="sidebar-wrapper">
 			<form class="input-group" action="/usersearch" method="post">
 				<input type="text" class="form-control" name="username" placeholder="Username"/>
-				<input class="btn" type="submit" value="Find a load order!" style="margin:10px 0px"/>
+				<button class="btn" type="submit" style="margin:10px 0px">Find a load order!</button>
 			</form>
 			<form class="input-group" action="/usersearch" method="post">
-				<select class="form-control" onchange="document.getElementById('recent').value = 'View '+this.options[this.selectedIndex].value+'\'s Mods'" name="username">
+				<select class="form-control" onchange="document.getElementById('recent').innerHTML = 'View '+this.options[this.selectedIndex].value+'\'s Mods'" name="username">
 					<% for (var i = 0; i < mods.length; i++) { %>
 						<option value="<%-mods[i]%>"><%-mods[i]%></option><%
 					} %>
 				</select>
-				<input class="btn" type="submit" value="View <%-mods[0]%>'s Mods" id="recent" style="margin:10px 0px"/>
+				<button class="btn" type="submit" id="recent" style="margin:10px 0px">View <%-mods[0]%>'s Mods</button>
 			</form>
 			<div id="sidebar-links">
 				<a href="https://github.com/ansballard/SkyrimModWatcher" target="_blank"><img id="github-link" src="/images/GitHub-Logo.png" class="sidebar-link" alt="Github repository link" title="Github Repo"/></a>

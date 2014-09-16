@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=475, initial-scale=1">
     <link href="stylesheets/bootstrap.min.css" rel="stylesheet">
     <title><%= username %>'s Load Order</title>
 
@@ -16,30 +16,39 @@
       }
       span#list-container {
         width: 60%;
-        min-width: 435px;
+        min-width: 475px;
         margin: 2.5% 0% 2.5% 0%;
         vertical-align: top;
         display: inline-block;
         border-radius: 25px;
         background-color: #E0E0E0;
+        text-align: left;
       }
       span#search-container {
         text-align: center;
-        width: 30%;
-        min-width: 220px;
-        max-width: 300px;
-        margin: 5% 10% 0px 5%;
-        vertical-align: top;
+        width: 100%;
+        padding: 10px 40px;
         display: inline-block;
-        position: fixed;
+      }
+      #filter-mods, #username {
+        width: 40%;
+        display: inline-block;
+        vertical-align: middle;
+        text-align: left;
+      }
+      #username {
+        font-size: 18px;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
       div#main-container {
         max-width: 1000px;
         margin: auto;
+        text-align: center;
       }
       ul#plugins, ul#modlist, ul#skyrim-ini, ul#skyrimprefs-ini {
         list-style-type: none;
-        padding: 40px;
+        padding: 0px 40px 40px 40px;
       }
       li {
         padding: 3px 0px 3px 3px;
@@ -48,7 +57,7 @@
       }
       li.grayed {
         background-color: #E0E0E0;
-      }
+      } /* 1380 */
       li.whited {
         background-color: #FFFFFF;
       }
@@ -84,9 +93,14 @@
       div#nav-wrapper {
         text-align: center;
         margin-top: 20px;
+        width: 100%;
+        padding: 0px 40px;
       }
       div#nav-wrapper button {
         background-color: #C0C0C0;
+      }
+      button.selected {
+        border: 2px solid black;
       }
     </style>
 
@@ -97,21 +111,19 @@
     <div id="main-container">
       <span id="list-container">
         <div id="nav-wrapper">
-          <span><button class="btn" onclick="NavigateLists(0)">Plugins</button></span>
-          <span><button class="btn" onclick="NavigateLists(1)">Modlist</button></span>
-          <span><button class="btn" onclick="NavigateLists(2)">Skyrim</button></span>
-          <span><button class="btn" onclick="NavigateLists(3)">SkyrimPrefs</button></span>
+          <span><button class="btn selected" onclick="NavigateLists(0, this)">Plugins</button></span>
+          <span><button class="btn" onclick="NavigateLists(1, this)">Modlist</button></span>
+          <span><button class="btn" onclick="NavigateLists(2, this)">Skyrim</button></span>
+          <span><button class="btn" onclick="NavigateLists(3, this)">SkyrimPrefs</button></span>
         </div>
+        <span id="search-container">
+          <h3 id="username"></h3>
+          <input type="text" class="form-control" id="filter-mods" placeholder="Filter by..."/>
+        </span>
         <ul class="" id="plugins"></ul>
         <ul class="" id="modlist"></ul>
         <ul class="" id="skyrim-ini"></ul>
         <ul class="" id="skyrimprefs-ini"></ul>
-      </span>
-      <span id="search-container">
-        <h3 id="username"></h3>
-        <input type="text" class="form-control" id="filter-mods" placeholder="Filter by..."/>
-        <h3 id="num-mods">Number of Files</h3>
-        <button class="btn" id="toggle">Next List</button>
       </span>
       
     </div>
@@ -132,6 +144,8 @@
         $('#skyrim-ini').hide();
         $('#skyrimprefs-ini').hide();
 
+        listoflistsdata[1] = reverseArray(listoflistsdata[1]);
+
         for(var i = 0; i < listoflistsdata.length; i++) {
           for(var j = 0; j < listoflistsdata[i].length; j++) {
             listoflistsbodies[i] += "<li class='";
@@ -149,7 +163,8 @@
           $('#'+listoflists[i]).html(listoflistsbodies[i]);
         }
 
-        $('#username').html(username + "\'s " + listoflistnames[listoflistsindex]);
+        //$('#username').html(username + "\'s " + listoflistnames[listoflistsindex]);
+        $('#username').html(username);
         $('#num-mods').html(listoflistsdata[listoflistsindex].length + " lines");
 
         $('#filter-mods').keyup(function(){
@@ -173,21 +188,6 @@
 
         $('.row-body').css('max-width', ($('#mod-list').width() - 110)+'px');
 
-        $('#toggle').click(RotateLists);
-
-        function RotateLists() {
-          $('#'+listoflists[listoflistsindex]).toggle('display', function() {
-            $('#'+listoflists[listoflistsindex]+' > li').each(function(){ if(!$(this).is(":visible")) {$(this).show();}});
-            $('#'+listoflists[(listoflistsindex+1) % listoflists.length]).toggle('display', function() {
-              listoflistsindex = (listoflistsindex + 1) % listoflists.length;
-              $('#username').html(username + "\'s " + listoflistnames[listoflistsindex]);
-              $('#num-mods').html(listoflistsdata[listoflistsindex].length + " lines");
-              $('#filter-mods').val("");
-            });
-          });
-          return listoflistsindex;
-        }
-
         $(window).resize(function() {
           $('.row-body').css('max-width', ($('#plugins').width() - 110)+'px');
         });
@@ -210,16 +210,20 @@
             }
           });
         });
+        $('.row-body').css('max-width', ($('#plugins').width() - 110)+'px');
       });
 
-      function NavigateLists(_index) {
+      function NavigateLists(_index, button) {
         if(_index != listoflistsindex) {
+          $('.selected').removeClass('selected');
           $('#'+listoflists[listoflistsindex]).toggle('display', function() {
             $('#'+listoflists[listoflistsindex]+' > li').each(function(){ if(!$(this).is(":visible")) {$(this).show();}});
             $('#'+listoflists[_index]).toggle('display', function() {
+              $(button).addClass('selected');
               listoflistsindex = _index;
-              $('#username').html(username + "\'s " + listoflistnames[listoflistsindex]);
-              $('#num-mods').html(listoflistsdata[listoflistsindex].length + " lines");
+              //$('#username').html(username + "\'s " + listoflistnames[listoflistsindex]);
+              $('#username').html(username);
+              //$('#num-mods').html(listoflistsdata[listoflistsindex].length + " lines");
               $('#filter-mods').val("");
             });
           });
@@ -228,6 +232,15 @@
           return false;
         }
       }
+
+      function reverseArray(_array) {
+        var reversedArray = [];
+        for(var i = 0, j = _array.length-1; i < _array.length; i++, j--) {
+          reversedArray[i] = _array[j];
+        }
+        return reversedArray;
+      }
+
 
     </script>
 
