@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<link href='http://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Muli' rel='stylesheet' type='text/css'>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width">
@@ -10,11 +10,11 @@
 
     <style type="text/css">
       body {
-        font-family:"Open Sans", sans-serif;
+        font-family:"Muli", sans-serif;
         color:#000000;
         text-align:center;
         background:#ebebeb;
-        background-image: url("/images/smooth-red-texture.jpg");
+        background-image: url("/images/congruent_outline.png");
       }
       .input-group {
       	margin: auto;
@@ -24,11 +24,13 @@
 		padding-bottom: 20px;
 		font-size: 100px;
 		font-weight: bold;
+		color:#D0D0D0;
 	  }
 	  #content-wrapper {
 	  	text-align: left;
 		width: 70%;
-		padding-left: 50px;
+		padding-left: 25px;
+		padding-right: 25px;
 		margin-right: 5%;
 		margin-bottom: 50px;
 		display: inline-block;
@@ -50,12 +52,18 @@
 	  }
 	  #sidebar-links {
 	  	width: 100%;
+	  	min-width: 175px;
 	  	padding-top: 20px;
 	  	margin-bottom:50px;
 	  }
 	  .sidebar-link {
 	  	padding-top: 10px;
 	  	width: 100%;
+	  }
+	  .post-header {
+	  	background-image:url("/images/9.20.14 update.png");
+	  	border-radius: 5px;
+	  	margin-top: 20px;
 	  }
 	  .post-thumbnail {
 	  	width: 150px;
@@ -67,6 +75,9 @@
 	  .post-title {
 	  	display: inline-block;
 	  	font-weight: bold;
+	  	background-image:url("/images/9.20.14 update.png");
+	  	margin-left: 10px;
+	  	color: #D0D0D0;
 	  }
 	  .post-body {
 	  	padding-top: 25px;
@@ -84,9 +95,16 @@
 </head>
 <body>
 	<div id="full-wrapper">
-		<h1 id="header"><span style="color: rgba(0,140,0,0.5)">Modwat.</span><span style="color: rgba(0,0,140,0.5)">ch<a href="/rss" target="_blank"><img id="rss-link" src="/images/rss.png" style="padding-left:10px;height:62px" alt="RSS Feed" title="RSS Feed"/></a></span></h1>
+		<h1 id="header">MODWAT.CH</h1>
 		<span id="content-wrapper">
-			<div class="update-block"><span><% if(thumbnailurl != "") { %><a href="<%- thumbnailurl %>" target="_blank"><img src="<%- thumbnailurl %>" class="post-thumbnail"/></a><%}%><h3 class="post-title"><%- title %></h3></span><p class="post-body"><%- content %></p><p class="post-sig">-<%-author %>, <%-date%></p></div>
+			<div class="update-block">
+				<div class="post-header">
+					<h3 class="post-title"><%- title %></h3>
+				</div>
+				<!--<span><% if(thumbnailurl != "") { %><a href="<%- thumbnailurl %>" target="_blank"><img src="<%- thumbnailurl %>" class="post-thumbnail"/></a><%}%><h3 class="post-title"><%- title %></h3></span>-->
+				<p class="post-body"><%- content %></p>
+				<p class="post-sig">-<%-author %>, <%-date%></p>
+			</div>
 		</span>
 		<span id="sidebar-wrapper">
 			<form class="input-group" action="/usersearch" method="post">
@@ -103,7 +121,7 @@
 			</form>
 			<div id="sidebar-links">
 				<a href="https://github.com/ansballard/SkyrimModWatcher" target="_blank"><img id="github-link" src="/images/GitHub-Logo.png" class="sidebar-link" alt="Github repository link" title="Github Repo"/></a>
-				<a href="http://www.nexusmods.com/skyrim/mods/56640/?" target="_blank"><img id="nexus-link" src="/images/FNV_NEXUS.png" class="sidebar-link" alt="Nexus link" title="Nexus Page"/></a>
+				<a href="http://www.nexusmods.com/skyrim/mods/56640/?" target="_blank"><img id="nexus-link" src="/images/FNV_NEXUS-black.png" class="sidebar-link" alt="Nexus link" title="Nexus Page"/></a>
 			</div>
 		</span>
 	</div>
