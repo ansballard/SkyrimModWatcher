@@ -134,14 +134,16 @@
     	<input type="submit"/>
     </form>
     <% } else if (admin == true) { %>
+    <div style="width: 80%;margin:auto;text-align:left">
     <form method="post" action="http://modwat.ch/postnewblog">
-		<input type="text" name="title" placeholder="Title" maxlength="80"/>
-		<input type="text" name="thumbnail" placeholder="Thumbnail URL"/>
-		<input type="text" name="author" placeholder="Author"/>
-		<input type="text" name="desc" placeholder="Description"/>
+		<div><input type="text" name="title" placeholder="Title" maxlength="80"/>
+		<input type="text" name="thumbnail" placeholder="Thumbnail URL"/></div>
+		<div><input type="text" name="author" placeholder="Author"/>
+		<input type="text" name="desc" placeholder="Description"/></div>
 		<textarea name="content" placeholder="Content"></textarea>
 		<input type="Submit"/>
 	</form>
+	</div>
 	<a href="/logout">LOGOUT</a>
 	<% } %>
     <script>

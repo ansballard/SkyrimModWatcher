@@ -322,6 +322,7 @@ module.exports = function(app, passport) {
 				}
 				else {
 					res.statusCode = 403;
+					res.write("Access denied, incorrect password");
 					res.end();
 				}
 			}
@@ -338,6 +339,8 @@ module.exports = function(app, passport) {
 				modlist.save(function(err) {
 					if(err) {
 						res.statusCode = 500;
+						console.error(err);
+						res.write(err);
 						res.end();
 						throw err;
 					}

@@ -4,11 +4,14 @@ from tkFileDialog import askopenfilename
 from os.path import expanduser, isfile
 home = expanduser("~")
 game = "skyrim"
+new = 0
 
 user_pass_path = []
 
 def populateAuth():
+	new = 1
 	temp = raw_input("Enter a username for ModWatcher.com: ")
+	temp.strip()
 	newpass = ''.join(random.choice(string.lowercase) for i in range(32))
 	temp += '\n' + newpass + '\n'
 	user_pass_path = temp.split('\n')
@@ -44,6 +47,18 @@ if len(user_pass_path) != 3:
 
 if "plugins.txt" in user_pass_path[2] : user_pass_path[2] = user_pass_path[2].split("plugins.txt")[0]
 
+if new == 0:
+	newPath = raw_input("Upload from "+user_pass_path[2]+"? (Y/N)")
+	if newPath == "N" or newPath == "n":
+		root = Tk()
+		root.withdraw()
+		filename = askopenfilename(parent=root, initialdir= (user_pass_path[2]))
+		filename = user_pass_path[2].split("plugins.txt")[0]
+		root.destroy()
+		authfile = open('./auth.dat', 'w')
+		authfile.write(user_pass_path[0]+'\n'+user_pass_path[1]+'\n'+filename)
+		authfile.close()
+
 #Read plugins.txt
 try:
 	infile = open(user_pass_path[2]+"plugins.txt", 'r')
@@ -52,7 +67,7 @@ try:
 	infile.close()
 except IOError as e:
 	print e.errno
-	raw_input("Error reading plugins.txt, Press enter to quit")
+	raw_input("Error reading plugins.txt. Is "+user_pass_path[2]+" the correct path?")
 	exit()
 
 #Read modlist.txt
@@ -62,7 +77,7 @@ try:
 	modlisttxt = string.replace(modlisttxt,"\"","\'").split('\n')
 	infile.close()
 except IOError as e:
-	raw_input("Error reading modlist.txt, continuing...")
+	raw_input("Error reading modlist.txt. Is "+user_pass_path[2]+" the correct path?")
 	modlisttxt = ""
 
 #Read 'game'.ini
@@ -72,7 +87,7 @@ try:
 	ini = string.replace(ini,"\"","\'").split('\n')
 	infile.close()
 except IOError as e:
-	raw_input("Error reading "+game+".ini, continuing...")
+	raw_input("Error reading "+game+".ini. Is "+user_pass_path[2]+" the correct path?")
 	ini = ""
 
 #Read 'game'prefs.ini
@@ -82,7 +97,7 @@ try:
 	prefsini = string.replace(prefsini,"\"","\'").split('\n')
 	infile.close()
 except IOError as e:
-	raw_input("Error reading "+game+"prefs.ini, continuing...")
+	raw_input("Error reading "+game+"prefs.ini. Is "+user_pass_path[2]+" the correct path?")
 	prefsini = ""
 
 #Build plugins.txt JSON
@@ -130,7 +145,7 @@ else:
 fullParams = "{\"plugins\": \""+pluginsToSend+"\",\"modlisttxt\": \""+modlisttxtToSend+"\",\""+game+"ini\": \""+iniToSend+"\",\""+game+"prefsini\": \""+prefsiniToSend+"\", \"username\": \""+user_pass_path[0]+"\", \"password\": \""+user_pass_path[1]+"\"}"
 
 #url to post to
-url = "http://modwat.ch/fullloadorder"
+url = "http://localhost:3000/fullloadorder"
 
 try:
 	#Fancy urllib2 things
@@ -138,15 +153,18 @@ try:
 	print 'Uploading to http://modwat.ch/' + user_pass_path[0] + '...'
 	f = urllib2.urlopen(req)
 	response = f.getcode()
-	print response
 	f.close()
 
 	#If response is OK, print happy message, else show error code and press enter to confirm
 	if(response == 200):
 		print "Your load order was successfully uploaded!"
+		raw_input("Press Enter to Finish\n")
 	else:
 		print "Something went wrong!\nError Code:",response
-		raw_input("\nPress Enter To Continue")
-except urllib2.HTTPError as e:
-	print "Incorrect password in auth.dat for",user_pass_path[0]
+		raw_input("\nPress Enter To Finish")
+except urllib2.HTTPError, e:
+	errorCode = e.code
+	errorText = e.read()
+	print "Error during upload. Error Code: ",errorCode
+	print "Error Message: ",errorText
 	raw_input("Press Enter to Quit\n")
