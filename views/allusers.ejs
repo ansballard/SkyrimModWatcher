@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link href='http://fonts.googleapis.com/css?family=Muli' rel='stylesheet' type='text/css'>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=475, initial-scale=1">
+    <link href="stylesheets/bootstrap.min.css" rel="stylesheet">
+    <title>All Uploads</title>
+
+    <style type="text/css">
+      body {
+        font-family:"Muli", sans-serif;
+        font-size: 12px;
+        color:#000000;
+        background:#ebebeb;
+        background-image: url("/images/congruent_outline.png");
+      }
+      #header {
+        width:100%;
+        padding-bottom: 20px;
+        font-size: 6em;
+        font-weight: bold;
+        color:#D0D0D0;
+      }
+      #header a {
+        color:#D0D0D0;
+        text-decoration:none;
+      }
+      span#list-container {
+        font-family:"Lucida Console", monospace;
+        width: 60%;
+        min-width: 475px;
+        margin: 2.5% auto;
+        vertical-align: top;
+        display: inline-block;
+        border-radius: 25px;
+        background-color: #E0E0E0;
+        text-align: left;
+      }
+      span#search-container {
+        text-align: left;
+        width: 100%;
+        padding: 10px 40px;
+        display: inline-block;
+      }
+      #filter-mods, #count {
+        width: 40%;
+        display: inline-block;
+        vertical-align: middle;
+        text-align: left;
+      }
+      #count {
+        font-size: 18px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: right;
+      }
+      div#main-container {
+        max-width: 1000px;
+        margin: auto;
+        text-align: center;
+      }
+      li {
+        padding: 3px 0px 3px 3px;
+      }
+      ul#users {
+        font-size: 20px;
+        list-style-type: none;
+      }
+    </style>
+
+  </head>
+
+  <body>
+
+    <div id="main-container">
+      <h1 id="header"><a href="/">MODWAT.CH</a></h1>
+      <span id="list-container">
+        <span id="search-container">
+          <input type="text" class="form-control" id="filter-mods" placeholder="Filter by..."/>
+          <span id="count"><%-mods.length%> uploads!</span>
+        </span>
+        <ul class="" id="users">
+          <% for(var i = 0; i < mods.length; i++) {
+            %><li class="user"><a href="/<%-mods[i]%>"><%-mods[i]%></a></li><%
+          } %>
+        </ul>
+      </span>
+      
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="javascripts/bootstrap.min.js"></script>
+    <script type="text/javascript">
+
+      $(document).ready(function() {
+
+        $('#filter-mods').keyup(function() {
+          var filterText = $(this).val();
+          var iterator = 0;
+          $('#users > li').each(function(){
+            var text = $(this).text().toLowerCase();
+            if(filterText[0] == '^') {
+              (text.indexOf(filterText.substr(1)) == 0) ? $(this).slideDown() : $(this).slideUp();
+            } else {
+              if(text.indexOf(filterText.toLowerCase()) >= 0) {
+                iterator++;
+                $(this).slideDown();
+              } else {
+                $(this).slideUp();
+              }
+            }
+          });
+        });
+        $('.row-body').css('max-width', ($('#plugins').width() - 110)+'px');
+      });
+
+    </script>
+
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-53199250-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+        
+  </body>
+</html>

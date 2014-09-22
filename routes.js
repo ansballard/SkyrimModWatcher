@@ -40,6 +40,17 @@ module.exports = function(app, passport) {
 			});
 		});
 	});
+	app.get('/users', function(req, res) {
+		Modlist.find({}, function(err, _mods) {
+			var mods_ = [];
+			for(var i = _mods.length-1, j = 0; i >= 0; i--, j++) {
+				mods_[j] = _mods[i].username;
+			}
+			res.render('allusers.ejs', {
+				mods: mods_
+			});
+		});
+	});
 	app.get('/rss', function(req, res) {
 		Blog.find({}, function(err, _blogs) {
 			if(_blogs) {
@@ -258,7 +269,7 @@ module.exports = function(app, passport) {
 	});
 	app.post('/loadorder', function(req, res) {
 
-		console.log(req.body.modlist);
+		//console.log(req.body.modlist);
 
 		Modlist.findOne({'username' : req.body.username}, function(err, _modlist) {
 
@@ -304,7 +315,7 @@ module.exports = function(app, passport) {
 	app.post('/fullloadorder', function(req, res) {
 		Modlist.findOne({'username' : req.body.username}, function(err, _modlist) {
 			if(_modlist) { // if the username exists in the db
-				console.log(req.body.modlisttxt);
+				//console.log(req.body.modlisttxt);
 				if(_modlist.validPassword(req.body.password)) {
 					_modlist.list = req.body.plugins;
 					_modlist.modlisttxt = req.body.modlisttxt;

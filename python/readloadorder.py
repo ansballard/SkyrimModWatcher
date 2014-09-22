@@ -53,7 +53,8 @@ if new == 0:
 		root = Tk()
 		root.withdraw()
 		filename = askopenfilename(parent=root, initialdir= (user_pass_path[2]))
-		filename = user_pass_path[2].split("plugins.txt")[0]
+		filename = filename.split("plugins.txt")[0]
+		user_pass_path[2] = filename
 		root.destroy()
 		authfile = open('./auth.dat', 'w')
 		authfile.write(user_pass_path[0]+'\n'+user_pass_path[1]+'\n'+filename)

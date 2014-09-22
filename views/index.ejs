@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <link href='http://fonts.googleapis.com/css?family=Muli' rel='stylesheet' type='text/css'>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=475, initial-scale=1">
@@ -13,11 +14,23 @@
         font-size: 12px;
         color:#000000;
         background:#ebebeb;
+        background-image: url("/images/congruent_outline.png");
+      }
+      #header {
+        font-family:"Muli", sans-serif;
+        width:100%;
+        font-size: 6em;
+        font-weight: bold;
+        color:#D0D0D0;
+      }
+      #header a {
+        color:#D0D0D0;
+        text-decoration:none;
       }
       span#list-container {
         width: 60%;
         min-width: 475px;
-        margin: 2.5% 0% 2.5% 0%;
+        margin: 1% 0% 2.5% 0%;
         vertical-align: top;
         display: inline-block;
         border-radius: 25px;
@@ -109,6 +122,7 @@
   <body>
 
     <div id="main-container">
+      <h1 id="header"><a href="/">MODWAT.CH</a></h1>
       <span id="list-container">
         <div id="nav-wrapper">
           <span><button class="btn selected" onclick="NavigateLists(0, this)">Plugins</button></span>
