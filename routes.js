@@ -247,7 +247,7 @@ module.exports = function(app, passport) {
 		blog.title = req.body.title;
 		blog.thumbnail = req.body.thumbnail;
 		blog.body = req.body.content.replace(new RegExp('\r?\n','g'), '<br />');
-		blod.desc = req.body.desc;
+		blog.desc = req.body.desc;
 		blog.author = req.body.author;
 		blog.unique = req.body.thumbnail.split('/')[1].split('.')[0];
 		blog.save(function(err) {
