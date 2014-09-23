@@ -146,7 +146,7 @@ else:
 fullParams = "{\"plugins\": \""+pluginsToSend+"\",\"modlisttxt\": \""+modlisttxtToSend+"\",\""+game+"ini\": \""+iniToSend+"\",\""+game+"prefsini\": \""+prefsiniToSend+"\", \"username\": \""+user_pass_path[0]+"\", \"password\": \""+user_pass_path[1]+"\"}"
 
 #url to post to
-url = "http://localhost:3000/fullloadorder"
+url = "http://modwat.ch/fullloadorder"
 
 try:
 	#Fancy urllib2 things
