@@ -64,6 +64,7 @@ if new == 0:
 try:
 	infile = open(user_pass_path[2]+"plugins.txt", 'r')
 	plugins = infile.read()
+	plugins = string.replace(plugins,"\\","\\\\")
 	plugins = string.replace(plugins,"\"","\'").split('\n')
 	infile.close()
 except IOError as e:
@@ -75,6 +76,7 @@ except IOError as e:
 try:
 	infile = open(user_pass_path[2]+"modlist.txt", 'r')
 	modlisttxt = infile.read()
+	modlisttxt = string.replace(modlisttxt,"\\","\\\\")
 	modlisttxt = string.replace(modlisttxt,"\"","\'").split('\n')
 	infile.close()
 except IOError as e:
@@ -85,6 +87,7 @@ except IOError as e:
 try:
 	infile = open(user_pass_path[2]+game+".ini", 'r')
 	ini = infile.read()
+	ini = string.replace(ini,"\\","\\\\")
 	ini = string.replace(ini,"\"","\'").split('\n')
 	infile.close()
 except IOError as e:
@@ -95,6 +98,7 @@ except IOError as e:
 try:
 	infile = open(user_pass_path[2]+game+"prefs.ini", 'r')
 	prefsini = infile.read()
+	prefsini = string.replace(prefsini,"\\","\\\\")
 	prefsini = string.replace(prefsini,"\"","\'").split('\n')
 	infile.close()
 except IOError as e:
