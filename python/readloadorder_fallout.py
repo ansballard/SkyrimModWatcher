@@ -5,25 +5,8 @@ from os.path import expanduser, isfile
 home = expanduser("~")
 game = "skyrim"
 new = 0
-version = "0.22b"
 
 user_pass_path = []
-
-try:
-	#Fancy urllib2 things
-	req = urllib2.Request("http://localhost:3000/scriptVersion")
-	f = urllib2.urlopen(req)
-	response = f.read()
-	f.close()
-	if response == version:
-		print "Script is up to date"
-	else:
-		print "A new version of this script is available"
-except urllib2.HTTPError, e:
-	errorCode = e.code
-	errorText = e.read()
-	print "Error Message: ",errorText
-	raw_input("Press Enter to Quit\n")
 
 def populateAuth():
 	new = 1

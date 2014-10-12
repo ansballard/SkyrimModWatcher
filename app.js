@@ -49,7 +49,9 @@ app.configure(function() {
 	}
 });
 
-require('./routes.js') (app, passport);
+var scriptVersion = "0.23b";
+
+require('./routes.js') (app, passport, scriptVersion);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

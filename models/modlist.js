@@ -9,7 +9,8 @@ var modlistSchema = new Schema({
 	skyrimini: String,
 	skyrimprefsini: String,
 	username: String,
-	password: String
+	password: String,
+	timestamp: Date
 }, {
 	collection: 'modlist'
 });

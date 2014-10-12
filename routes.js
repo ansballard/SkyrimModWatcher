@@ -1,4 +1,4 @@
-module.exports = function(app, passport) {
+module.exports = function(app, passport, scriptVersion) {
 
 	app.get('/', function(req, res) {
 		Blog.findOne({'newest': true}, function(err, _blog) {
@@ -50,6 +50,10 @@ module.exports = function(app, passport) {
 				mods: mods_
 			});
 		});
+	});
+	app.get('/scriptversion', function(req, res) {
+		res.set('Content-Type','text');
+		res.send(scriptVersion);
 	});
 	app.get('/rss', function(req, res) {
 		Blog.find({}, function(err, _blogs) {
@@ -161,17 +165,24 @@ module.exports = function(app, passport) {
 					_lists.skyrimprefsini = "[]";
 					save = true;
 				}
+				if(_lists.timestamp == null) {
+					_lists.timestamp = new Date("7/10/2014");
+					console.log(_lists.timestamp);
+					save = true;
+				}
 				if(save) {
 					console.log("saved");
 					_lists.save();
 				}
 				//console.log(_lists.list+"\n\n"+_lists.modlisttxt+"\n\n"+_lists.skyrimini+"\n\n"+_lists.skyrimprefsini);
+				console.log(_lists.timestamp);
 				res.render('index.ejs', {
 					list : _lists.list,
 					modlist : _lists.modlisttxt,
 					skyrimini : _lists.skyrimini,
 					skyrimprefsini : _lists.skyrimprefsini,
-					username: _lists.username
+					username: _lists.username,
+					timestamp: (_lists.timestamp.getMonth()+1) + "/" + _lists.timestamp.getDate() + "/" + _lists.timestamp.getFullYear()
 				});
 			}
 		});
@@ -321,9 +332,10 @@ module.exports = function(app, passport) {
 					_modlist.modlisttxt = req.body.modlisttxt;
 					_modlist.skyrimini = req.body.skyrimini;
 					_modlist.skyrimprefsini = req.body.skyrimprefsini;
+					_modlist.timestamp = Date.now();
 					_modlist.save(function(err) {
 						if(err) {
-
+							console.err(err);
 						} else {
 
 						}
@@ -345,6 +357,7 @@ module.exports = function(app, passport) {
 				modlist.skyrimini = req.body.skyrimini;
 				modlist.skyrimprefsini = req.body.skyrimprefsini;
 				modlist.username = req.body.username;
+				modlist.timestamp = Date.now();
 				modlist.password = modlist.generateHash(req.body.password);
 
 				modlist.save(function(err) {
