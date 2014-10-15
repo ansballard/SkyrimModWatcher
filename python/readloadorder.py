@@ -1,17 +1,17 @@
-import httplib, urllib2, random, string, json
+import urllib2, random, string
 from Tkinter import *
 from tkFileDialog import askopenfilename
-from os.path import expanduser, isfile
+from os.path import expanduser
 home = expanduser("~")
 game = "skyrim"
 new = 0
-version = "0.22b"
+version = "0.24b"
 
 user_pass_path = []
 
 try:
 	#Fancy urllib2 things
-	req = urllib2.Request("http://localhost:3000/scriptVersion")
+	req = urllib2.Request("http://modwat.ch/scriptVersion")
 	f = urllib2.urlopen(req)
 	response = f.read()
 	f.close()
@@ -27,7 +27,7 @@ except urllib2.HTTPError, e:
 
 def populateAuth():
 	new = 1
-	temp = raw_input("Enter a username for ModWatcher.com: ")
+	temp = raw_input("Enter a username for modwat.ch: ")
 	temp.strip()
 	newpass = ''.join(random.choice(string.lowercase) for i in range(32))
 	temp += '\n' + newpass + '\n'

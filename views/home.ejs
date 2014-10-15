@@ -113,10 +113,6 @@
 		</span>
 		<span id="sidebar-wrapper">
 			<form class="input-group" action="/usersearch" method="post">
-				<input type="text" class="form-control" name="username" placeholder="Username"/>
-				<button class="btn" type="submit" style="margin:10px 0px">Find a load order!</button>
-			</form>
-			<form class="input-group" action="/usersearch" method="post">
 				<select class="form-control" onchange="document.getElementById('recent').innerHTML = 'View '+this.options[this.selectedIndex].value+'\'s Mods'" name="username">
 					<% for (var i = 0; i < mods.length; i++) { %>
 						<option value="<%-mods[i]%>"><%-mods[i]%></option><%
@@ -124,6 +120,7 @@
 				</select>
 				<button class="btn" type="submit" id="recent" style="margin:10px 0px">View <%-mods[0]%>'s Mods</button>
 			</form>
+			<a href="/users/" style="color:black"><button class="btn" type="button">View All Uploads</button></a>
 			<div id="sidebar-links">
 				<a href="https://github.com/ansballard/SkyrimModWatcher" target="_blank"><img id="github-link" src="/images/GitHub-Logo_invert.png" class="sidebar-link" alt="Github repository link" title="Github Repo"/></a>
 				<a href="http://www.nexusmods.com/skyrim/mods/56640/?" target="_blank"><img id="nexus-link" src="/images/FNV_NEXUS_small.png" class="sidebar-link" alt="Nexus link" title="Nexus Page"/></a>
