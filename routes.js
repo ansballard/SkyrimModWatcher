@@ -64,7 +64,7 @@ module.exports = function(app, passport, scriptVersion) {
 				rsstext += "<language>en-us</language>";
 				for(var i = 0; i < _blogs.length; i++) {
 					rsstext += "<item><title>"+_blogs[i].title+"</title><description>"+_blogs[i].desc+"</description>";
-					rsstext += "<link>http://modwat.ch/blog/"+_blogs[i].unique+"</link><image>"+_blogs[i].thumbnail+"</image></item>";
+					rsstext += "<link>http://modwat.ch/blog/"+_blogs[i].unique+"</link><image><url>"+_blogs[i].thumbnail+"</url></image></item>";
 					rsstext += "<pubDate>"+_blogs[i].date+"</pubDate>";
 				}
 				rsstext += "</channel></rss>";
