@@ -40,6 +40,52 @@ module.exports = function(app, passport, scriptVersion) {
 			});
 		});
 	});
+	app.get('/admin/:username', isLoggedIn, function(req, res) {
+		Modlist.findOne({username: req.param("username")}, function(err, _lists) {
+			if(!_lists) {
+				res.redirect('/');
+			}
+			else {
+				var save = false;
+				if(_lists.list == null) {
+					_lists.list = "[]";
+					save = true;
+				}
+				if(_lists.modlisttxt == null) {
+					_lists.modlisttxt = "[]";
+					save = true;
+				}
+				if(_lists.skyrimini == null) {
+					_lists.skyrimini = "[]";
+					save = true;
+				}
+				if(_lists.skyrimprefsini == null) {
+					_lists.skyrimprefsini = "[]";
+					save = true;
+				}
+				if(_lists.timestamp == null) {
+					_lists.timestamp = new Date("7/10/2014");
+					console.log(_lists.timestamp);
+					save = true;
+				}
+				if(save) {
+					console.log("saved");
+					_lists.save();
+				}
+				//console.log(_lists.list+"\n\n"+_lists.modlisttxt+"\n\n"+_lists.skyrimini+"\n\n"+_lists.skyrimprefsini);
+				console.log(_lists.timestamp);
+				res.render('index.ejs', {
+					list : _lists.list,
+					modlist : _lists.modlisttxt,
+					skyrimini : _lists.skyrimini,
+					skyrimprefsini : _lists.skyrimprefsini,
+					username: _lists.username,
+					timestamp: (_lists.timestamp.getMonth()+1) + "/" + _lists.timestamp.getDate() + "/" + _lists.timestamp.getFullYear(),
+					admin: true
+				});
+			}
+		});
+	});
 	app.get('/users', function(req, res) {
 		Modlist.find({}, function(err, _mods) {
 			var mods_ = [];
@@ -142,51 +188,6 @@ module.exports = function(app, passport, scriptVersion) {
 			}
 		});
 	});*/
-	app.get('/:username', function(req, res) {
-		Modlist.findOne({username: req.param("username")}, function(err, _lists) {
-			if(!_lists) {
-				res.redirect('/');
-			}
-			else {
-				var save = false;
-				if(_lists.list == null) {
-					_lists.list = "[]";
-					save = true;
-				}
-				if(_lists.modlisttxt == null) {
-					_lists.modlisttxt = "[]";
-					save = true;
-				}
-				if(_lists.skyrimini == null) {
-					_lists.skyrimini = "[]";
-					save = true;
-				}
-				if(_lists.skyrimprefsini == null) {
-					_lists.skyrimprefsini = "[]";
-					save = true;
-				}
-				if(_lists.timestamp == null) {
-					_lists.timestamp = new Date("7/10/2014");
-					console.log(_lists.timestamp);
-					save = true;
-				}
-				if(save) {
-					console.log("saved");
-					_lists.save();
-				}
-				//console.log(_lists.list+"\n\n"+_lists.modlisttxt+"\n\n"+_lists.skyrimini+"\n\n"+_lists.skyrimprefsini);
-				console.log(_lists.timestamp);
-				res.render('index.ejs', {
-					list : _lists.list,
-					modlist : _lists.modlisttxt,
-					skyrimini : _lists.skyrimini,
-					skyrimprefsini : _lists.skyrimprefsini,
-					username: _lists.username,
-					timestamp: (_lists.timestamp.getMonth()+1) + "/" + _lists.timestamp.getDate() + "/" + _lists.timestamp.getFullYear()
-				});
-			}
-		});
-	});
 	app.get('/text/:username/:filetype', function(req, res) {
 		Modlist.findOne({'username' : req.params.username}, function(err, _modlist) {
 			if(_modlist) {
@@ -244,6 +245,52 @@ module.exports = function(app, passport, scriptVersion) {
 		successRedirect: '/admin',
 		failureRedirect: '/login'
 	}));
+	app.get('/:username', function(req, res) {
+		Modlist.findOne({username: req.param("username")}, function(err, _lists) {
+			if(!_lists) {
+				res.redirect('/');
+			}
+			else {
+				var save = false;
+				if(_lists.list == null) {
+					_lists.list = "[]";
+					save = true;
+				}
+				if(_lists.modlisttxt == null) {
+					_lists.modlisttxt = "[]";
+					save = true;
+				}
+				if(_lists.skyrimini == null) {
+					_lists.skyrimini = "[]";
+					save = true;
+				}
+				if(_lists.skyrimprefsini == null) {
+					_lists.skyrimprefsini = "[]";
+					save = true;
+				}
+				if(_lists.timestamp == null) {
+					_lists.timestamp = new Date("7/10/2014");
+					console.log(_lists.timestamp);
+					save = true;
+				}
+				if(save) {
+					console.log("saved");
+					_lists.save();
+				}
+				//console.log(_lists.list+"\n\n"+_lists.modlisttxt+"\n\n"+_lists.skyrimini+"\n\n"+_lists.skyrimprefsini);
+				console.log(_lists.timestamp);
+				res.render('index.ejs', {
+					list : _lists.list,
+					modlist : _lists.modlisttxt,
+					skyrimini : _lists.skyrimini,
+					skyrimprefsini : _lists.skyrimprefsini,
+					username: _lists.username,
+					timestamp: (_lists.timestamp.getMonth()+1) + "/" + _lists.timestamp.getDate() + "/" + _lists.timestamp.getFullYear(),
+					admin: false
+				});
+			}
+		});
+	});
 	// COMMENT OUT, ONLY NEED 1 ADMIN FOR NOW
 	/*app.post('/register', passport.authenticate('register', {
 		successRedirect : '/admin',
@@ -376,6 +423,26 @@ module.exports = function(app, passport, scriptVersion) {
 			}
 		});
 	});
+	app.post('/admin/:username/delete', isLoggedIn, function(req, res) {
+		Modlist.findOne({'username' : req.body.username}, function(err, _modlist) {
+			if(_modlist) { // if the username exists in the db
+				_modlist.remove(function(err) {
+					if(err) {
+						console.err(err);
+					} else {
+						//
+					}
+				});
+			} else {
+				console.log("Username "+req.body.username+" not found");
+			}
+			if(err) {
+				console.err(err);
+			} else {
+				//
+			}
+		});
+	})
 };
 
 var Modlist = require('./models/modlist');

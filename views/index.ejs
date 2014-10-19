@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=475, initial-scale=1">
-    <link href="stylesheets/bootstrap.min.css" rel="stylesheet">
+    <link href="/stylesheets/bootstrap.min.css" rel="stylesheet">
     <title><%= username %>'s Load Order</title>
 
     <style type="text/css">
@@ -128,6 +128,11 @@
       <h1 id="header"><a href="/">MODWAT.CH</a></h1>
       <span id="list-container">
         <div id="nav-wrapper">
+          <%if (admin) {%>
+            <form action="/admin/<%-username%>/delete" method="post">
+              <input type="submit"/>
+            </form>
+          <%}%>
           <h1 id="timestamp"><%if(timestamp!="7/10/2014"){%>Updated: <%-timestamp%><%} else{}%></h1>
           <span><button class="btn selected" onclick="NavigateLists(0, this)">Plugins</button></span>
           <span><button class="btn" onclick="NavigateLists(1, this)">Modlist</button></span>
@@ -157,7 +162,7 @@
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script src="javascripts/bootstrap.min.js"></script>
+    <script src="/javascripts/bootstrap.min.js"></script>
     <script type="text/javascript">
 
       var username = "<%- username %>";
