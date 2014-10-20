@@ -166,28 +166,6 @@ module.exports = function(app, passport, scriptVersion) {
 			});
 		});
 	});
-	// 
-	/*app.get('/Peanut', function(req, res) {
-		Modlist.findOne({username: "Peanut"}, function(err, _lists) {
-			if(!_lists) {
-				res.redirect('/');
-			}
-			else {
-				if(_lists.length == 0) {
-					console.log("empty?");
-					_lists = "";
-				}
-				console.log(_lists.skyrimini);
-				res.render('peanut.ejs', {
-					list : _lists.list,
-					modlist : _lists.modlisttxt,
-					skyrimini : _lists.skyrimini,
-					skyrimprefsini : _lists.skyrimprefsini,
-					username: _lists.username
-				});
-			}
-		});
-	});*/
 	app.get('/text/:username/:filetype', function(req, res) {
 		Modlist.findOne({'username' : req.params.username}, function(err, _modlist) {
 			if(_modlist) {
