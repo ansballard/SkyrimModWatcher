@@ -9,9 +9,12 @@ version = "0.24b"
 
 user_pass_path = []
 
+pluginsPath = home+"/AppData/Local/Skyrim/" # plugins.txt
+inisPath = home+"/Documents/my games/skyrim/" # skyrim.ini, skyrimprefs.ini
+
 try:
 	#Fancy urllib2 things
-	req = urllib2.Request("http://modwat.ch/scriptVersion")
+	req = urllib2.Request("http://localhost:3000/scriptVersion")
 	f = urllib2.urlopen(req)
 	response = f.read()
 	f.close()
@@ -19,6 +22,7 @@ try:
 		print "Script is up to date"
 	else:
 		print "A new version of this script is available"
+		print response
 except urllib2.HTTPError, e:
 	errorCode = e.code
 	errorText = e.read()
@@ -38,14 +42,19 @@ def populateAuth():
 	return user_pass_path
 
 def getPluginsFile():
-	raw_input("Find your plugins.txt. It will either be in \"C:\Users\username\AppData\Local\Skyrim\" \nor your Mod Organizer profile directory. Press Enter to search:")
-	root = Tk()
-	root.withdraw()
-	filename = askopenfilename(parent=root, initialdir= (home+"\AppData\Local\Skyrim"))
-	user_pass_path[2] = user_pass_path[2].split("plugins.txt")[0]
-	root.destroy()
-	authfile = open('./auth.dat', 'a')
-	authfile.write('\n' + filename)
+	usingMO = raw_input("Are you using Mod Organizer? (Y/N): ")
+	if usingMO == 'Y' or usingMO == 'y':
+		root = Tk()
+		root.withdraw()
+		filename = askopenfilename(parent=root, initialdir= (home+"\AppData\Local\Skyrim"))
+		user_pass_path[2] = user_pass_path[2].split("plugins.txt")[0]
+		root.destroy()
+		authfile = open('./auth.dat', 'a')
+		authfile.write('\n' + filename)
+	else:
+		filename = 'default'
+		authfile = open('./auth.dat', 'a')
+		authfile.write('\n' + filename)
 	return filename
 
 # Get Auth from auth.dat
@@ -65,7 +74,10 @@ if len(user_pass_path) != 3:
 if "plugins.txt" in user_pass_path[2] : user_pass_path[2] = user_pass_path[2].split("plugins.txt")[0]
 
 if new == 0:
-	newPath = raw_input("Upload from "+user_pass_path[2]+"? (Y/N)")
+	if user_pass_path[2] == 'default':
+		newPath = raw_input("Upload using the default directories? (Y/N)")
+	else:
+		newPath = raw_input("Upload from "+user_pass_path[2]+"? (Y/N)")
 	if newPath == "N" or newPath == "n":
 		root = Tk()
 		root.withdraw()
@@ -79,7 +91,10 @@ if new == 0:
 
 #Read plugins.txt
 try:
-	infile = open(user_pass_path[2]+"plugins.txt", 'r')
+	if user_pass_path[2] == 'default':
+		infile = open(pluginsPath+"plugins.txt", 'r')
+	else:
+		infile = open(user_pass_path[2]+"plugins.txt", 'r')
 	plugins = infile.read()
 	plugins = string.replace(plugins,"\\","\\\\")
 	plugins = string.replace(plugins,"\"","\'").split('\n')
@@ -91,18 +106,24 @@ except IOError as e:
 
 #Read modlist.txt
 try:
-	infile = open(user_pass_path[2]+"modlist.txt", 'r')
-	modlisttxt = infile.read()
-	modlisttxt = string.replace(modlisttxt,"\\","\\\\")
-	modlisttxt = string.replace(modlisttxt,"\"","\'").split('\n')
-	infile.close()
+	if user_pass_path[2] == 'default':
+		modlisttxt = ""
+	else:
+		infile = open(user_pass_path[2]+"modlist.txt", 'r')
+		modlisttxt = infile.read()
+		modlisttxt = string.replace(modlisttxt,"\\","\\\\")
+		modlisttxt = string.replace(modlisttxt,"\"","\'").split('\n')
+		infile.close()
 except IOError as e:
 	raw_input("Error reading modlist.txt. Is "+user_pass_path[2]+" the correct path?")
 	modlisttxt = ""
 
 #Read 'game'.ini
 try:
-	infile = open(user_pass_path[2]+game+".ini", 'r')
+	if user_pass_path[2] == 'default':
+		infile = open(inisPath+game+".ini", 'r')
+	else:
+		infile = open(user_pass_path[2]+game+".ini", 'r')
 	ini = infile.read()
 	ini = string.replace(ini,"\\","\\\\")
 	ini = string.replace(ini,"\"","\'").split('\n')
@@ -113,7 +134,10 @@ except IOError as e:
 
 #Read 'game'prefs.ini
 try:
-	infile = open(user_pass_path[2]+game+"prefs.ini", 'r')
+	if user_pass_path[2] == 'default':
+		infile = open(inisPath+game+".ini", 'r')
+	else:
+		infile = open(user_pass_path[2]+game+"prefs.ini", 'r')
 	prefsini = infile.read()
 	prefsini = string.replace(prefsini,"\\","\\\\")
 	prefsini = string.replace(prefsini,"\"","\'").split('\n')
@@ -167,7 +191,7 @@ else:
 fullParams = "{\"plugins\": \""+pluginsToSend+"\",\"modlisttxt\": \""+modlisttxtToSend+"\",\""+game+"ini\": \""+iniToSend+"\",\""+game+"prefsini\": \""+prefsiniToSend+"\", \"username\": \""+user_pass_path[0]+"\", \"password\": \""+user_pass_path[1]+"\"}"
 
 #url to post to
-url = "http://modwat.ch/fullloadorder"
+url = "http://localhost:3000/fullloadorder"
 
 try:
 	#Fancy urllib2 things
