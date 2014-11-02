@@ -113,6 +113,10 @@
 		</span>
 		<span id="sidebar-wrapper">
 			<form class="input-group" action="/usersearch" method="post">
+				<input type="text" class="form-control" name="username" placeholder="Username"/>
+				<button class="btn" type="submit" style="margin:10px 0px">Find a load order!</button>
+			</form>
+			<form class="input-group" action="/usersearch" method="post">
 				<select class="form-control" onchange="document.getElementById('recent').innerHTML = 'View '+this.options[this.selectedIndex].value+'\'s Mods'" name="username">
 					<% for (var i = 0; i < mods.length; i++) { %>
 						<option value="<%-mods[i]%>"><%-mods[i]%></option><%

@@ -85,6 +85,7 @@
         max-width: 75%;
         display: inline-block;
         vertical-align: top;
+        text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
       }
@@ -172,6 +173,8 @@
       var listoflistnames = ['Plugins.txt', 'Modlist.txt', 'Skyrim.ini','SkyrimPrefs.ini'];
       var listoflistsindex = 0;
 
+      var expandedItem = undefined;
+
       $(document).ready(function() {
         $('#modlist').hide();
         $('#skyrim-ini').hide();
@@ -251,6 +254,21 @@
           });
         });
         $('.row-body').css('max-width', ($('#plugins').width() - 110)+'px');
+
+        $('#plugins span.row-body').mouseover(function() {
+          if ($(this)[0].scrollWidth >  $(this).innerWidth()) {
+            $(this).height($(this).height()*2);
+            $(this).css('white-space','normal');
+            expandedItem = $(this);
+          }
+        });
+        $('#plugins span.row-body').mouseout(function() {
+          if (expandedItem != undefined && $(this).css('white-space') != 'nowrap') {
+            expandedItem.height($(this).height()/2);
+            expandedItem.css('white-space','nowrap');
+            expandedItem = undefined;
+          }
+        });
       });
 
       function NavigateLists(_index, button) {
