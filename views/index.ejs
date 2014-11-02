@@ -59,7 +59,7 @@
         margin: auto;
         text-align: center;
       }
-      ul#plugins, ul#modlist, ul#skyrim-ini, ul#skyrimprefs-ini {
+      ul#plugins, ul#modlist, ul#skyrimini, ul#skyrimprefsini {
         list-style-type: none;
         padding: 0px 40px 40px 40px;
       }
@@ -137,8 +137,8 @@
           <h1 id="timestamp"><%if(timestamp!="7/10/2014"){%>Updated: <%-timestamp%><%} else{}%></h1>
           <span><button class="btn selected" id="pluginsNav" onclick="NavigateLists(0, this)">Plugins</button></span>
           <span><button class="btn" id="modlistNav" onclick="NavigateLists(1, this)">Modlist</button></span>
-          <span><button class="btn" id="skyrim-iniNav" onclick="NavigateLists(2, this)">Skyrim</button></span>
-          <span><button class="btn" id="skyrimprefs-iniNav" onclick="NavigateLists(3, this)">SkyrimPrefs</button></span>
+          <span><button class="btn" id="skyriminiNav" onclick="NavigateLists(2, this)">Skyrim</button></span>
+          <span><button class="btn" id="skyrimprefsiniNav" onclick="NavigateLists(3, this)">SkyrimPrefs</button></span>
         </div>
         <span id="search-container">
           <h3 id="username"></h3>
@@ -146,8 +146,8 @@
         </span>
         <ul class="" id="plugins"></ul>
         <ul class="" id="modlist"></ul>
-        <ul class="" id="skyrim-ini"></ul>
-        <ul class="" id="skyrimprefs-ini"></ul>
+        <ul class="" id="skyrimini"></ul>
+        <ul class="" id="skyrimprefsini"></ul>
         <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
         <!-- Modwat.ch Ad -->
         <ins class="adsbygoogle"
@@ -169,7 +169,7 @@
       var username = "<%- username %>";
       var listoflistsbodies = ["", "", "", ""];
       var listoflistsdata = [<%-list%>, <%-modlist%>, <%-skyrimini%>, <%-skyrimprefsini%>];
-      var listoflists = ['plugins','modlist','skyrim-ini','skyrimprefs-ini'];
+      var listoflists = ['plugins','modlist','skyrimini','skyrimprefsini'];
       var listoflistnames = ['Plugins.txt', 'Modlist.txt', 'Skyrim.ini','SkyrimPrefs.ini'];
       var listoflistsindex = 0;
 
@@ -177,8 +177,8 @@
 
       $(document).ready(function() {
         $('#modlist').hide();
-        $('#skyrim-ini').hide();
-        $('#skyrimprefs-ini').hide();
+        $('#skyrimini').hide();
+        $('#skyrimprefsini').hide();
 
         listoflistsdata[1] = reverseArray(listoflistsdata[1]);
 
@@ -269,6 +269,14 @@
             expandedItem = undefined;
           }
         });
+
+        if(window.location.hash) {
+          hash = window.location.hash.substr(1);
+          console.log('#'+hash+'Nav');
+          $('#'+hash+'Nav').trigger('click');
+        } else {
+          console.log('no hash');
+        }
       });
 
       function NavigateLists(_index, button) {
