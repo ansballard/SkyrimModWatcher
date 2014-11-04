@@ -348,6 +348,33 @@ module.exports = function(app, passport, scriptVersion) {
 			}
 		});
 	});
+	app.post('/:username/newpass', function(req, res) {
+		Modlist.findOne({'username' : req.param("username")}, function(err, _modlist) {
+			if(_modlist) {
+				if(_modlist.validPassword(req.body.oldPassword)) {
+					_modlist.password = _modlist.generateHash(req.body.newPassword);
+					_modlist.save(function(err) {
+						if(err) {
+							console.err(err);
+						} else {
+							// nope
+						}
+					});
+					res.statusCode = 200;
+					res.write("Password changed");
+					res.end();
+				} else {
+					res.statusCode = 403;
+					res.write("Access denied, incorrect password");
+					res.end();
+				}
+			} else {
+				res.statusCode = 400;
+				res.write("No username found");
+				res.end();
+			}
+		});
+	});
 	app.post('/fullloadorder', function(req, res) {
 		Modlist.findOne({'username' : req.body.username}, function(err, _modlist) {
 			if(_modlist) { // if the username exists in the db
