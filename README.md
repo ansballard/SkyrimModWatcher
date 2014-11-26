@@ -1,4 +1,5 @@
-http://ansballard.github.io/SkyrimModWatcher
+http://modwat.ch
+http://nexusmods.com/skyrim/mods/56640?
 
 TO BUILD
 ========
