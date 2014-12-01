@@ -162,13 +162,17 @@ class Application(Frame):
 		self.fpTextbox.insert(0,self.MOpath)
 
 	def getAuthData(self):
-		authfile = open('./auth.dat', 'r')
-		user_pass_path = authfile.read().split('\n')
-		self.username = user_pass_path[0]
-		self.password = user_pass_path[1]
-		self.MOpath = user_pass_path[2]
-		authfile.close()
-		self.setUserPassPath()
+		try:
+			authfile = open('./auth.dat', 'r')
+			user_pass_path = authfile.read().split('\n')
+			self.username = user_pass_path[0]
+			self.password = user_pass_path[1]
+			self.MOpath = user_pass_path[2]
+			authfile.close()
+			self.setUserPassPath()
+		except:
+			authfile = open('./auth.dat', 'w')
+			authfile.close()
 
 	def getMOpath(self):
 		root = Tk()
@@ -187,37 +191,53 @@ class Application(Frame):
 		self.postLoadOrder(self.buildJSON())
 
 	def postNewPass(self):
-		print self.password
+		params = "{\"oldPassword\":\""+self.oldText.get()+"\", \"newPassword\":\""+self.newText.get()+"\"}"
+		req = urllib2.Request("http://modwat.ch/"+self.username+"/newpass", params, {'Content-Type':'application/json'})
+		print 'Changing password to ' + self.newText.get() + '...'
+		f = urllib2.urlopen(req)
+		response = f.getcode()
+		f.close()
+		if response == 200:
+			print 'Success! Your new password is',self.newText.get()
+			self.password = self.newText.get()
+			self.populateAuth()
+			self.pwTextbox.delete(0,END)
+			self.pwTextbox.insert(0,self.password)
+		elif response == 403:
+			print "Password Incorrect"
+		else:
+			print "Couldn't Change Password, reverting to",self.password
+		self.cp.destroy()
 
 	def changePass(self):
-		cp = Toplevel(self)
+		self.cp = Toplevel(self)
 
-		oldFrame = Frame(cp)
-		bottomFrame = Frame(cp)
+		self.oldFrame = Frame(self.cp)
+		self.bottomFrame = Frame(self.cp)
 
-		newFrame = Frame(bottomFrame)
-		submitFrame = Frame(bottomFrame)
+		self.newFrame = Frame(self.bottomFrame)
+		self.submitFrame = Frame(self.bottomFrame)
 
-		oldFrame.pack(side="top", fill="x", expand=False)
-		bottomFrame.pack(side="bottom", fill="both", expand=True)
+		self.oldFrame.pack(side="top", fill="x", expand=False)
+		self.bottomFrame.pack(side="bottom", fill="both", expand=True)
 
-		newFrame.pack(side="top", fill="x", expand=False)
-		submitFrame.pack(side="bottom", fill="both", expand=True)
+		self.newFrame.pack(side="top", fill="x", expand=False)
+		self.submitFrame.pack(side="bottom", fill="both", expand=True)
 
-		oldLabel = Label(oldFrame, width=13)
-		oldLabel.pack(side="left")
-		oldLabel["text"] = "Old Password"
-		oldText = Entry(oldFrame, width=20)
-		oldText.pack(side="left")
-		oldText.insert(0,self.password)
+		self.oldLabel = Label(self.oldFrame, width=13)
+		self.oldLabel.pack(side="left")
+		self.oldLabel["text"] = "Old Password"
+		self.oldText = Entry(self.oldFrame, width=20)
+		self.oldText.pack(side="left")
+		self.oldText.insert(0,self.password)
 
-		newLabel = Label(newFrame, width=13)
-		newLabel.pack(side="left")
-		newLabel["text"] = "New Password"
-		newText = Entry(newFrame, width=20)
-		newText.pack(side="left")
+		self.newLabel = Label(self.newFrame, width=13)
+		self.newLabel.pack(side="left")
+		self.newLabel["text"] = "Change Password"
+		self.newText = Entry(self.newFrame, width=20)
+		self.newText.pack(side="left")
 
-		self.submitNewPass = Button(submitFrame, width=10)
+		self.submitNewPass = Button(self.submitFrame, width=10)
 		self.submitNewPass["text"] = "Submit"
 		self.submitNewPass["command"] = self.postNewPass
 		self.submitNewPass.pack({"side": "left"})
@@ -269,7 +289,7 @@ class Application(Frame):
 		self.pwLabel["text"] = "Password"
 		self.pwLabel.pack({"side":"left"})
 
-		self.pwTextbox = Entry(self.second_quarter, show='*', width=40)
+		self.pwTextbox = Entry(self.second_quarter, width=40)
 		self.pwTextbox.pack({"side":"left"})
 
 		self.fpLabel = Label(self.third_quarter, width=12)

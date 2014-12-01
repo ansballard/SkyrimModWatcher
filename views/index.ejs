@@ -119,6 +119,9 @@
       h1#timestamp {
         font-size: 20px;
       }
+      #filter-checked {
+        background-color: #C0C0C0;
+      }
     </style>
 
   </head>
@@ -143,6 +146,7 @@
         <span id="search-container">
           <h3 id="username"></h3>
           <input type="text" class="form-control" id="filter-mods" placeholder="Filter by..."/>
+          <button class="btn" id="filter-checked">Show Only Running Mods</button>
         </span>
         <ul class="" id="plugins"></ul>
         <ul class="" id="modlist"></ul>
@@ -172,6 +176,7 @@
       var listoflists = ['plugins','modlist','skyrimini','skyrimprefsini'];
       var listoflistnames = ['Plugins.txt', 'Modlist.txt', 'Skyrim.ini','SkyrimPrefs.ini'];
       var listoflistsindex = 0;
+      var checkedFiltered = false;
 
       var expandedItem = undefined;
 
@@ -179,6 +184,7 @@
         $('#modlist').hide();
         $('#skyrimini').hide();
         $('#skyrimprefsini').hide();
+        $('#filter-checked').hide();
 
         listoflistsdata[1] = reverseArray(listoflistsdata[1]);
 
@@ -210,15 +216,14 @@
         $('#username').html(username);
         $('#num-mods').html(listoflistsdata[listoflistsindex].length + " lines");
 
-        $('#filter-mods').keyup(function(){
-          var filterText = $(this).val();
+        function filterMods() {
+          var filterText = $('#filter-mods').val().toLowerCase();
           var iterator = 0;
           $('#'+listoflists[listoflistsindex]+' > li').each(function(){
             var text = $(this).text().toLowerCase();
-            if(filterText[0] == '^') {
-              (text.indexOf(filterText.substr(1)) == 0) ? $(this).slideDown() : $(this).slideUp();
-            } else {
-              if(text.indexOf(filterText) >= 0) {
+            if(checkedFiltered && listoflistnames[listoflistsindex] == 'Modlist.txt') {
+              text = text.substr(text.indexOf('.')+1, text.length);
+              if((text.indexOf('+') == 0 || text.indexOf('*') == 0) && text.indexOf(filterText) >= 0) {
                 (iterator%2 == 0) ? $(this)[0].className = 'whited' : $(this)[0].className = 'grayed';
                 iterator++;
                 $(this).slideDown();
@@ -226,8 +231,17 @@
                 $(this).slideUp();
               }
             }
+            else if(text.indexOf(filterText) >= 0) {
+              (iterator%2 == 0) ? $(this)[0].className = 'whited' : $(this)[0].className = 'grayed';
+              iterator++;
+              $(this).slideDown();
+            } else {
+              $(this).slideUp();
+            }
           });
-        });
+        }
+
+        $('#filter-mods').keyup(filterMods);
 
         $('.row-body').css('max-width', ($('#mod-list').width() - 110)+'px');
 
@@ -235,24 +249,30 @@
           $('.row-body').css('max-width', ($('#plugins').width() - 110)+'px');
         });
 
-        $('#filter-mods').keyup(function() {
-          var filterText = $(this).val();
-          var iterator = 0;
-          $('#mod-list > li').each(function(){
-            var text = $(this).text().toLowerCase();
-            if(filterText[0] == '^') {
-              (text.indexOf(filterText.substr(1)) == 0) ? $(this).slideDown() : $(this).slideUp();
-            } else {
-              if(text.indexOf(filterText) >= 0) {
+        $('#filter-checked').click(function() {
+          if(checkedFiltered) {
+            checkedFiltered = false;
+            $(this).html('Show Only Running Mods');
+            filterMods();
+          } else {
+            var iterator = 0;
+            console.log('firing');
+            $('#'+listoflists[listoflistsindex]+' > li').each(function(){
+              var text = $(this).text().toLowerCase();
+              text = text.substr(text.indexOf('.')+1, text.length);
+              if(text.indexOf('+') == 0 || text.indexOf('*') == 0) {
                 (iterator%2 == 0) ? $(this)[0].className = 'whited' : $(this)[0].className = 'grayed';
                 iterator++;
                 $(this).slideDown();
               } else {
                 $(this).slideUp();
               }
-            }
-          });
+            });
+            checkedFiltered = true;
+            $(this).html('Show All Mods');
+          }
         });
+
         $('.row-body').css('max-width', ($('#plugins').width() - 110)+'px');
 
         $('#plugins span.row-body').mouseover(function() {
@@ -275,7 +295,7 @@
           console.log('#'+hash+'Nav');
           $('#'+hash+'Nav').trigger('click');
         } else {
-          console.log('no hash');
+          //
         }
       });
 
@@ -292,6 +312,14 @@
               $('#filter-mods').val("");
             });
           });
+          if(listoflistnames[_index] == 'Modlist.txt')
+          {
+            console.log('show');
+            $('#filter-checked').show();
+          } else {
+            console.log('hide');
+            $('#filter-checked').hide();
+          }
           return listoflistsindex;
         } else {
           return false;

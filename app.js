@@ -49,7 +49,7 @@ app.configure(function() {
 	}
 });
 
-var scriptVersion = "0.24b";
+var scriptVersion = "0.25b";
 
 require('./routes.js') (app, passport, scriptVersion);
 
