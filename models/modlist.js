@@ -10,6 +10,10 @@ var modlistSchema = new Schema({
 	skyrimprefsini: String,
 	username: String,
 	password: String,
+	plugins: [String],
+	modlist: [String],
+	ini: [String],
+	prefsini: [String],
 	timestamp: Date
 }, {
 	collection: 'modlist'
@@ -24,6 +28,11 @@ modlistSchema.methods.generateHash = function(_password) {
 modlistSchema.methods.validPassword = function(_password) {
 
 	return bcrypt.compareSync(_password, this.password);
+};
+
+modlistSchema.methods.overwriteList = function(_list) {
+
+	return true;
 };
 
 module.exports = mongoose.model('Modlist', modlistSchema);

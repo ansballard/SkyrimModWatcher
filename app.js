@@ -6,7 +6,6 @@
 var express = require('express');
 var app = express();
 var routes = require('./routes');
-var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
 var fs = require('fs');
@@ -18,7 +17,7 @@ var mongoose = require('mongoose/');
 //var Modlist = require('./models/modlist');
 //var Blog = require('./models/blog');
 
-var configDB = require('./config/db.js').url;
+var configDB = require('./config/db.js').devurl;
 mongoose.connect(configDB);
 
 var Schema = mongoose.Schema;

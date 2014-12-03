@@ -1,17 +1,17 @@
 {
   "name": "Skyrim-Mod-Watcher",
-  "version": "0.0.1-26",
+  "version": "0.0.1-27",
   "private": true,
   "scripts": {
     "start": "node app.js"
   },
   "dependencies": {
     "express": "3.4.8",
-    "ejs": "*",
-    "mongoose": "*",
-    "bcrypt-nodejs": "latest",
-    "passport": "*",
-    "passport-local": "*"
+    "ejs": "1.0.x",
+    "mongoose": "3.8.x",
+    "bcrypt-nodejs": "0.0.3",
+    "passport": "0.2.x",
+    "passport-local": "1.0.x"
   },
   "subdomain": "skyrimmodwatcher",
   "domains": [

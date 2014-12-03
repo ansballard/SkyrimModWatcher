@@ -303,51 +303,6 @@ module.exports = function(app, passport, scriptVersion) {
 			}
 		});
 	});
-	app.post('/loadorder', function(req, res) {
-
-		//console.log(req.body.modlist);
-
-		Modlist.findOne({'username' : req.body.username}, function(err, _modlist) {
-
-			if(_modlist) { // if the username exists in the db
-				if(_modlist.validPassword(req.body.password)) {
-					_modlist.list = req.body.modlist;
-					_modlist.save(function(err) {
-						if(err) {
-
-						} else {
-
-						}
-					});
-					res.writeHead('200');
-					res.end();
-				}
-				else {
-					res.writeHead('403');
-					res.end();
-				}
-			}
-			else { // if the username does not exist
-
-				var modlist = new Modlist();
-				modlist.list = req.body.modlist;
-				modlist.username = req.body.username;
-				modlist.password = modlist.generateHash(req.body.password);
-
-				modlist.save(function(err) {
-					if(err) {
-						res.writeHead('500');
-						res.end();
-						throw err;
-					}
-					else {
-						res.writeHead('200');
-						res.end();
-					}
-				});
-			}
-		});
-	});
 	app.post('/:username/newpass', function(req, res) {
 		Modlist.findOne({'username' : req.param("username")}, function(err, _modlist) {
 			if(_modlist) {
@@ -389,7 +344,7 @@ module.exports = function(app, passport, scriptVersion) {
 						if(err) {
 							console.err(err);
 						} else {
-
+							//
 						}
 					});
 					res.statusCode = 200;
