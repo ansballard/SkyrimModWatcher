@@ -1,5 +1,13 @@
 module.exports = function(app, passport, scriptVersion) {
 
+	/*app.get('/testOverwrite/:username', function(req, res) {
+		Modlist.findOne({username: req.param("username")}, function(err, _lists) {
+			_lists.overwriteList();
+			res.writeHead(200);
+			res.end();
+		});
+	});*/
+
 	app.get('/', function(req, res) {
 		Blog.findOne({'newest': true}, function(err, _blog) {
 			Modlist.find({}, function(err, _mods) {
