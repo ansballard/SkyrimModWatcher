@@ -18,3 +18,13 @@ module.exports = {
 Using a different service or local dev should be easy to find in a bsic mongoose tutorial.
 
 After both of those, you should have a functional project that you can run with `node app.js` when in the root directory of the project. Navigating to `localhost:3000` will show you the web page.
+
+BUILDING THE EXE
+================
+
+I compile the python script in /python/ using https://github.com/pyinstaller/pyinstaller/wiki.
+After downloading the latest version for Python 2.X, you can compile the exe yourself via 
+```
+python /path/to/pyinstaller.py -F /path/to/readloadorder.py
+```
+That should build the exe and put it somewhere in your pyinstaller directory.
