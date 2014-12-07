@@ -10,10 +10,12 @@ var modlistSchema = new Schema({
 	skyrimprefsini: String,
 	username: String,
 	password: String,
-	plugins: [String],
-	modlist: [String],
-	ini: [String],
-	prefsini: [String],
+	plugins: [{name: String, notes: String}],
+	modlist: [{name: String, notes: String}],
+	ini: [{name: String, notes: String}],
+	prefsini: [{name: String, notes: String}],
+	tags: [String],
+	enb: String,
 	timestamp: Date
 }, {
 	collection: 'modlist'
@@ -29,8 +31,20 @@ modlistSchema.methods.validPassword = function(_password) {
 	return bcrypt.compareSync(_password, this.password);
 };
 
-modlistSchema.methods.overwriteList = function() {
+modlistSchema.methods.convertFilesToArrays = function() {
 
+	this.plugins = null;
+	this.modlist = null;
+	this.ini = null;
+	this.prefsini = null;
+
+	var temp = [];
+	temp = this.list.split('\",\"');
+	temp[0] = this.plugins[0].substring(2,this.plugins[0].length);
+
+	for(var i = 0; i < temp.length; i++) {
+		this.plugins[i].name = temp[i];
+	}
 	this.plugins = this.list.split('\",\"');
 	this.plugins[0] = this.plugins[0].substring(2,this.plugins[0].length);
 	this.plugins[this.plugins.length-1] = this.plugins[this.plugins.length-1].substring(0,this.plugins[this.plugins.length-1].length-2);
@@ -46,23 +60,6 @@ modlistSchema.methods.overwriteList = function() {
 	this.prefsini = this.skyrimprefsini.split('\",\"');
 	this.prefsini[0] = this.prefsini[0].substring(2,this.prefsini[0].length);
 	this.prefsini[this.prefsini.length-1] = this.prefsini[this.prefsini.length-1].substring(0,this.prefsini[this.prefsini.length-1].length-2);
-
-	/*console.log('\n\nplugins.txt --\n\n')
-	for(var i = 0; i < this.plugins.length; i++) {
-		console.log(this.plugins[i]);
-	}
-	console.log('\n\nmodlist.txt --\n\n')
-	for(var i = 0; i < this.modlist.length; i++) {
-		console.log(this.modlist[i]);
-	}
-	console.log('\n\nskyrim.ini --\n\n')
-	for(var i = 0; i < this.ini.length; i++) {
-		console.log(this.ini[i]);
-	}
-	console.log('\n\nskyrimprefs.ini --\n\n')
-	for(var i = 0; i < this.prefsini.length; i++) {
-		console.log(this.prefsini[i]);
-	}*/
 
 	this.save();
 	return true;
