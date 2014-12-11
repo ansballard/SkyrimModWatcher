@@ -3,6 +3,8 @@ from Tkinter import *
 from tkFileDialog import askopenfilename
 from os.path import expanduser
 
+from win32com.shell import shell, shellcon
+
 # variable for all params
 user_pass_path = ['','','']
 
@@ -321,13 +323,16 @@ class Application(Frame):
 		self.done.pack({"side": "left"})
 
 	def __init__(self, master=None):
+		df = shell.SHGetDesktopFolder()
+		pidl = df.ParseDisplayName(0, None, "::{450d8fba-ad25-11d0-98a8-0800361b1103}")[1]
+		self.mydocs = shell.SHGetPathFromIDList(pidl)
 		self.username = ""
 		self.password = ""
 		self.vText = StringVar()
 		self.home = expanduser("~")
 		self.MOpath = "C:/Program Files/Mod Organizer"
 		self.pluginsPath = self.home+"/AppData/Local/Skyrim/" # plugins.txt
-		self.nexusInisPath = self.home+"/Documents/my games/skyrim/" # skyrim.ini, skyrimprefs.ini
+		self.nexusInisPath = self.mydocs+"/my games/skyrim/" # skyrim.ini, skyrimprefs.ini
 
 		self.plugins = ""
 		self.modlisttxt = ""
@@ -335,7 +340,7 @@ class Application(Frame):
 		self.prefsini = ""
 		
 		self.game = "skyrim"
-		self.version = "0.25b"
+		self.version = "0.26b"
 
 		Frame.__init__(self, master)
 		self.pack()

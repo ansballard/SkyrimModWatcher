@@ -41,6 +41,7 @@ modlistSchema.methods.convertFilesToArrays = function() {
 	var temp = [];
 	temp = this.list.split('\",\"');
 	temp[0] = this.plugins[0].substring(2,this.plugins[0].length);
+	
 
 	for(var i = 0; i < temp.length; i++) {
 		this.plugins[i].name = temp[i];
