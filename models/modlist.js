@@ -33,34 +33,39 @@ modlistSchema.methods.validPassword = function(_password) {
 
 modlistSchema.methods.convertFilesToArrays = function() {
 
-	this.plugins = null;
-	this.modlist = null;
-	this.ini = null;
-	this.prefsini = null;
+	this.plugins = [{"name": "", "notes": ""}];
+	this.modlist = [{"name": "", "notes": ""}];
+	this.ini = [{"name": "", "notes": ""}];
+	this.prefsini = [{"name": "", "notes": ""}];
 
 	var temp = [];
 	temp = this.list.split('\",\"');
-	temp[0] = this.plugins[0].substring(2,this.plugins[0].length);
-	
+	temp[0] = temp[0].substring(2,temp[0].length);
 
 	for(var i = 0; i < temp.length; i++) {
 		this.plugins[i].name = temp[i];
 	}
-	this.plugins = this.list.split('\",\"');
-	this.plugins[0] = this.plugins[0].substring(2,this.plugins[0].length);
-	this.plugins[this.plugins.length-1] = this.plugins[this.plugins.length-1].substring(0,this.plugins[this.plugins.length-1].length-2);
 
-	this.modlist = this.modlisttxt.split('\",\"');
-	this.modlist[0] = this.modlist[0].substring(2,this.modlist[0].length);
-	this.modlist[this.modlist.length-1] = this.modlist[this.modlist.length-1].substring(0,this.modlist[this.modlist.length-1].length-2);
+	temp = this.modlisttxt.split('\",\"');
+	temp[0] = temp[0].substring(2,temp[0].length);
 
-	this.ini = this.skyrimini.split('\",\"');
-	this.ini[0] = this.ini[0].substring(2,this.ini[0].length);
-	this.ini[this.ini.length-1] = this.ini[this.ini.length-1].substring(0,this.ini[this.ini.length-1].length-2);
+	for(var i = 0; i < temp.length; i++) {
+		this.modlist[i].name = temp[i];
+	}
 
-	this.prefsini = this.skyrimprefsini.split('\",\"');
-	this.prefsini[0] = this.prefsini[0].substring(2,this.prefsini[0].length);
-	this.prefsini[this.prefsini.length-1] = this.prefsini[this.prefsini.length-1].substring(0,this.prefsini[this.prefsini.length-1].length-2);
+	temp = this.skyrimini.split('\",\"');
+	temp[0] = temp[0].substring(2,temp[0].length);
+
+	for(var i = 0; i < temp.length; i++) {
+		this.ini[i].name = temp[i];
+	}
+
+	temp = this.skyrimprefsini.split('\",\"');
+	temp[0] = temp[0].substring(2,temp[0].length);
+
+	for(var i = 0; i < temp.length; i++) {
+		this.prefsini[i].name = temp[i];
+	}
 
 	this.save();
 	return true;

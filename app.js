@@ -17,7 +17,7 @@ var mongoose = require('mongoose/');
 //var Modlist = require('./models/modlist');
 //var Blog = require('./models/blog');
 
-var configDB = require('./config/db.js').url;
+var configDB = require('./config/db.js').localurl;
 mongoose.connect(configDB);
 
 var Schema = mongoose.Schema;
