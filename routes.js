@@ -1,8 +1,10 @@
 module.exports = function(app, passport, scriptVersion) {
 
 	app.get('/testOverwrite/:username', function(req, res) {
-		Modlist.findOne({username: req.param("username")}, function(err, _lists) {
-			_lists.convertFilesToArrays();
+		Modlist.findOne({username: req.param("username")}, function(err, _list) {
+			if(_list) {
+				_list.convertFilesToArrays();
+			}
 			res.writeHead(200);
 			res.end();
 		});
@@ -81,7 +83,6 @@ module.exports = function(app, passport, scriptVersion) {
 					_lists.save();
 				}
 				//console.log(_lists.list+"\n\n"+_lists.modlisttxt+"\n\n"+_lists.skyrimini+"\n\n"+_lists.skyrimprefsini);
-				console.log(_lists.timestamp);
 				res.render('index.ejs', {
 					list : _lists.list,
 					modlist : _lists.modlisttxt,
