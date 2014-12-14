@@ -33,43 +33,41 @@ modlistSchema.methods.validPassword = function(_password) {
 
 modlistSchema.methods.convertFilesToArrays = function() {
 
-	/*this.plugins = [{"name": "", "notes": ""}];
+	this.plugins = [{"name": "", "notes": ""}];
 	this.modlist = [{"name": "", "notes": ""}];
 	this.ini = [{"name": "", "notes": ""}];
-	this.prefsini = [{"name": "", "notes": ""}];*/
-
-	console.log(this.list);
-	this.skyrimini = "swaggg";
+	this.prefsini = [{"name": "", "notes": ""}];
 
 	var temp = [];
 	temp = this.list.split('\",\"');
 	temp[0] = temp[0].substring(2,temp[0].length);
 
 	for(var i = 0; i < temp.length; i++) {
-		this.plugins[i] = {"name":temp[i],"notes":""};
+		this.plugins[i].name = temp[i];
 	}
 
 	temp = this.modlisttxt.split('\",\"');
 	temp[0] = temp[0].substring(2,temp[0].length);
 
 	for(var i = 0; i < temp.length; i++) {
-		this.modlist[i] = {"name":temp[i],"notes":""};
+		this.modlist[i].name = temp[i];
 	}
 
 	temp = this.skyrimini.split('\",\"');
 	temp[0] = temp[0].substring(2,temp[0].length);
 
 	for(var i = 0; i < temp.length; i++) {
-		this.ini[i] = {"name":temp[i],"notes":""};
+		this.ini[i].name = temp[i];
 	}
 
 	temp = this.skyrimprefsini.split('\",\"');
 	temp[0] = temp[0].substring(2,temp[0].length);
 
 	for(var i = 0; i < temp.length; i++) {
-		this.prefsini[i] = {"name":temp[i],"notes":""};
+		this.prefsini[i].name = temp[i];
 	}
 
+	this.save();
 	return true;
 };
 

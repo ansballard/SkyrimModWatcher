@@ -13,7 +13,7 @@ class Application(Frame):
 	def getScriptVersion(self):
 		# Get current script version
 		try:
-			req = urllib2.Request(self.url+"/scriptVersion")
+			req = urllib2.Request("http://modwat.ch/scriptVersion")
 			f = urllib2.urlopen(req)
 			response = f.read()
 			f.close()
@@ -138,8 +138,8 @@ class Application(Frame):
 	def postLoadOrder(self, fullParams):
 		try:
 			#Fancy urllib2 things
-			req = urllib2.Request(self.url+"/fullloadorder", fullParams, {'Content-Type':'application/json'})
-			print 'Uploading to '+self.url+'/' + self.username + '...'
+			req = urllib2.Request("http://modwat.ch/fullloadorder", fullParams, {'Content-Type':'application/json'})
+			print 'Uploading to http://modwat.ch/' + self.username + '...'
 			f = urllib2.urlopen(req)
 			response = f.getcode()
 			f.close()
@@ -194,7 +194,7 @@ class Application(Frame):
 
 	def postNewPass(self):
 		params = "{\"oldPassword\":\""+self.oldText.get()+"\", \"newPassword\":\""+self.newText.get()+"\"}"
-		req = urllib2.Request(self.url+"/"+self.username+"/newpass", params, {'Content-Type':'application/json'})
+		req = urllib2.Request("http://modwat.ch/"+self.username+"/newpass", params, {'Content-Type':'application/json'})
 		print 'Changing password to ' + self.newText.get() + '...'
 		f = urllib2.urlopen(req)
 		response = f.getcode()
@@ -326,7 +326,6 @@ class Application(Frame):
 		df = shell.SHGetDesktopFolder()
 		pidl = df.ParseDisplayName(0, None, "::{450d8fba-ad25-11d0-98a8-0800361b1103}")[1]
 		self.mydocs = shell.SHGetPathFromIDList(pidl)
-		self.url = "http://localhost:3000";
 		self.username = ""
 		self.password = ""
 		self.vText = StringVar()
