@@ -45,6 +45,12 @@
       var array_listData = [[], [], [], []];
       var array_listNames = ['plugins','modlist','ini','prefsini'];
       var array_listFullNames = ['Plugins.txt', 'Modlist.txt', '.ini','Prefs.ini'];
+
+      var string_pluginsBody = [];
+      var string_modlistBody = [];
+      var string_iniBody = [];
+      var string_prefsiniBody = [];
+
       var array_currentIndex = 0;
 
       var checkedFiltered = false;
@@ -63,9 +69,10 @@
           hash = window.location.hash.substr(1);
           $.getJSON("/q/"+username+"/"+hash, function(data) {
             if(hash == "modlist") {
-              for(var i = data.length-1; i >= 0; i++) {
-                array_listData[0][i] = data[i].name;
+              for(var i = data.length-1, j = 0; i >= 0; i--, j++) {
+                array_listData[1][j] = data[i].name;
               }
+              populateList(1);
             } else {
               for(var i = 0; i < data.length; i++) {
                 array_listData[0][i] = data[i].name;
@@ -74,30 +81,31 @@
             console.log(array_listData[0]);
           });
         } else {
-          $.getJSON("/q/"+username+"/plugins", function(data) {
-            for(var i = 0; i < data.length; i++) {
-              array_listData[0][i] = data[i].name;
-            }
-            console.log(array_listData[0]);
-            populateList(0);
-          });
+          populateList('plugins', string_pluginsBody);
         }
 
-        function populateList(_index) {
-          for(var j = 0; j < array_listData[_index].length; j++) {
-            array_listBodies[_index] += "<li class='";
-            if(j%2 == 1) {
-              array_listBodies[_index] += " grayed";
-            } else {
-              array_listBodies[_index] += " whited";
+        function populateList(_filename, _arrayRef) {
+
+          $.getJSON("/q/"+username+"/"+_filename, function(data) {
+
+            for(var i = 0; i < data.length; i++) {
+              _arrayRef[0] += "<li class='";
+
+              if(j%2 == 1) {
+                _arrayRef[0] += " grayed";
+              } else {
+                _arrayRef[0] += " whited";
+              }
+
+              if(_filename == "plugins") {
+                _arrayRef[0] += "'><span class='row-header'>"+(i+1)+".</span><span class='row-body'>"+data[i].name+"</span><span class='row-footer "+data[i].name.substr(-3,3)+"'>"+data[i].name.substr(-3,3)+"</span></li>";
+              } else {
+                _arrayRef[0] += "'><span class='row-header'>"+(i+1)+".</span><span class='row-body'>"+data[i].name+"</span></li>";
+              }
             }
-            if(_index == 0) {
-              array_listBodies[_index] += "'><span class='row-header'>"+(j+1)+".</span><span class='row-body'>"+array_listData[_index][j]+"</span><span class='row-footer "+array_listData[_index][j].substr(-3,3)+"'>"+array_listData[_index][j].substr(-3,3)+"</span></li>";
-            } else {
-              array_listBodies[_index] += "'><span class='row-header'>"+(j+1)+".</span><span class='row-body'>"+array_listData[_index][j]+"</span></li>";
-            }
-          }
-          $('#'+array_listNames[_index]).html(array_listBodies[_index]);
+            $('#'+_filename).html(_arrayRef[0]);
+          });
+          
         }
 
         for(var i = 0; i < array_listData.length; i++) {
