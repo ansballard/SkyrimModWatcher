@@ -10,10 +10,10 @@ var modlistSchema = new Schema({
 	skyrimprefsini: String,
 	username: String,
 	password: String,
-	plugins: [{name: String, notes: String}],
-	modlist: [{name: String, notes: String}],
-	ini: [{name: String, notes: String}],
-	prefsini: [{name: String, notes: String}],
+	plugins: [],
+	modlist: [],
+	ini: [],
+	prefsini: [],
 	tags: [String],
 	enb: String,
 	timestamp: Date
@@ -29,6 +29,64 @@ modlistSchema.methods.generateHash = function(_password) {
 
 modlistSchema.methods.validPassword = function(_password) {
 	return bcrypt.compareSync(_password, this.password);
+};
+
+modlistSchema.methods.UpdateOldStyleModlist = function() {
+	var tempOld = [];
+	var tempNew = [];
+	save = false;
+
+	if(this.plugins.length < 1) {
+		tempOld = this.list.split('\",\"');
+		tempOld[0] = tempOld[0].substring(2);
+		tempOld[tempOld.length-1] = tempOld[tempOld.length-1].substring(0,tempOld[tempOld.length-1].length-2);
+		tempNew = [];
+		for(var i = 0; i < tempOld.length; i++) {
+			tempNew[i] = {"name":tempOld[i]};
+		}
+		this.plugins = tempNew;
+		save = true;
+	}
+	if(this.modlist.length < 1) {
+		console.log('no modlist');
+		tempOld = this.modlisttxt.split('\",\"');
+		tempOld[0] = tempOld[0].substring(2);
+		tempOld[tempOld.length-1] = tempOld[tempOld.length-1].substring(0,tempOld[tempOld.length-1].length-2);
+		tempNew = [];
+		for(var i = 0; i < tempOld.length; i++) {
+			tempNew[i] = {"name":tempOld[i]};
+		}
+		this.modlist = tempNew;
+		save = true;
+	}
+	if(this.ini.length < 1) {
+		tempOld = this.skyrimini.split('\",\"');
+		tempOld[0] = tempOld[0].substring(2);
+		tempOld[tempOld.length-1] = tempOld[tempOld.length-1].substring(0,tempOld[tempOld.length-1].length-2);
+		tempNew = [];
+		for(var i = 0; i < tempOld.length; i++) {
+			tempNew[i] = {"name":tempOld[i]};
+		}
+		this.ini = tempNew;
+		save = true;
+	}
+	if(this.prefsini.length < 1) {
+		tempOld = this.skyrimprefsini.split('\",\"');
+		tempOld[0] = tempOld[0].substring(2);
+		tempOld[tempOld.length-1] = tempOld[tempOld.length-1].substring(0,tempOld[tempOld.length-1].length-2);
+		tempNew = [];
+		for(var i = 0; i < tempOld.length; i++) {
+			tempNew[i] = {"name":tempOld[i]};
+		}
+		this.prefsini = tempNew;
+		save = true;
+	}
+	if(this.timestamp == null) {
+		this.timestamp = new Date("7/10/2014");
+		save = true;
+	}
+	if(save)
+		this.save();
 };
 
 module.exports = mongoose.model('Modlist', modlistSchema);

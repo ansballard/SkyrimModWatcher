@@ -17,16 +17,11 @@
       <h1 id="header"><a href="/">MODWAT.CH</a></h1>
       <span id="list-container">
         <div id="nav-wrapper">
-          <%if (admin) {%>
-            <form action="/admin/<%-username%>/delete" method="post">
-              <input type="submit"/>
-            </form>
-          <%}%>
           <h1 id="timestamp"><%if(timestamp!="7/10/2014"){%>Updated: <%-timestamp%><%} else{}%></h1>
           <span><button class="btn selected" id="pluginsNav" onclick="NavigateLists(0, this)">Plugins</button></span>
-          <span><button class="btn" id="modlistNav" onclick="NavigateLists(1, this)">Modlist</button></span>
-          <span><button class="btn" id="skyriminiNav" onclick="NavigateLists(2, this)">Skyrim</button></span>
-          <span><button class="btn" id="skyrimprefsiniNav" onclick="NavigateLists(3, this)">SkyrimPrefs</button></span>
+          <span><button style="display:none" class="btn" id="modlistNav" onclick="NavigateLists(1, this)">Modlist</button></span>
+          <span><button class="btn" id="iniNav" onclick="NavigateLists(2, this)">ini</button></span>
+          <span><button class="btn" id="prefsiniNav" onclick="NavigateLists(3, this)">Prefs.ini</button></span>
         </div>
         <span id="search-container">
           <h3 id="username"></h3>
@@ -46,11 +41,12 @@
     <script type="text/javascript">
 
       var username = "<%- username %>";
-      var listoflistsbodies = ["", "", "", ""];
-      var listoflistsdata = [<%-list%>, <%-modlist%>, <%-skyrimini%>, <%-skyrimprefsini%>];
-      var listoflists = ['plugins','modlist','skyrimini','skyrimprefsini'];
-      var listoflistnames = ['Plugins.txt', 'Modlist.txt', 'Skyrim.ini','SkyrimPrefs.ini'];
-      var listoflistsindex = 0;
+      var array_listBodies = ["", "", "", ""];
+      var array_listData = [[], [], [], []];
+      var array_listNames = ['plugins','modlist','ini','prefsini'];
+      var array_listFullNames = ['Plugins.txt', 'Modlist.txt', '.ini','Prefs.ini'];
+      var array_currentIndex = 0;
+
       var checkedFiltered = false;
 
       var expandedItem = undefined;
@@ -60,43 +56,87 @@
         $('#skyrimini').hide();
         $('#skyrimprefsini').hide();
         $('#filter-checked').hide();
+        $('.row-body').css('max-width', ($('#mod-list').width() - 110)+'px');
+        $('.row-body').css('max-width', ($('#plugins').width() - 110)+'px');
 
-        listoflistsdata[1] = reverseArray(listoflistsdata[1]);
+        if(window.location.hash) {
+          hash = window.location.hash.substr(1);
+          $.getJSON("/q/"+username+"/"+hash, function(data) {
+            if(hash == "modlist") {
+              for(var i = data.length-1; i >= 0; i++) {
+                array_listData[0][i] = data[i].name;
+              }
+            } else {
+              for(var i = 0; i < data.length; i++) {
+                array_listData[0][i] = data[i].name;
+              }
+            }
+            console.log(array_listData[0]);
+          });
+        } else {
+          $.getJSON("/q/"+username+"/plugins", function(data) {
+            for(var i = 0; i < data.length; i++) {
+              array_listData[0][i] = data[i].name;
+            }
+            console.log(array_listData[0]);
+            populateList(0);
+          });
+        }
 
-        for(var i = 0; i < listoflistsdata.length; i++) {
-          if(listoflistsdata[i].length == 0)
+        function populateList(_index) {
+          for(var j = 0; j < array_listData[_index].length; j++) {
+            array_listBodies[_index] += "<li class='";
+            if(j%2 == 1) {
+              array_listBodies[_index] += " grayed";
+            } else {
+              array_listBodies[_index] += " whited";
+            }
+            if(_index == 0) {
+              array_listBodies[_index] += "'><span class='row-header'>"+(j+1)+".</span><span class='row-body'>"+array_listData[_index][j]+"</span><span class='row-footer "+array_listData[_index][j].substr(-3,3)+"'>"+array_listData[_index][j].substr(-3,3)+"</span></li>";
+            } else {
+              array_listBodies[_index] += "'><span class='row-header'>"+(j+1)+".</span><span class='row-body'>"+array_listData[_index][j]+"</span></li>";
+            }
+          }
+          $('#'+array_listNames[_index]).html(array_listBodies[_index]);
+        }
+
+        for(var i = 0; i < array_listData.length; i++) {
+          if(array_listData[i].length == 0)
           {
-            $('#'+listoflists[i]+'Nav').hide();
+            $('#'+array_listNames[i]+'Nav').hide();
           } 
           else 
           {
-            for(var j = 0; j < listoflistsdata[i].length; j++) {
-              listoflistsbodies[i] += "<li class='";
+            for(var j = 0; j < array_listData[i].length; j++) {
+              array_listBodies[i] += "<li class='";
               if(j%2 == 1) {
-                listoflistsbodies[i] += " grayed";
+                array_listBodies[i] += " grayed";
               } else {
-                listoflistsbodies[i] += " whited";
+                array_listBodies[i] += " whited";
               }
               if(i == 0) {
-                listoflistsbodies[i] += "'><span class='row-header'>"+(j+1)+".</span><span class='row-body'>"+listoflistsdata[i][j]+"</span><span class='row-footer "+listoflistsdata[i][j].substr(-3,3)+"'>"+listoflistsdata[i][j].substr(-3,3)+"</span></li>";
+                array_listBodies[i] += "'><span class='row-header'>"+(j+1)+".</span><span class='row-body'>"+array_listData[i][j]+"</span><span class='row-footer "+array_listData[i][j].substr(-3,3)+"'>"+array_listData[i][j].substr(-3,3)+"</span></li>";
               } else {
-                listoflistsbodies[i] += "'><span class='row-header'>"+(j+1)+".</span><span class='row-body'>"+listoflistsdata[i][j]+"</span></li>";
+                array_listBodies[i] += "'><span class='row-header'>"+(j+1)+".</span><span class='row-body'>"+array_listData[i][j]+"</span></li>";
               }
             }
           }
-          $('#'+listoflists[i]).html(listoflistsbodies[i]);
+          $('#'+array_listNames[i]).html(array_listBodies[i]);
         }
 
-        //$('#username').html(username + "\'s " + listoflistnames[listoflistsindex]);
+        //$('#username').html(username + "\'s " + array_listFullNames[array_currentIndex]);
         $('#username').html(username);
-        $('#num-mods').html(listoflistsdata[listoflistsindex].length + " lines");
+        $('#num-mods').html(array_listData[array_currentIndex].length + " lines");
 
+        /*
+         *  Filter mods by search bar value
+         */
         function filterMods() {
           var filterText = $('#filter-mods').val().toLowerCase();
           var iterator = 0;
-          $('#'+listoflists[listoflistsindex]+' > li').each(function(){
+          $('#'+array_listNames[array_currentIndex]+' > li').each(function(){
             var text = $(this).text().toLowerCase();
-            if(checkedFiltered && listoflistnames[listoflistsindex] == 'Modlist.txt') {
+            if(checkedFiltered && array_listFullNames[array_currentIndex] == 'Modlist.txt') {
               text = text.substr(text.indexOf('.')+1, text.length);
               if((text.indexOf('+') == 0 || text.indexOf('*') == 0) && text.indexOf(filterText) >= 0) {
                 (iterator%2 == 0) ? $(this)[0].className = 'whited' : $(this)[0].className = 'grayed';
@@ -116,14 +156,21 @@
           });
         }
 
-        $('#filter-mods').keyup(filterMods);
+        /*
+         *  Call filterMods when something is typed in filter box
+         */
+        $('#filter-mods').keyup(filterMods);        
 
-        $('.row-body').css('max-width', ($('#mod-list').width() - 110)+'px');
-
+        /*
+         *  Resize lists on window resize
+         */
         $(window).resize(function() {
           $('.row-body').css('max-width', ($('#plugins').width() - 110)+'px');
         });
 
+        /*
+         *  Filters Modlist.txt for strings that start with a +
+         */
         $('#filter-checked').click(function() {
           if(checkedFiltered) {
             checkedFiltered = false;
@@ -131,7 +178,7 @@
             filterMods();
           } else {
             var iterator = 0;
-            $('#'+listoflists[listoflistsindex]+' > li').each(function(){
+            $('#'+array_listNames[array_currentIndex]+' > li').each(function(){
               var text = $(this).text().toLowerCase();
               text = text.substr(text.indexOf('.')+1, text.length);
               if(text.indexOf('+') == 0 || text.indexOf('*') == 0) {
@@ -147,8 +194,9 @@
           }
         });
 
-        $('.row-body').css('max-width', ($('#plugins').width() - 110)+'px');
-
+        /*
+         *  Next 2 handle long file names, blow up on mouseover, return on mouseout
+         */
         $('#plugins span.row-body').mouseover(function() {
           if ($(this)[0].scrollWidth >  $(this).innerWidth()) {
             $(this).height($(this).height()*2);
@@ -164,6 +212,9 @@
           }
         });
 
+        /*
+         *  Handles direct file share, dirty AF, replace it
+         */
         if(window.location.hash) {
           hash = window.location.hash.substr(1);
           $('#'+hash+'Nav').trigger('click');
@@ -171,32 +222,38 @@
           //
         }
       });
-
+      
+      /*
+       *  Handles switching file panes, needs a rewrite for aesthetics
+       */
       function NavigateLists(_index, button) {
-        if(_index != listoflistsindex) {
-          location.hash = listoflists[_index];
+        if(_index != array_currentIndex) {
+          location.hash = array_listNames[_index];
           $('.selected').removeClass('selected');
-          $('#'+listoflists[listoflistsindex]).toggle('display', function() {
-            $('#'+listoflists[listoflistsindex]+' > li').each(function(){ if(!$(this).is(":visible")) {$(this).show();}});
-            $('#'+listoflists[_index]).toggle('display', function() {
+          $('#'+array_listNames[array_currentIndex]).toggle('display', function() {
+            $('#'+array_listNames[array_currentIndex]+' > li').each(function(){ if(!$(this).is(":visible")) {$(this).show();}});
+            $('#'+array_listNames[_index]).toggle('display', function() {
               $(button).addClass('selected');
-              listoflistsindex = _index;
+              array_currentIndex = _index;
               $('#username').html(username);
               $('#filter-mods').val("");
             });
           });
-          if(listoflistnames[_index] == 'Modlist.txt')
+          if(array_listFullNames[_index] == 'Modlist.txt')
           {
             $('#filter-checked').show();
           } else {
             $('#filter-checked').hide();
           }
-          return listoflistsindex;
+          return array_currentIndex;
         } else {
           return false;
         }
       }
 
+      /*
+       *  Utility, reverses a 1D array
+       */
       function reverseArray(_array) {
         var reversedArray = [];
         for(var i = 0, j = _array.length-1; i < _array.length; i++, j--) {
@@ -204,7 +261,6 @@
         }
         return reversedArray;
       }
-
 
     </script>
 

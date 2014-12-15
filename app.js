@@ -8,16 +8,11 @@ var app = express();
 var routes = require('./routes');
 var http = require('http');
 var path = require('path');
-var fs = require('fs');
 var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
 var bcrypt = require('bcrypt-nodejs');
 var mongoose = require('mongoose/'); 
 
-//var Modlist = require('./models/modlist');
-//var Blog = require('./models/blog');
-
-var configDB = require('./config/db.js').url;
+var configDB = require('./config/db.js').devurl;
 mongoose.connect(configDB);
 
 var Schema = mongoose.Schema;

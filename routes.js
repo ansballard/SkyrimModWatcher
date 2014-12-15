@@ -40,52 +40,6 @@ module.exports = function(app, passport, scriptVersion) {
 			});
 		});
 	});
-	app.get('/admin/:username', isLoggedIn, function(req, res) {
-		Modlist.findOne({username: req.param("username")}, function(err, _lists) {
-			if(!_lists) {
-				res.redirect('/');
-			}
-			else {
-				var save = false;
-				if(_lists.list == null) {
-					_lists.list = "[]";
-					save = true;
-				}
-				if(_lists.modlisttxt == null) {
-					_lists.modlisttxt = "[]";
-					save = true;
-				}
-				if(_lists.skyrimini == null) {
-					_lists.skyrimini = "[]";
-					save = true;
-				}
-				if(_lists.skyrimprefsini == null) {
-					_lists.skyrimprefsini = "[]";
-					save = true;
-				}
-				if(_lists.timestamp == null) {
-					_lists.timestamp = new Date("7/10/2014");
-					console.log(_lists.timestamp);
-					save = true;
-				}
-				if(save) {
-					console.log("saved");
-					_lists.save();
-				}
-				//console.log(_lists.list+"\n\n"+_lists.modlisttxt+"\n\n"+_lists.skyrimini+"\n\n"+_lists.skyrimprefsini);
-				console.log(_lists.timestamp);
-				res.render('index.ejs', {
-					list : _lists.list,
-					modlist : _lists.modlisttxt,
-					skyrimini : _lists.skyrimini,
-					skyrimprefsini : _lists.skyrimprefsini,
-					username: _lists.username,
-					timestamp: (_lists.timestamp.getMonth()+1) + "/" + _lists.timestamp.getDate() + "/" + _lists.timestamp.getFullYear(),
-					admin: true
-				});
-			}
-		});
-	});
 	app.get('/users', function(req, res) {
 		Modlist.find({}, function(err, _mods) {
 			var mods_ = [];
@@ -214,7 +168,6 @@ module.exports = function(app, passport, scriptVersion) {
 			}
 		});
 	});
-
 	app.get('/logout', function(req, res) {
 		req.logout();
 		res.redirect('/');
@@ -223,6 +176,47 @@ module.exports = function(app, passport, scriptVersion) {
 		successRedirect: '/admin',
 		failureRedirect: '/login'
 	}));
+	app.get('/q/:username', function(req, res) {
+		Modlist.findOne({username: req.param("username")}, function(err, _list) {
+			if(!_list) {
+				res.redirect('/');
+			}
+			else {
+				_list.UpdateOldStyleModlist();
+				res.render('profile.ejs', {
+					username: _list.username,
+					timestamp: (_list.timestamp.getMonth()+1) + "/" + _list.timestamp.getDate() + "/" + _list.timestamp.getFullYear(),
+					enb: _list.enb
+				});
+			}
+		});
+	});
+	app.get('/q/:username/:filename', function(req, res) {
+		Modlist.findOne({username: req.param("username")}, function(err, _list) {
+			if(!_list) {
+				res.writeHead(404);
+				res.end();
+			} else {
+				res.setHeader('Content-Type', 'application/json');
+
+				if(req.param("filename") == 'plugins') {
+					res.end(JSON.stringify(_list.plugins));
+				}
+				else if(req.param("filename") == 'modlist') {
+					res.end(JSON.stringify(_list.modlist));
+				}
+				else if(req.param("filename") == 'ini') {
+					res.end(JSON.stringify(_list.ini));
+				}
+				else if(req.param("filename") == 'prefsini') {
+					res.end(JSON.stringify(_list.prefsini));
+				}
+				else {
+					res.end(JSON.stringify([]));
+				}
+			}
+		});
+	});
 	app.get('/:username', function(req, res) {
 		Modlist.findOne({username: req.param("username")}, function(err, _lists) {
 			if(!_lists) {
@@ -246,17 +240,11 @@ module.exports = function(app, passport, scriptVersion) {
 					_lists.skyrimprefsini = "[]";
 					save = true;
 				}
-				if(_lists.timestamp == null) {
-					_lists.timestamp = new Date("7/10/2014");
-					console.log(_lists.timestamp);
-					save = true;
-				}
 				if(save) {
 					console.log("saved");
 					_lists.save();
 				}
-				//console.log(_lists.list+"\n\n"+_lists.modlisttxt+"\n\n"+_lists.skyrimini+"\n\n"+_lists.skyrimprefsini);
-				console.log(_lists.timestamp);
+				_lists.UpdateOldStyleModlist();
 				res.render('index.ejs', {
 					list : _lists.list,
 					modlist : _lists.modlisttxt,
