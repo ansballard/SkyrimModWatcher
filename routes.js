@@ -186,7 +186,8 @@ module.exports = function(app, passport, scriptVersion) {
 				res.render('profile.ejs', {
 					username: _list.username,
 					timestamp: (_list.timestamp.getMonth()+1) + "/" + _list.timestamp.getDate() + "/" + _list.timestamp.getFullYear(),
-					enb: _list.enb
+					enb: _list.enb,
+					game: "skyrim"
 				});
 			}
 		});
