@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=475, initial-scale=1">
     <link href="/stylesheets/bootstrap.min.css" rel="stylesheet">
-    <link href="/stylesheets/index.css" rel="stylesheet">
+    <link href="/stylesheets/profile.css" rel="stylesheet">
     <title><%= username %>'s Load Order</title>
   </head>
   <body>
@@ -15,13 +15,13 @@
       <span id="list-container">
         <div id="nav-wrapper">
           <h1 id="timestamp">Updated: <%-timestamp%></h1>
-          <span><button class="btn selected" id="pluginsNav" onclick="NavigateLists(0, this)">Plugins</button></span>
-          <span><button class="btn" id="modlistNav" onclick="NavigateLists(1, this)">Modlist</button></span>
-          <span><button class="btn" id="iniNav" onclick="NavigateLists(2, this)"><%= game.charAt(0).toUpperCase() + game.substring(1) %></button></span>
-          <span><button class="btn" id="prefsiniNav" onclick="NavigateLists(3, this)"><%= game.charAt(0).toUpperCase() + game.substring(1) %>Prefs</button></span>
+          <span><button class="btn" id="pluginsNav" onclick="NavigateLists('plugins')">Plugins</button></span>
+          <span><button class="btn" id="modlistNav" onclick="NavigateLists('modlist')">Modlist</button></span>
+          <span><button class="btn" id="iniNav" onclick="NavigateLists('ini')"><%= game.charAt(0).toUpperCase() + game.substring(1) %></button></span>
+          <span><button class="btn" id="prefsiniNav" onclick="NavigateLists('prefsini')"><%= game.charAt(0).toUpperCase() + game.substring(1) %>Prefs</button></span>
         </div>
         <span id="search-container">
-          <h3 id="username"></h3>
+          <h3 id="username"><%= username %></h3>
           <input type="text" class="form-control" id="filter-mods" placeholder="Filter by..."/>
           <button class="btn" id="filter-checked">Show Only Running Mods</button>
         </span>
@@ -39,226 +39,24 @@
 
       var username = "<%- username %>";
       var game = "<%- game %>";
-      var array_listBodies = ["", "", "", ""];
-      var array_listData = [[], [], [], []];
-      var array_listNames = ['plugins','modlist','ini','prefsini'];
-      var array_listFullNames = ['Plugins.txt', 'Modlist.txt', '.ini','Prefs.ini'];
-
-      var string_pluginsBody = [];
-      var string_modlistBody = [];
-      var string_iniBody = [];
-      var string_prefsiniBody = [];
-
-      var array_currentIndex = 0;
-
-      var checkedFiltered = false;
-
-      var expandedItem = undefined;
-
-      $(document).ready(function() {
-        $('#modlist').hide();
-        $('#ini').hide();
-        $('#prefsini').hide();
-        $('#filter-checked').hide();
-        $('.row-body').css('max-width', ($('#mod-list').width() - 110)+'px');
-        $('.row-body').css('max-width', ($('#plugins').width() - 110)+'px');
-
-        if(window.location.hash) {
-          hash = window.location.hash.substr(1);
-          $.getJSON("/q/"+username+"/"+hash, function(data) {
-            if(hash == "modlist") {
-              for(var i = data.length-1, j = 0; i >= 0; i--, j++) {
-                array_listData[1][j] = data[i].name;
-              }
-              populateList(1);
-            } else {
-              for(var i = 0; i < data.length; i++) {
-                array_listData[0][i] = data[i].name;
-              }
-            }
-            console.log(array_listData[0]);
-          });
-        } else {
-          populateList('plugins', string_pluginsBody);
-          populateList('modlist', string_modlistBody);
-          populateList('ini', string_iniBody);
-          populateList('prefsini', string_prefsiniBody);
-        }
-
-        function populateList(_filename, _arrayRef) {
-
-          $.getJSON("/q/"+username+"/"+_filename, function(data) {
-
-            for(var i = 0; i < data.length; i++) {
-              _arrayRef[0] += "<li class='";
-
-              if(i%2 == 1) {
-                _arrayRef[0] += " grayed";
-              } else {
-                _arrayRef[0] += " whited";
-              }
-
-              if(_filename == "plugins") {
-                _arrayRef[0] += "'><span class='row-header'>"+(i+1)+".</span><span class='row-body'>"+data[i].name+"</span><span class='row-footer "+data[i].name.substr(-3,3)+"'>"+data[i].name.substr(-3,3)+"</span></li>";
-              } else {
-                _arrayRef[0] += "'><span class='row-header'>"+(i+1)+".</span><span class='row-body'>"+data[i].name+"</span></li>";
-              }
-            }
-            $('#'+_filename).html(_arrayRef[0]);
-          });
-          
-        }
-
-        //$('#username').html(username + "\'s " + array_listFullNames[array_currentIndex]);
-        $('#username').html(username);
-        $('#num-mods').html(array_listData[array_currentIndex].length + " lines");
-
-        /*
-         *  Filter mods by search bar value
-         */
-        function filterMods() {
-          var filterText = $('#filter-mods').val().toLowerCase();
-          var iterator = 0;
-          $('#'+array_listNames[array_currentIndex]+' > li').each(function(){
-            var text = $(this).text().toLowerCase();
-            if(checkedFiltered && array_listFullNames[array_currentIndex] == 'Modlist.txt') {
-              text = text.substr(text.indexOf('.')+1, text.length);
-              if((text.indexOf('+') == 0 || text.indexOf('*') == 0) && text.indexOf(filterText) >= 0) {
-                (iterator%2 == 0) ? $(this)[0].className = 'whited' : $(this)[0].className = 'grayed';
-                iterator++;
-                $(this).slideDown();
-              } else {
-                $(this).slideUp();
-              }
-            }
-            else if(text.indexOf(filterText) >= 0) {
-              (iterator%2 == 0) ? $(this)[0].className = 'whited' : $(this)[0].className = 'grayed';
-              iterator++;
-              $(this).slideDown();
-            } else {
-              $(this).slideUp();
-            }
-          });
-        }
-
-        /*
-         *  Call filterMods when something is typed in filter box
-         */
-        $('#filter-mods').keyup(filterMods);        
-
-        /*
-         *  Resize lists on window resize
-         */
-        $(window).resize(function() {
-          $('.row-body').css('max-width', ($('#plugins').width() - 110)+'px');
-        });
-
-        /*
-         *  Filters Modlist.txt for strings that start with a +
-         */
-        $('#filter-checked').click(function() {
-          if(checkedFiltered) {
-            checkedFiltered = false;
-            $(this).html('Show Only Running Mods');
-            filterMods();
-          } else {
-            var iterator = 0;
-            $('#'+array_listNames[array_currentIndex]+' > li').each(function(){
-              var text = $(this).text().toLowerCase();
-              text = text.substr(text.indexOf('.')+1, text.length);
-              if(text.indexOf('+') == 0 || text.indexOf('*') == 0) {
-                (iterator%2 == 0) ? $(this)[0].className = 'whited' : $(this)[0].className = 'grayed';
-                iterator++;
-                $(this).slideDown();
-              } else {
-                $(this).slideUp();
-              }
-            });
-            checkedFiltered = true;
-            $(this).html('Show All Mods');
-          }
-        });
-
-        /*
-         *  Next 2 handle long file names, blow up on mouseover, return on mouseout
-         */
-        $('#plugins span.row-body').mouseover(function() {
-          if ($(this)[0].scrollWidth >  $(this).innerWidth()) {
-            $(this).height($(this).height()*2);
-            $(this).css('white-space','normal');
-            expandedItem = $(this);
-          }
-        });
-        $('#plugins span.row-body').mouseout(function() {
-          if (expandedItem != undefined && $(this).css('white-space') != 'nowrap') {
-            expandedItem.height($(this).height()/2);
-            expandedItem.css('white-space','nowrap');
-            expandedItem = undefined;
-          }
-        });
-
-        /*
-         *  Handles direct file share, dirty AF, replace it
-         */
-        if(window.location.hash) {
-          hash = window.location.hash.substr(1);
-          $('#'+hash+'Nav').trigger('click');
-        } else {
-          //
-        }
-      });
-      
-      /*
-       *  Handles switching file panes, needs a rewrite for aesthetics
-       */
-      function NavigateLists(_index, button) {
-        if(_index != array_currentIndex) {
-          location.hash = array_listNames[_index];
-          $('.selected').removeClass('selected');
-          $('#'+array_listNames[array_currentIndex]).hide(function() {
-            $('#'+array_listNames[array_currentIndex]+' > li').each(function(){ if(!$(this).is(":visible")) {$(this).show();}});
-            $('#'+array_listNames[_index]).show(function() {
-              $(button).addClass('selected');
-              array_currentIndex = _index;
-              $('#username').html(username);
-              $('#filter-mods').val("");
-            });
-          });
-          if(array_listFullNames[_index] == 'Modlist.txt')
-          {
-            $('#filter-checked').show();
-          } else {
-            $('#filter-checked').hide();
-          }
-          return array_currentIndex;
-        } else {
-          return false;
-        }
-      }
 
       /*
-       *  Utility, reverses a 1D array
+       *  Dat AJAX doh
        */
-      function reverseArray(_array) {
-        var reversedArray = [];
-        for(var i = 0, j = _array.length-1; i < _array.length; i++, j--) {
-          reversedArray[i] = _array[j];
-        }
-        return reversedArray;
-      }
+      $.getScript('/javascripts/profile.js');
 
     </script>
 
     <script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-  ga('create', 'UA-53199250-1', 'auto');
-  ga('send', 'pageview');
+      ga('create', 'UA-53199250-1', 'auto');
+      ga('send', 'pageview');
 
-</script>
+    </script>
         
   </body>
 </html>

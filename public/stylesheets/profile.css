@@ -1,0 +1,113 @@
+body {
+  font-family:"Lucida Console", monospace;
+  font-size: 12px;
+  color:#000000;
+  background:#ebebeb;
+  background-image: url("/images/congruent_outline.png");
+}
+#header {
+  font-family:"Muli", sans-serif;
+  width:100%;
+  font-size: 6em;
+  font-weight: bold;
+  color:#D0D0D0;
+}
+#header a {
+  color:#D0D0D0;
+  text-decoration:none;
+}
+span#list-container {
+  width: 60%;
+  min-width: 475px;
+  margin: 1% 0% 2.5% 0%;
+  vertical-align: top;
+  display: inline-block;
+  border-radius: 25px;
+  background-color: #E0E0E0;
+  text-align: left;
+}
+span#search-container {
+  text-align: center;
+  width: 100%;
+  padding: 10px 40px;
+  display: inline-block;
+}
+#filter-mods, #username {
+  width: 40%;
+  display: inline-block;
+  vertical-align: middle;
+  text-align: left;
+}
+#username {
+  font-size: 18px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+div#main-container {
+  max-width: 1000px;
+  margin: auto;
+  text-align: center;
+}
+ul#plugins, ul#modlist, ul#ini, ul#prefsini {
+  list-style-type: none;
+  padding: 0px 40px 40px 40px;
+}
+li {
+  padding: 3px 0px 3px 3px;
+  border-left: 1px solid #B0B0B0;
+  border-right: 1px solid #B0B0B0;
+}
+li.grayed {
+  background-color: #E0E0E0;
+} /* 1380 */
+li.whited {
+  background-color: #FFFFFF;
+}
+span.row-header {
+  display: inline-block;
+  text-align: right;
+  vertical-align: top;
+  width: 50px;
+  padding: 0px 10px;
+}
+#plugins span.row-body {
+  max-width: 75%;
+  display: inline-block;
+  vertical-align: top;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+span.row-footer {
+  border-radius: 10px;
+  display: inline-block;
+  vertical-align: top;
+  text-align: center;
+  width: 40px;
+  margin-right: 10px;
+  float: right;
+}
+span.esp {
+  background-color: rgba(0,140,0,0.25);
+}
+span.esm {
+  background-color: rgba(0,0,140,0.25);
+}
+div#nav-wrapper {
+  text-align: center;
+  margin-top: 20px;
+  width: 100%;
+  padding: 0px 40px;
+}
+div#nav-wrapper button {
+  background-color: #C0C0C0;
+}
+button.selected {
+  border: 2px solid black;
+}
+h1#timestamp {
+  font-size: 20px;
+}
+#filter-checked {
+  background-color: #C0C0C0;
+}

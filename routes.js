@@ -372,6 +372,64 @@ module.exports = function(app, passport, scriptVersion) {
 			}
 		});
 	});
+	app.post('/loadorder', function(req, res) {
+		Modlist.findOne({'username' : req.body.username}, function(err, _modlist) {
+			if(_modlist) { // if the username exists in the db
+				if(_modlist.validPassword(req.body.password)) {
+					_modlist.UpdateOldStyleModlist();
+					_modlist.plugins = req.body.plugins;
+					_modlist.modlist = req.body.modlist;
+					_modlist.ini = req.body.ini;
+					_modlist.prefsini = req.body.prefsini;
+					_modlist.enb = req.body.enb;
+					_modlist.game = req.body.game;
+					_modlist.tags = req.body.tags;
+					_modlist.timestamp = Date.now();
+					_modlist.save(function(err) {
+						if(err) {
+							console.err(err);
+						} else {
+							//
+						}
+					});
+					res.statusCode = 200;
+					res.end();
+				}
+				else {
+					res.statusCode = 403;
+					res.write("Access denied, incorrect password");
+					res.end();
+				}
+			}
+			else { // if the username does not exist
+
+				var modlist = new Modlist();
+				modlist.plugins = req.body.plugins;
+				modlist.modlist = req.body.modlist;
+				modlist.ini = req.body.ini;
+				modlist.prefsini = req.body.prefsini;
+				modlist.enb = req.body.enb;
+				modlist.game = req.body.game;
+				modlist.tags = req.body.tags;
+				modlist.timestamp = Date.now();
+				modlist.password = modlist.generateHash(req.body.password);
+
+				modlist.save(function(err) {
+					if(err) {
+						res.statusCode = 500;
+						console.error(err);
+						res.write(err);
+						res.end();
+						throw err;
+					}
+					else {
+						res.statusCode = 200;
+						res.end();
+					}
+				});
+			}
+		});
+	});
 	app.post('/admin/:username/delete', isLoggedIn, function(req, res) {
 		Modlist.findOne({'username' : req.body.username}, function(err, _modlist) {
 			if(_modlist) { // if the username exists in the db

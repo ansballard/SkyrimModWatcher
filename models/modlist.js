@@ -4,10 +4,10 @@ var bcrypt = require('bcrypt-nodejs');
 var Schema = mongoose.Schema;
 
 var modlistSchema = new Schema({
-	list: String,
-	modlisttxt: String,
-	skyrimini: String,
-	skyrimprefsini: String,
+	list: String, // deprecated
+	modlisttxt: String, // deprecated
+	skyrimini: String, // deprecated
+	skyrimprefsini: String, // deprecated
 	username: String,
 	password: String,
 	plugins: [],
@@ -16,6 +16,7 @@ var modlistSchema = new Schema({
 	prefsini: [],
 	tags: [String],
 	enb: String,
+	game: String,
 	timestamp: Date
 }, {
 	collection: 'modlist'
@@ -45,10 +46,10 @@ modlistSchema.methods.UpdateOldStyleModlist = function() {
 			tempNew[i] = {"name":tempOld[i]};
 		}
 		this.plugins = tempNew;
+		this.list = "";
 		save = true;
 	}
 	if(this.modlist.length < 1) {
-		console.log('no modlist');
 		tempOld = this.modlisttxt.split('\",\"');
 		tempOld[0] = tempOld[0].substring(2);
 		tempOld[tempOld.length-1] = tempOld[tempOld.length-1].substring(0,tempOld[tempOld.length-1].length-2);
@@ -57,6 +58,7 @@ modlistSchema.methods.UpdateOldStyleModlist = function() {
 			tempNew[i] = {"name":tempOld[i]};
 		}
 		this.modlist = tempNew;
+		this.modlisttxt = "";
 		save = true;
 	}
 	if(this.ini.length < 1) {
@@ -68,6 +70,7 @@ modlistSchema.methods.UpdateOldStyleModlist = function() {
 			tempNew[i] = {"name":tempOld[i]};
 		}
 		this.ini = tempNew;
+		this.skyrimini = "";
 		save = true;
 	}
 	if(this.prefsini.length < 1) {
@@ -79,6 +82,7 @@ modlistSchema.methods.UpdateOldStyleModlist = function() {
 			tempNew[i] = {"name":tempOld[i]};
 		}
 		this.prefsini = tempNew;
+		this.skyrimprefsini = "";
 		save = true;
 	}
 	if(this.timestamp == null) {
