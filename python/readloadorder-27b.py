@@ -40,7 +40,7 @@ class Application(Frame):
 				infile = open(self.MOpath+"plugins.txt", 'r')
 			self.plugins = infile.read()
 			self.plugins = string.replace(self.plugins,"\\","\\\\")
-			self.plugins = string.replace(self.plugins,"\"","\'").split('\n')
+			self.plugins = string.replace(self.plugins,"\"","\\\"").split('\n')
 			infile.close()
 		except IOError as e:
 			print e.errno
@@ -55,7 +55,7 @@ class Application(Frame):
 				infile = open(self.MOpath+"modlist.txt", 'r')
 				self.modlist = infile.read()
 				self.modlist = string.replace(self.modlist,"\\","\\\\")
-				self.modlist = string.replace(self.modlist,"\"","\'").split('\n')
+				self.modlist = string.replace(self.modlist,"\"","\\\"").split('\n')
 				infile.close()
 		except IOError as e:
 			raw_input("Error reading modlist.txt. Is "+self.MOpath+" the correct path?")
@@ -69,7 +69,7 @@ class Application(Frame):
 				infile = open(self.MOpath+self.game+".ini", 'r')
 			self.ini = infile.read()
 			self.ini = string.replace(self.ini,"\\","\\\\")
-			self.ini = string.replace(self.ini,"\"","\'").split('\n')
+			self.ini = string.replace(self.ini,"\"","\\\"").split('\n')
 			infile.close()
 		except IOError as e:
 			raw_input("Error reading "+self.game+".ini. Is "+self.MOpath+" the correct path?")
@@ -83,7 +83,7 @@ class Application(Frame):
 				infile = open(self.MOpath+self.game+"prefs.ini", 'r')
 			self.prefsini = infile.read()
 			self.prefsini = string.replace(self.prefsini,"\\","\\\\")
-			self.prefsini = string.replace(self.prefsini,"\"","\'").split('\n')
+			self.prefsini = string.replace(self.prefsini,"\"","\\\"").split('\n')
 			infile.close()
 		except IOError as e:
 			raw_input("Error reading "+self.game+"prefs.ini. Is "+self.MOpath+" the correct path?")
@@ -94,7 +94,7 @@ class Application(Frame):
 		pluginsToSend = "["
 		for i in self.plugins:
 			if i != "" and i[0] != "#":
-				pluginsToSend = pluginsToSend + "\"" + i + "\","
+				pluginsToSend = pluginsToSend + "{\"name\":\"" + i + "\"},"
 		pluginsToSend = pluginsToSend[:-1]
 		pluginsToSend += "]"
 
@@ -103,7 +103,7 @@ class Application(Frame):
 			modlistToSend = "["
 			for i in self.modlist:
 				if i != "" and i[0] != "#":
-					modlistToSend = modlistToSend + "\"" + i + "\","
+					modlistToSend = modlistToSend + "{\"name\":\"" + i + "\"},"
 			modlistToSend = modlistToSend[:-1]
 			modlistToSend += "]"
 		else:
@@ -114,7 +114,7 @@ class Application(Frame):
 			iniToSend = "["
 			for i in self.ini:
 				if i != "" and i[0] != "#":
-					iniToSend = iniToSend + "\"" + i + "\","
+					iniToSend = iniToSend + "{\"name\":\"" + i + "\"},"
 			iniToSend = iniToSend[:-1]
 			iniToSend += "]"
 		else:
@@ -125,14 +125,14 @@ class Application(Frame):
 			prefsiniToSend = "["
 			for i in self.prefsini:
 				if i != "" and i[0] != "#":
-					prefsiniToSend = prefsiniToSend + "\"" + i + "\","
+					prefsiniToSend = prefsiniToSend + "{\"name\":\"" + i + "\"},"
 			prefsiniToSend = prefsiniToSend[:-1]
 			prefsiniToSend += "]"
 		else:
 			prefsiniToSend = "[]"
 
 		#Build full JSON, including all files, username, password
-		fullParams = "{\"plugins\": "+pluginsToSend+",\"modlist\": "+modlistToSend+",\""+self.game+"ini\": "+iniToSend+",\""+self.game+"prefsini\": "+prefsiniToSend+", \"username\": \""+self.username+"\", \"password\": \""+self.password+"\",\"game\":\""+self.game+"\", \"enb\": \"\", \"tags\": []}"
+		fullParams = "{\"plugins\": "+pluginsToSend+",\"modlist\": "+modlistToSend+",\"ini\": "+iniToSend+",\"prefsini\": "+prefsiniToSend+", \"username\": \""+self.username+"\", \"password\": \""+self.password+"\",\"game\":\""+self.game+"\", \"enb\": \"\", \"tags\": []}"
 		return fullParams
 
 	def postLoadOrder(self, fullParams):
@@ -339,7 +339,7 @@ class Application(Frame):
 		self.ini = ""
 		self.prefsini = ""
 		
-		self.game = "skyrim"
+		self.game = "skyrim" # change via dropdown to skyrim, fallout and oblivion
 		self.version = "0.26b"
 		self.url = "http://localhost:3000"
 

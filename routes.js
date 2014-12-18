@@ -187,7 +187,7 @@ module.exports = function(app, passport, scriptVersion) {
 					username: _list.username,
 					timestamp: (_list.timestamp.getMonth()+1) + "/" + _list.timestamp.getDate() + "/" + _list.timestamp.getFullYear(),
 					enb: _list.enb,
-					game: "skyrim"
+					game: _list.game
 				});
 			}
 		});
@@ -412,6 +412,7 @@ module.exports = function(app, passport, scriptVersion) {
 				modlist.game = req.body.game;
 				modlist.tags = req.body.tags;
 				modlist.timestamp = Date.now();
+				modlist.username = req.body.username;
 				modlist.password = modlist.generateHash(req.body.password);
 
 				modlist.save(function(err) {

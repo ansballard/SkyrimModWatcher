@@ -170,6 +170,7 @@ function filterMods() {
  */
 function populateList(_filename, _arrayRef, _callback) {
   $.getJSON("/q/"+username+"/"+_filename, function(data) {
+    console.log(data);
     _arrayRef[0] = "";
     for(var i = 0, j = data.length-1; i < data.length; i++, j--) {
       _arrayRef[0] += "<li class='";
