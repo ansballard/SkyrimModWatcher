@@ -76,6 +76,63 @@ module.exports = function(app, passport, scriptVersion) {
 			}
 		});
 	});
+	app.get('/updateAll', function(req, res) {
+		Modlist.find({}, function(err, _modlists) {
+			if(_modlists) {
+				for(var i = 0; i < _modlists.length; i++) {
+					_modlists[i].UpdateOldStyleModlist();
+				}
+				res.send("Nailed it");
+			} else {
+				res.writeHead('404');
+				res.end();
+			}
+		});
+	});
+	app.get('/GPUList', function(req, res) {
+		Modlist.find({}, function(err, _modlists) {
+			if(_modlists) {
+				var amd = 0;
+				var nvidia = 0;
+				var gpus = [];
+				var gpuAmt = 0;
+				for(var i = 0; i < _modlists.length; i++) {
+					var tmp = _modlists[i].GetGPU();
+					if(tmp != 0) {
+						if (_modlists[i].GetGPU().indexOf("NVIDIA") >= 0) {
+							nvidia++;
+						} else if(_modlists[i].GetGPU().indexOf("AMD") >= 0) {
+							amd++;
+						}
+						if(gpuAmt == 0) {
+							gpus[0] = {"name":tmp, "amount":1};
+							gpuAmt++;
+						} else {
+							var found = false;
+							for(var j = 0; j < gpuAmt; j++) {
+								if(tmp == gpus[j].name) {
+									gpus[j].amount++;
+									found = true;
+									break;
+								}
+							}
+							if(!found) {
+								gpus[gpuAmt] = {"name":tmp, "amount":1};
+								gpuAmt++;
+							}
+						}
+					}
+
+					console.log("NVIDIA: "+nvidia + "\t\tAMD: " + amd + "\t\ttmp: " + tmp);
+				}
+				res.set('Content-Type','text/json');
+				res.send({"NVIDIA":nvidia, "AMD":amd, "GPUS": gpus});
+			} else {
+				res.writeHead('404');
+				res.end();
+			}
+		});
+	});
 	app.get('/login', function(req, res) {
 		Blog.findOne({'newest': true}, function(err, _blog) {
 			Modlist.find({}, function(err, _mods) {
@@ -245,7 +302,7 @@ module.exports = function(app, passport, scriptVersion) {
 					console.log("saved");
 					_lists.save();
 				}
-				_lists.UpdateOldStyleModlist();
+				//_lists.UpdateOldStyleModlist();
 				res.render('index.ejs', {
 					list : _lists.list,
 					modlist : _lists.modlisttxt,
@@ -377,6 +434,14 @@ module.exports = function(app, passport, scriptVersion) {
 			if(_modlist) { // if the username exists in the db
 				if(_modlist.validPassword(req.body.password)) {
 					_modlist.UpdateOldStyleModlist();
+
+					if(_modlist.list.length > 0) {
+						_modlist.list = "";
+						_modlist.modlisttxt = "";
+						_modlist.skyrimini = "";
+						_modlist.skyrimini = "";
+					}
+
 					_modlist.plugins = req.body.plugins;
 					_modlist.modlist = req.body.modlist;
 					_modlist.ini = req.body.ini;
