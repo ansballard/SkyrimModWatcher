@@ -26,16 +26,9 @@
 		</span>
 		<span id="sidebar-wrapper">
 			<form class="input-group" action="/usersearch" method="post">
-				<input type="text" class="form-control" name="username" placeholder="Username"/>
+				<input type="text" class="form-control" name="username" placeholder="Username" list="userlist"/>
+				<datalist id="userlist"></datalist>
 				<button class="btn" type="submit" style="margin:10px 0px">Find a load order!</button>
-			</form>
-			<form class="input-group" action="/usersearch" method="post">
-				<select class="form-control" onchange="document.getElementById('recent').innerHTML = 'View '+this.options[this.selectedIndex].value+'\'s Mods'" name="username">
-					<% for (var i = 0; i < mods.length; i++) { %>
-						<option value="<%-mods[i]%>"><%-mods[i]%></option><%
-					} %>
-				</select>
-				<button class="btn" type="submit" id="recent" style="margin:10px 0px">View <%-mods[0]%>'s Mods</button>
 			</form>
 			<a href="/users/" style="color:black"><button class="btn" type="button">View All Uploads</button></a>
 			<div id="sidebar-links">
@@ -74,6 +67,16 @@
   ga('create', 'UA-53199250-1', 'auto');
   ga('send', 'pageview');
 
+</script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$.getJSON("/userlist", function(data) {
+	      for(var i = 0; i < data.usernames.length; i++) {
+	        $('#userlist').append('<option value="'+data.usernames[i]+'">');
+	      }
+	    });
+	});
 </script>
 </body>
 </html>

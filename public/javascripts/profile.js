@@ -169,7 +169,7 @@ function filterMods() {
  *  _callback is for NavigateLists to switch between files
  */
 function populateList(_filename, _arrayRef, _callback) {
-  $.getJSON("/q/"+username+"/"+_filename, function(data) {
+  $.getJSON("/api/"+username+"/"+_filename, function(data) {
     console.log(data);
     _arrayRef[0] = "";
     for(var i = 0, j = data.length-1; i < data.length; i++, j--) {
