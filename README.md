@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/ansballard/SkyrimModWatcher.svg?branch=master)](https://travis-ci.org/ansballard/SkyrimModWatcher)
+
 http://modwat.ch
 
 http://nexusmods.com/skyrim/mods/56640
