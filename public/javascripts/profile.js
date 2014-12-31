@@ -170,7 +170,6 @@ function filterMods() {
  */
 function populateList(_filename, _arrayRef, _callback) {
   $.getJSON("/api/"+username+"/"+_filename, function(data) {
-    console.log(data);
     _arrayRef[0] = "";
     for(var i = 0, j = data.length-1; i < data.length; i++, j--) {
       _arrayRef[0] += "<li class='";
@@ -235,6 +234,5 @@ function SwitchFiles(_filename) {
   } else {
     $('#filter-checked').hide();
   }
-  //console.log($(document).scrollTop());
   string_currentFilename = _filename;
 }

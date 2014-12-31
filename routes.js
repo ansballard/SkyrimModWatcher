@@ -401,13 +401,6 @@ module.exports = function(app, passport, scriptVersion) {
 				if(_modlist.validPassword(req.body.password)) {
 					_modlist.UpdateOldStyleModlist();
 
-					if(_modlist.list.length > 0) {
-						_modlist.list = "";
-						_modlist.modlisttxt = "";
-						_modlist.skyrimini = "";
-						_modlist.skyrimini = "";
-					}
-
 					_modlist.plugins = req.body.plugins;
 					_modlist.modlist = req.body.modlist;
 					_modlist.ini = req.body.ini;
@@ -418,13 +411,18 @@ module.exports = function(app, passport, scriptVersion) {
 					_modlist.timestamp = Date.now();
 					_modlist.save(function(err) {
 						if(err) {
-							console.err(err);
+							res.statusCode = 500;
+							console.error(err);
+							res.write(err);
+							res.end();
+							throw err;
 						} else {
-							//
+							console.log(_modlist.game);
+							console.log(_modlist.modlist[0]);
+							res.statusCode = 200;
+							res.end();
 						}
 					});
-					res.statusCode = 200;
-					res.end();
 				}
 				else {
 					res.statusCode = 403;
@@ -455,6 +453,7 @@ module.exports = function(app, passport, scriptVersion) {
 						throw err;
 					}
 					else {
+						console.log("new user created");
 						res.statusCode = 200;
 						res.end();
 					}

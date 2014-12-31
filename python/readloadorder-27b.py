@@ -25,6 +25,8 @@ class Application(Frame):
 			errorCode = e.code
 			errorText = e.read()
 			print "Error Message: ",errorText
+		except urllib2.URLError, e:
+			self.vText.set("HTTP error, check your connection and restart")
 
 	def populateAuth(self):
 		authfile = open('./auth.dat', 'w')
@@ -32,6 +34,7 @@ class Application(Frame):
 		authfile.close()
 
 	def readFiles(self):
+		filesRead = 1
 		#Read plugins.txt
 		try:
 			if self.MOpath == 'default':
@@ -44,7 +47,7 @@ class Application(Frame):
 			infile.close()
 		except IOError as e:
 			print e.errno
-			raw_input("Error reading plugins.txt. Is "+self.MOpath+" the correct path?")
+			filesRead = 0
 			exit()
 
 		#Read modlist.txt
@@ -58,36 +61,39 @@ class Application(Frame):
 				self.modlist = string.replace(self.modlist,"\"","\\\"").split('\n')
 				infile.close()
 		except IOError as e:
-			raw_input("Error reading modlist.txt. Is "+self.MOpath+" the correct path?")
+			filesRead = 0
 			self.modlist = ""
 
 		#Read 'game'.ini
 		try:
 			if self.MOpath == 'default':
-				infile = open(self.nexusInisPath+self.game+".ini", 'r')
+				infile = open(self.nexusInisPath+self.game.get()+".ini", 'r')
 			else:
-				infile = open(self.MOpath+self.game+".ini", 'r')
+				infile = open(self.MOpath+self.game.get()+".ini", 'r')
 			self.ini = infile.read()
 			self.ini = string.replace(self.ini,"\\","\\\\")
 			self.ini = string.replace(self.ini,"\"","\\\"").split('\n')
 			infile.close()
 		except IOError as e:
-			raw_input("Error reading "+self.game+".ini. Is "+self.MOpath+" the correct path?")
+			filesRead = 0
 			self.ini = ""
 
 		#Read 'game'prefs.ini
 		try:
 			if self.MOpath == 'default':
-				infile = open(self.nexusInisPath+self.game+".ini", 'r')
+				infile = open(self.nexusInisPath+self.game.get()+".ini", 'r')
 			else:
-				infile = open(self.MOpath+self.game+"prefs.ini", 'r')
+				infile = open(self.MOpath+self.game.get()+"prefs.ini", 'r')
 			self.prefsini = infile.read()
 			self.prefsini = string.replace(self.prefsini,"\\","\\\\")
 			self.prefsini = string.replace(self.prefsini,"\"","\\\"").split('\n')
 			infile.close()
 		except IOError as e:
-			raw_input("Error reading "+self.game+"prefs.ini. Is "+self.MOpath+" the correct path?")
+			filesRead = 0
 			self.prefsini = ""
+
+		if(filesRead == 0):
+			self.vText.set('One or more files could not be read')
 
 	def buildJSON(self):
 		#Build plugins.txt JSON
@@ -132,28 +138,29 @@ class Application(Frame):
 			prefsiniToSend = "[]"
 
 		#Build full JSON, including all files, username, password
-		fullParams = "{\"plugins\": "+pluginsToSend+",\"modlist\": "+modlistToSend+",\"ini\": "+iniToSend+",\"prefsini\": "+prefsiniToSend+", \"username\": \""+self.username+"\", \"password\": \""+self.password+"\",\"game\":\""+self.game+"\", \"enb\": \"\", \"tags\": []}"
+		fullParams = "{\"plugins\": "+pluginsToSend+",\"modlist\": "+modlistToSend+",\"ini\": "+iniToSend+",\"prefsini\": "+prefsiniToSend+", \"username\": \""+self.username+"\", \"password\": \""+self.password+"\",\"game\":\""+self.game.get()+"\", \"enb\": \"\", \"tags\": []}"
 		return fullParams
 
 	def postLoadOrder(self, fullParams):
 		try:
 			#Fancy urllib2 things
 			req = urllib2.Request(self.url+"/loadorder", fullParams, {'Content-Type':'application/json'})
-			print "Uploading to "+self.url+"/" + self.username + "..."
 			f = urllib2.urlopen(req)
 			response = f.getcode()
 			f.close()
 
 			#If response is OK, print happy message, else show error code and press enter to confirm
 			if(response == 200):
-				print "Your load order was successfully uploaded!"
+				self.vText.set("Your load order was successfully uploaded!")
 			else:
-				print "Something went wrong!\nError Code:",response
+				self.vText.set("Something went wrong!\nError Code: " + response)
 		except urllib2.HTTPError, e:
 			errorCode = e.code
 			errorText = e.read()
 			print "Error during upload. Error Code: ",errorCode
 			print "Error Message: ",errorText
+		except urllib2.URLError, e:
+			self.vText.set("HTTP error, check your connection and restart")
 
 	def setUserPassPath(self):
 		self.unTextbox.delete(0,END)
@@ -277,28 +284,28 @@ class Application(Frame):
 
 		self.version_frame.pack(side="top", fill="x", expand=False)
 
-		self.vLabel = Label(self.version_frame, textvariable=self.vText, width=40)
+		self.vLabel = Label(self.version_frame, textvariable=self.vText, width=60)
 		self.vLabel.pack({"side":"left"})
 
 		self.unLabel = Label(self.first_quarter, width=12)
 		self.unLabel["text"] = "Username"
 		self.unLabel.pack({"side":"left"})
 
-		self.unTextbox = Entry(self.first_quarter, width=40)
+		self.unTextbox = Entry(self.first_quarter, width=60)
 		self.unTextbox.pack({"side":"left"})
 
 		self.pwLabel = Label(self.second_quarter, width=12)
 		self.pwLabel["text"] = "Password"
 		self.pwLabel.pack({"side":"left"})
 
-		self.pwTextbox = Entry(self.second_quarter, width=40)
+		self.pwTextbox = Entry(self.second_quarter, width=60)
 		self.pwTextbox.pack({"side":"left"})
 
 		self.fpLabel = Label(self.third_quarter, width=12)
 		self.fpLabel["text"] = "Plugins.txt"
 		self.fpLabel.pack({"side":"left"})
 
-		self.fpTextbox = Entry(self.third_quarter, width=40)
+		self.fpTextbox = Entry(self.third_quarter, width=60)
 		self.fpTextbox.insert(0,self.MOpath)
 		self.fpTextbox.pack({"side":"left"})
 
@@ -317,10 +324,15 @@ class Application(Frame):
 		self.cpass["command"] = self.changePass
 		self.cpass.pack({"side": "left"})
 
+		self.gDrop = OptionMenu(self.fourth_quarter, self.game, *self.gameList)
+		self.gDrop.pack({"side": "left"})
+
 		self.done = Button(self.fourth_quarter, width=10)
 		self.done["text"] = "Upload!"
 		self.done["command"] = self.upload
 		self.done.pack({"side": "left"})
+
+
 
 	def __init__(self, master=None):
 		df = shell.SHGetDesktopFolder()
@@ -328,18 +340,20 @@ class Application(Frame):
 		self.mydocs = shell.SHGetPathFromIDList(pidl)
 		self.username = ""
 		self.password = ""
+		self.gameList = ['skyrim', 'fallout', 'oblivion', 'Morrowind']
+		self.game = StringVar()
+		self.game.set('skyrim')
 		self.vText = StringVar()
 		self.home = expanduser("~")
 		self.MOpath = "C:/Program Files/Mod Organizer"
-		self.pluginsPath = self.home+"/AppData/Local/Skyrim/" # plugins.txt
-		self.nexusInisPath = self.mydocs+"/my games/skyrim/" # skyrim.ini, skyrimprefs.ini
+		self.pluginsPath = self.home+"/AppData/Local/"+self.game.get()+"/" # plugins.txt
+		self.nexusInisPath = self.mydocs+"/my games/"+self.game.get()+"/" # ini, prefsini
 
 		self.plugins = ""
 		self.modlist = ""
 		self.ini = ""
 		self.prefsini = ""
 		
-		self.game = "skyrim" # change via dropdown to skyrim, fallout and oblivion
 		self.version = "0.26b"
 		self.url = "http://localhost:3000"
 

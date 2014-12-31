@@ -50,51 +50,63 @@ modlistSchema.methods.UpdateOldStyleModlist = function() {
 		save = true;
 	}
 	if(this.modlist.length < 1 && this.modlisttxt != "[]") {
-		tempOld = this.modlisttxt.split('\",\"');
-		tempOld[0] = tempOld[0].substring(2);
-		tempOld[tempOld.length-1] = tempOld[tempOld.length-1].substring(0,tempOld[tempOld.length-1].length-2);
-		tempNew = [];
-		for(var i = 0; i < tempOld.length; i++) {
-			tempNew[i] = {"name":tempOld[i]};
-		}
-		if(tempNew[0].name == "") {
+		if(this.modlisttxt == undefined) {
 			this.modlist = [];
 		} else {
-			this.modlist = tempNew;
+			tempOld = this.modlisttxt.split('\",\"');
+			tempOld[0] = tempOld[0].substring(2);
+			tempOld[tempOld.length-1] = tempOld[tempOld.length-1].substring(0,tempOld[tempOld.length-1].length-2);
+			tempNew = [];
+			for(var i = 0; i < tempOld.length; i++) {
+				tempNew[i] = {"name":tempOld[i]};
+			}
+			if(tempNew[0].name == "") {
+				this.modlist = [];
+			} else {
+				this.modlist = tempNew;
+			}
+			this.modlisttxt = "";
 		}
-		this.modlisttxt = "";
 		save = true;
 	}
 	if(this.ini.length < 1 && this.skyrimini != "[]") {
-		tempOld = this.skyrimini.split('\",\"');
-		tempOld[0] = tempOld[0].substring(2);
-		tempOld[tempOld.length-1] = tempOld[tempOld.length-1].substring(0,tempOld[tempOld.length-1].length-2);
-		tempNew = [];
-		for(var i = 0; i < tempOld.length; i++) {
-			tempNew[i] = {"name":tempOld[i]};
-		}
-		if(tempNew[0].name == "") {
+		if(this.skyrimini == undefined) {
 			this.ini = [];
 		} else {
-			this.ini = tempNew;
+			tempOld = this.skyrimini.split('\",\"');
+			tempOld[0] = tempOld[0].substring(2);
+			tempOld[tempOld.length-1] = tempOld[tempOld.length-1].substring(0,tempOld[tempOld.length-1].length-2);
+			tempNew = [];
+			for(var i = 0; i < tempOld.length; i++) {
+				tempNew[i] = {"name":tempOld[i]};
+			}
+			if(tempNew[0].name == "") {
+				this.ini = [];
+			} else {
+				this.ini = tempNew;
+			}
+			this.skyrimini = "";
 		}
-		this.skyrimini = "";
 		save = true;
 	}
 	if(this.prefsini.length < 1 && this.skyrimprefsini != "[]") {
-		tempOld = this.skyrimprefsini.split('\",\"');
-		tempOld[0] = tempOld[0].substring(2);
-		tempOld[tempOld.length-1] = tempOld[tempOld.length-1].substring(0,tempOld[tempOld.length-1].length-2);
-		tempNew = [];
-		for(var i = 0; i < tempOld.length; i++) {
-			tempNew[i] = {"name":tempOld[i]};
-		}
-		if(tempNew[0].name == "") {
+		if(this.skyrimprefsini == undefined) {
 			this.prefsini = [];
 		} else {
-			this.prefsini = tempNew;
+			tempOld = this.skyrimprefsini.split('\",\"');
+			tempOld[0] = tempOld[0].substring(2);
+			tempOld[tempOld.length-1] = tempOld[tempOld.length-1].substring(0,tempOld[tempOld.length-1].length-2);
+			tempNew = [];
+			for(var i = 0; i < tempOld.length; i++) {
+				tempNew[i] = {"name":tempOld[i]};
+			}
+			if(tempNew[0].name == "") {
+				this.prefsini = [];
+			} else {
+				this.prefsini = tempNew;
+			}
+			this.skyrimprefsini = "";
 		}
-		this.skyrimprefsini = "";
 		save = true;
 	}
 	if(this.timestamp == null) {
