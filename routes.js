@@ -2,22 +2,26 @@ module.exports = function(app, passport, scriptVersion) {
 
 	app.get('/', function(req, res) {
 		Blog.findOne({'newest': true}, function(err, _blog) {
-			Modlist.find({}, function(err, _mods) {
-				var mods_ = [];
-				for(var i = _mods.length-1, j = 0; i > _mods.length-6; i--, j++) {
-					mods_[j] = _mods[i].username;
-				}
-				res.render('home.ejs', {
-					title : _blog.title,
-					author: _blog.author,
-					thumbnailurl: _blog.thumbnail,
-					date: (_blog.date.getMonth()+1)+"/"+_blog.date.getDate()+"/"+_blog.date.getFullYear(),
-					content: _blog.body,
-					login: false,
-					admin: false,
-					mods: mods_
-				});
+			res.render('home.ejs', {
+				title : _blog.title,
+				author: _blog.author,
+				thumbnailurl: _blog.thumbnail,
+				date: (_blog.date.getMonth()+1)+"/"+_blog.date.getDate()+"/"+_blog.date.getFullYear(),
+				content: _blog.body,
+				login: false,
+				admin: false
 			});
+		});
+	});
+	app.get('/api/blog/newest', function(req, res) {
+		Blog.findOne({'newest': true}, function(err, _blog) {
+			if(_blog) {
+				res.set('Content-Type','text/json');
+				res.send(_blog);
+			} else {
+				res.writeHead(404);
+				res.end();
+			}
 		});
 	});
 	app.get('/admin', isLoggedIn, function(req, res) {

@@ -40,7 +40,7 @@ $(document).ready(function() {
    */
   if(window.location.hash) {
     hash = window.location.hash.substr(1);
-    $.getJSON("/q/"+username+"/"+hash, function(data) {
+    $.getJSON("/api/"+username+"/"+hash, function(data) {
       if(hash == "plugins") {
         populateList('plugins', string_pluginsBody);
         $('#plugins').show();
