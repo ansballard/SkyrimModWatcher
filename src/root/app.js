@@ -5,7 +5,6 @@
 
 var express = require('express');
 var app = express();
-var routes = require('./routes');
 var http = require('http');
 var path = require('path');
 var passport = require('passport');
@@ -17,7 +16,7 @@ mongoose.connect(configDB);
 
 var Schema = mongoose.Schema;
 
-require('./passport')(passport);
+require('./passport.min.js')(passport);
 
 // all environments
 app.configure(function() {

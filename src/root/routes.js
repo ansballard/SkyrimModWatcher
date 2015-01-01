@@ -482,9 +482,8 @@ module.exports = function(app, passport, scriptVersion) {
 	});
 };
 
-var Modlist = require('./models/modlist');
-var Blog = require('./models/blog');
-var Admin = require('./models/admin');
+var Modlist = require('./models/modlist.min.js');
+var Blog = require('./models/blog.min.js');
 
 function isLoggedIn(req, res, next) {
 
