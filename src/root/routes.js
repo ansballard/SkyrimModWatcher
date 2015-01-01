@@ -82,7 +82,7 @@ module.exports = function(app, passport, scriptVersion) {
 			}
 		});
 	});
-	app.get('/updateAll', function(req, res) {
+	/*app.get('/updateAll', function(req, res) {
 		Modlist.find({}, function(err, _modlists) {
 			if(_modlists) {
 				for(var i = 0; i < _modlists.length; i++) {
@@ -94,8 +94,8 @@ module.exports = function(app, passport, scriptVersion) {
 				res.end();
 			}
 		});
-	});
-	app.get('/GPUList', function(req, res) {
+	});*/
+	/*app.get('/GPUList', function(req, res) {
 		Modlist.find({}, function(err, _modlists) {
 			if(_modlists) {
 				var amd = 0;
@@ -138,7 +138,7 @@ module.exports = function(app, passport, scriptVersion) {
 				res.end();
 			}
 		});
-	});
+	});*/
 	app.get('/login', function(req, res) {
 		Blog.findOne({'newest': true}, function(err, _blog) {
 			Modlist.find({}, function(err, _mods) {
