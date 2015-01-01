@@ -5,24 +5,18 @@
 
 var express = require('express');
 var app = express();
-var routes = require('./routes');
 var http = require('http');
 var path = require('path');
-var fs = require('fs');
 var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
 var bcrypt = require('bcrypt-nodejs');
 var mongoose = require('mongoose/'); 
 
-//var Modlist = require('./models/modlist');
-//var Blog = require('./models/blog');
-
-var configDB = require('./config/db.js').url;
+var configDB = require('./config/db.js').dev3url;
 mongoose.connect(configDB);
 
 var Schema = mongoose.Schema;
 
-require('./passport')(passport);
+require('./passport.min.js')(passport);
 
 // all environments
 app.configure(function() {
@@ -50,7 +44,7 @@ app.configure(function() {
 
 var scriptVersion = "0.26b";
 
-require('./routes.js') (app, passport, scriptVersion);
+require('./routes.min.js') (app, passport, scriptVersion);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

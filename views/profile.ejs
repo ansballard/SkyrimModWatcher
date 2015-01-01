@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link href='http://fonts.googleapis.com/css?family=Muli' rel='stylesheet' type='text/css'>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=475, initial-scale=1">
+    <link href="/stylesheets/bootstrap.min.css" rel="stylesheet">
+    <link href="/stylesheets/profile.min.css" rel="stylesheet">
+    <title><%= username %>'s Load Order</title>
+  </head>
+  <body>
+    <div id="main-container">
+      <h1 id="header"><a href="/">MODWAT.CH</a></h1>
+      <span id="list-container">
+        <div id="nav-wrapper">
+          <h1 id="timestamp">Updated: <%-timestamp%></h1>
+          <span><button class="btn" id="pluginsNav" onclick="NavigateLists('plugins')">Plugins</button></span>
+          <span><button class="btn" id="modlistNav" onclick="NavigateLists('modlist')">Modlist</button></span>
+          <span><button class="btn" id="iniNav" onclick="NavigateLists('ini')"><%= game.charAt(0).toUpperCase() + game.substring(1) %></button></span>
+          <span><button class="btn" id="prefsiniNav" onclick="NavigateLists('prefsini')"><%= game.charAt(0).toUpperCase() + game.substring(1) %>Prefs</button></span>
+        </div>
+        <span id="search-container">
+          <h3 id="username"><%= username %></h3>
+          <input type="text" class="form-control" id="filter-mods" placeholder="Filter by..."/>
+          <button class="btn" id="filter-checked">Show Only Running Mods</button>
+        </span>
+        <ul class="" id="plugins"></ul>
+        <ul class="" id="modlist"></ul>
+        <ul class="" id="ini"></ul>
+        <ul class="" id="prefsini"></ul>
+      </span>
+      
+    </div>
+
+    <script src="/javascripts/jquery.min.js"></script>
+    <script src="/javascripts/bootstrap.min.js"></script>
+    <script type="text/javascript">
+
+      var username = "<%- username %>";
+      var game = "<%- game %>";
+
+      /*
+       *  Dat AJAX doh
+       */
+      $.getScript('/javascripts/profile.min.js');
+
+    </script>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-53199250-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+        
+  </body>
+</html>
