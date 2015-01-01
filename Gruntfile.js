@@ -41,6 +41,19 @@ module.exports = function(grunt) {
         }
       }
     },
+    imagemin: {
+      dist: {
+        options: {
+          optimizationLevel: 3
+        },
+        files: {
+          'public/images/FNV_NEXUS_small.png': 'src/images/FNV_NEXUS_small.png',
+          'public/images/congruent_outline.png': 'src/images/congruent_outline.png',
+          'public/images/GitHub-Logo_invert.png': 'src/images/GitHub-Logo_invert.png',
+          'public/images/ajax-loader.gif': 'src/images/ajax-loader.gif'
+        }
+      }
+    },
     watch: {
       javascript: {
         files: ['src/javascripts/*.js'],
@@ -63,6 +76,7 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
+  grunt.loadNpmTasks('grunt-contrib-imagemin');
   grunt.loadNpmTasks('grunt-contrib-watch');
 
   grunt.registerTask('default', ['uglify','cssmin']);
