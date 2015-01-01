@@ -32,12 +32,14 @@ modlistSchema.methods.validPassword = function(_password) {
 	return bcrypt.compareSync(_password, this.password);
 };
 
+// Overwrites new style with updated old style data, will fix after
+// logic for merging works correctly
 modlistSchema.methods.UpdateOldStyleModlist = function() {
 	var tempOld = [];
 	var tempNew = [];
 	save = false;
 
-	if(this.plugins.length < 1) {
+	if(this.list != "[]" || (this.plugins.length > 0 && this.list == "[]")) {
 		tempOld = this.list.split('\",\"');
 		tempOld[0] = tempOld[0].substring(2);
 		tempOld[tempOld.length-1] = tempOld[tempOld.length-1].substring(0,tempOld[tempOld.length-1].length-2);
@@ -49,7 +51,7 @@ modlistSchema.methods.UpdateOldStyleModlist = function() {
 		this.list = "";
 		save = true;
 	}
-	if(this.modlist.length < 1 && this.modlisttxt != "[]") {
+	if(this.modlisttxt != "[]" || (this.modlist.length > 0 && this.modlisttxt == "[]")) {
 		if(this.modlisttxt == undefined) {
 			this.modlist = [];
 		} else {
@@ -69,7 +71,7 @@ modlistSchema.methods.UpdateOldStyleModlist = function() {
 		}
 		save = true;
 	}
-	if(this.ini.length < 1 && this.skyrimini != "[]") {
+	if(this.skyrimini != "[]" || (this.ini.length > 0 && this.ini == "[]")) {
 		if(this.skyrimini == undefined) {
 			this.ini = [];
 		} else {
@@ -89,7 +91,7 @@ modlistSchema.methods.UpdateOldStyleModlist = function() {
 		}
 		save = true;
 	}
-	if(this.prefsini.length < 1 && this.skyrimprefsini != "[]") {
+	if(this.skyrimprefsini != "[]" || (this.prefsini.length > 0 && this.prefsini == "[]")) {
 		if(this.skyrimprefsini == undefined) {
 			this.prefsini = [];
 		} else {

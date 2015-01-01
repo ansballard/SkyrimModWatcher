@@ -245,7 +245,9 @@ module.exports = function(app, passport, scriptVersion) {
 				res.redirect('/');
 			}
 			else {
-				_list.UpdateOldStyleModlist();
+				if(_list.list.length > 0) {
+					_list.UpdateOldStyleModlist();
+				}
 				res.render('profile.ejs', {
 					username: _list.username,
 					timestamp: (_list.timestamp.getMonth()+1) + "/" + _list.timestamp.getDate() + "/" + _list.timestamp.getFullYear(),
@@ -354,13 +356,17 @@ module.exports = function(app, passport, scriptVersion) {
 					_modlist.timestamp = Date.now();
 					_modlist.save(function(err) {
 						if(err) {
-							console.err(err);
+							res.statusCode = 500;
+							console.error(err);
+							res.write(err);
+							res.end();
+							throw err;
 						} else {
-							//
+							_modlist.UpdateOldStyleModlist();
+							res.statusCode = 200;
+							res.end();
 						}
 					});
-					res.statusCode = 200;
-					res.end();
 				}
 				else {
 					res.statusCode = 403;
@@ -388,6 +394,7 @@ module.exports = function(app, passport, scriptVersion) {
 						throw err;
 					}
 					else {
+						modlist.UpdateOldStyleModlist();
 						res.statusCode = 200;
 						res.end();
 					}
