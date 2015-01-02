@@ -25,6 +25,20 @@
 			</div>
 		</span>
 		<span id="sidebar-wrapper">
+			<% if (user == "") { %>
+				<form class="form-group" style="margin-bottom: 20px;padding:0 10%;background-color: #E3A853;border-radius: 10px;"  action="/login" method="post">
+					<h2 style="color:#ffffff;padding-top:10px;margin-top:0px">Welcome!</h2>
+					<label class="sr-only" for="loginUsername">Username</label><input type="text" id="loginUsername" class="form-control" name="username" placeholder="Username">
+					<label class="sr-only" for="loginPassword">Password</label><input type="password" id="loginPassword" class="form-control" name="password" placeholder="Password">
+					<button type="submit" class="btn btn-default vert-margin">Login</button>
+				</form>
+			<% } else { %>
+				<div class="form-group" style="margin-bottom: 20px;padding:0 10%;background-color: #E3A853;border-radius: 10px;">
+					<h2 style="color:#ffffff;padding-top:10px;margin-top:0px">Hi, <%= user %>!</h2>
+					<a href="/<%=user%>"><button type="submit" class="btn btn-default" style="margin-bottom:5px">Your Profile</button></a>
+					<a href="/logout"><button type="submit" class="btn btn-default" style="margin-bottom:5px">Logout</button></a>
+				</div>
+			<% } %>
 			<form class="input-group" action="/usersearch" method="post">
 				<input type="text" class="form-control" name="username" placeholder="Username"/>
 				<button class="btn btn-default vert-margin" type="submit" style="margin:10px 0px">Find a load order!</button>
@@ -42,25 +56,6 @@
 	</div>
 	<script src="/javascripts/jquery.min.js"></script>
     <script src="/javascripts/bootstrap.min.js"></script>
-    <% if (login == true) { %>
-    <form action="/login" method="post">
-    	<input type="text" name="username" placeholder="username"/>
-    	<input type="password" name="password" placeholder="password"/>
-    	<input type="submit"/>
-    </form>
-    <% } else if (admin == true) { %>
-    <div style="width: 80%;margin:auto;text-align:left">
-    <form method="post" action="http://modwat.ch/postnewblog">
-		<div><input type="text" name="title" placeholder="Title" maxlength="80"/>
-		<input type="text" name="thumbnail" placeholder="Thumbnail URL"/></div>
-		<div><input type="text" name="author" placeholder="Author"/>
-		<input type="text" name="desc" placeholder="Description"/></div>
-		<textarea name="content" placeholder="Content"></textarea>
-		<input type="Submit"/>
-	</form>
-	</div>
-	<a href="/logout">LOGOUT</a>
-	<% } %>
     <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

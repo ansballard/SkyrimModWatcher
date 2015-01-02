@@ -14,9 +14,10 @@ var modlistSchema = new Schema({
 	modlist: [],
 	ini: [],
 	prefsini: [],
-	tags: [String],
+	tag: String,
 	enb: String,
 	game: String,
+	pic: String,
 	timestamp: Date
 }, {
 	collection: 'modlist'
