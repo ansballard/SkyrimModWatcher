@@ -1,6 +1,6 @@
 {
   "name": "Skyrim-Mod-Watcher",
-  "version": "0.0.1-31",
+  "version": "0.0.1-32",
   "private": true,
   "scripts": {
     "start": "node app.min.js"
