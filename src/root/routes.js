@@ -1,7 +1,6 @@
 module.exports = function(app, passport, scriptVersion) {
 
 	app.get('/', function(req, res) {
-		console.log((req.user != undefined) ? req.user.username : "none");
 		Blog.findOne({'newest': true}, function(err, _blog) {
 			res.render('home.ejs', {
 				title : _blog.title,
@@ -169,7 +168,8 @@ module.exports = function(app, passport, scriptVersion) {
 		Modlist.findOne({'username' : req.params.username}, function(err, _modlist) {
 
 			if(_modlist) {
-				_modlist.UpdateOldStyleModlist();
+				if(_modlist.plugins.length < 1)
+					_modlist.UpdateOldStyleModlist();
 				res.send({"username": req.params.username, "plugins": _modlist.plugins, "modlist": _modlist.modlist, "ini": _modlist.ini, "prefsini": _modlist.prefsini});
 			} else {
 				res.writeHead('404');
@@ -212,7 +212,8 @@ module.exports = function(app, passport, scriptVersion) {
 				res.writeHead(404);
 				res.end();
 			} else {
-				_list.UpdateOldStyleModlist();
+				if(_list.plugins.length < 1)
+					_list.UpdateOldStyleModlist();
 				res.setHeader('Content-Type', 'application/json');
 
 				if(req.param("filename") == 'plugins') {

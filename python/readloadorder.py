@@ -138,7 +138,7 @@ class Application(Frame):
 	def postLoadOrder(self, fullParams):
 		try:
 			#Fancy urllib2 things
-			req = urllib2.Request("http://modwat.ch/fullloadorder", fullParams, {'Content-Type':'application/json'})
+			req = urllib2.Request("http://localhost:3000/fullloadorder", fullParams, {'Content-Type':'application/json'})
 			print 'Uploading to http://modwat.ch/' + self.username + '...'
 			f = urllib2.urlopen(req)
 			response = f.getcode()
