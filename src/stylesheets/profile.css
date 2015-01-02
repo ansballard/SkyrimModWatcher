@@ -105,7 +105,7 @@ div#nav-wrapper button {
 button.selected {
   border: 2px solid black;
 }
-h1#timestamp {
+h1#timestamp, h1#enbText, h1#tagText {
   font-size: 20px;
 }
 #filter-checked {

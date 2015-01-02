@@ -116,6 +116,51 @@ $(document).ready(function() {
   });
 
   /*
+   *  Handle changing the ENB via AJAX
+   */
+  $('#enbPost').submit(function(event) {
+    $.ajax({
+      type: "POST",
+      url: $('#enbPost').attr('action'),
+      data: {enb: $('#enb').val()},
+      dataType: 'text',
+      success: function() {
+        if($('#enb').val() != "")
+          $('#enbText').html("ENB: "+$('#enb').val());
+        else
+          $('#enbText').empty();
+      },
+      error: function() {
+        alert('There was an error updating your ENB');
+      }
+    });
+    event.preventDefault();
+  });
+
+  /*
+   *  Handle changing the tag via AJAX
+   */
+  $('#tagPost').submit(function(event) {
+    $.ajax({
+      type: "POST",
+      url: $('#tagPost').attr('action'),
+      data: {tag: $('#tag').val()},
+      dataType: 'text',
+      success: function() {
+        if($('#tag').val() != "")
+          $('#tagText').html("\""+$('#tag').val()+"\"");
+        else
+          $('#tagText').empty();
+      },
+      error: function() {
+        alert('There was an error updating your tags');
+      }
+    });
+    event.preventDefault();
+  });
+
+
+  /*
    *  Next 2 handle long file names, blow up on mouseover, return on mouseout
    */
   $('#plugins span.row-body').mouseover(function() {

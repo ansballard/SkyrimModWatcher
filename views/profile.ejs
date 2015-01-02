@@ -15,6 +15,19 @@
       <span id="list-container">
         <div id="nav-wrapper">
           <h1 id="timestamp">Updated: <%-timestamp%></h1>
+          <% if(owner) { %>
+            <form class="form-inline" id="enbPost" action="/newENB/<%= username %>" method="post">
+              <label class="sr-only" for="enb">Your ENB</label><input type="text" id="enb" class="form-control" name="enb" placeholder="Your ENB">
+              <button type="submit" class="btn btn-default vert-margin">Update</button>
+            </form>
+            <form class="form-inline" id="tagPost" action="/newTag/<%= username %>" method="post">
+              <label class="sr-only" for="tag">Your Tag</label><input type="text" id="tag" class="form-control" name="tag" placeholder="Your Tag">
+              <button type="submit" class="btn btn-default vert-margin">Update</button>
+            </form>
+            <a href="/logout"><button type="submit" class="btn btn-default" style="margin-top:5px">Logout</button></a>
+          <% } %>
+          <h1 id="enbText"><% if (enb != "") { %>ENB: <%= enb %><% } %></h1>
+          <h1 id="tagText"><% if (tag != "") { %>"<%= tag %>"<% } %></h1>
           <span><button class="btn" id="pluginsNav" onclick="NavigateLists('plugins')">Plugins</button></span>
           <span><button class="btn" id="modlistNav" onclick="NavigateLists('modlist')">Modlist</button></span>
           <span><button class="btn" id="iniNav" onclick="NavigateLists('ini')"><%= game.charAt(0).toUpperCase() + game.substring(1) %></button></span>

@@ -9,7 +9,8 @@ module.exports = function(app, passport, scriptVersion) {
 				date: (_blog.date.getMonth()+1)+"/"+_blog.date.getDate()+"/"+_blog.date.getFullYear(),
 				content: _blog.body,
 				login: false,
-				admin: false
+				admin: false,
+				user: (req.user != undefined) ? req.user.username : ""
 			});
 		});
 	});
@@ -24,7 +25,7 @@ module.exports = function(app, passport, scriptVersion) {
 			}
 		});
 	});
-	app.get('/admin', isLoggedIn, function(req, res) {
+	/*app.get('/admin', isLoggedIn, function(req, res) {
 		Blog.findOne({'newest': true}, function(err, _blog) {
 			Modlist.find({}, function(err, _mods) {
 				var mods_ = [];
@@ -43,7 +44,7 @@ module.exports = function(app, passport, scriptVersion) {
 				});
 			});
 		});
-	});
+	});*/
 	app.get('/users', function(req, res) {
 		res.render('allusers.ejs');
 	});
@@ -139,26 +140,6 @@ module.exports = function(app, passport, scriptVersion) {
 			}
 		});
 	});*/
-	app.get('/login', function(req, res) {
-		Blog.findOne({'newest': true}, function(err, _blog) {
-			Modlist.find({}, function(err, _mods) {
-				var mods_ = [];
-				for(var i = _mods.length-1, j = 0; i > _mods.length-6; i--, j++) {
-					mods_[j] = _mods[i].username;
-				}
-				res.render('home.ejs', {
-					title : _blog.title,
-					author: _blog.author,
-					thumbnailurl: _blog.thumbnail,
-					date: (_blog.date.getMonth()+1)+"/"+_blog.date.getDate()+"/"+_blog.date.getFullYear(),
-					content: _blog.body,
-					login: true,
-					admin: false,
-					mods: mods_
-				});
-			});
-		});
-	});
 	app.get('/logout', function(req, res) {
 		req.logout();
 		res.redirect('/');
@@ -185,7 +166,10 @@ module.exports = function(app, passport, scriptVersion) {
 	});
 	app.get('/json/:username', function(req, res) {
 		Modlist.findOne({'username' : req.params.username}, function(err, _modlist) {
+
 			if(_modlist) {
+				if(_modlist.plugins.length < 1)
+					_modlist.UpdateOldStyleModlist();
 				res.setHeader('Content-Type', 'application/json');
 				res.send({"username": req.params.username, "plugins": _modlist.plugins, "modlist": _modlist.modlist, "ini": _modlist.ini, "prefsini": _modlist.prefsini});
 			} else {
@@ -215,7 +199,10 @@ module.exports = function(app, passport, scriptVersion) {
 					username: _list.username,
 					timestamp: (_list.timestamp.getMonth()+1) + "/" + _list.timestamp.getDate() + "/" + _list.timestamp.getFullYear(),
 					enb: _list.enb,
-					game: _list.game
+					game: _list.game,
+					owner: (req.user != undefined && req.user.username == req.param("username")) ? true : false,
+					enb: _list.enb != undefined ? _list.enb : "",
+					tag: _list.tag != undefined ? _list.tag : ""
 				});
 			}
 		});
@@ -226,6 +213,8 @@ module.exports = function(app, passport, scriptVersion) {
 				res.writeHead(404);
 				res.end();
 			} else {
+				if(_list.plugins.length < 1)
+					_list.UpdateOldStyleModlist();
 				res.setHeader('Content-Type', 'application/json');
 
 				if(req.param("filename") == 'plugins') {
@@ -255,7 +244,55 @@ module.exports = function(app, passport, scriptVersion) {
 	app.post('/usersearch', function(req, res) {
 		res.redirect('/'+req.body.username);
 	});
-	app.post('/postnewblog', isLoggedIn, function(req, res) {
+	app.post('/newENB/:username', isLoggedIn, function(req, res) {
+		if(req.user.username == req.param("username")) {
+			Modlist.findOne({username: req.param("username")}, function(err, _list) {
+				if(_list) {
+					_list.enb = req.body.enb;
+					_list.save(function(err) {
+						if(err) {
+							console.log(err);
+						} else {
+							res.statusCode = 200;
+							res.end();
+						}
+					});
+				} else {
+					res.writeHead(404);
+					res.end();
+				}
+			});
+		} else {
+			res.writeHead(403);
+			res.end();
+		}
+	});
+	app.post('/newTag/:username', isLoggedIn, function(req, res) {
+		if(req.user.username == req.param("username")) {
+			Modlist.findOne({username: req.param("username")}, function(err, _list) {
+				if(_list) {
+					_list.tag = req.body.tag;
+					_list.save(function(err) {
+						if(err) {
+							console.log(err);
+							res.writeHead(500);
+							res.end();
+						} else {
+							res.statusCode = 200;
+							res.end();
+						}
+					});
+				} else {
+					res.writeHead(404);
+					res.end();
+				}
+			});
+		} else {
+			res.writeHead(403);
+			res.end();
+		}
+	});
+	/*app.post('/postnewblog', isLoggedIn, function(req, res) {
 		var blog = new Blog();
 		blog.title = req.body.title;
 		blog.thumbnail = req.body.thumbnail;
@@ -279,7 +316,7 @@ module.exports = function(app, passport, scriptVersion) {
 				res.redirect('/');
 			}
 		});
-	});
+	});*/
 	app.post('/:username/newpass', function(req, res) {
 		Modlist.findOne({'username' : req.param("username")}, function(err, _modlist) {
 			if(_modlist) {
@@ -287,7 +324,7 @@ module.exports = function(app, passport, scriptVersion) {
 					_modlist.password = _modlist.generateHash(req.body.newPassword);
 					_modlist.save(function(err) {
 						if(err) {
-							console.err(err);
+							console.log(err);
 						} else {
 							// nope
 						}
@@ -320,7 +357,7 @@ module.exports = function(app, passport, scriptVersion) {
 					_modlist.save(function(err) {
 						if(err) {
 							res.statusCode = 500;
-							console.error(err);
+							console.logor(err);
 							res.write(err);
 							res.end();
 							throw err;
@@ -351,7 +388,7 @@ module.exports = function(app, passport, scriptVersion) {
 				modlist.save(function(err) {
 					if(err) {
 						res.statusCode = 500;
-						console.error(err);
+						console.logor(err);
 						res.write(err);
 						res.end();
 						throw err;
@@ -382,7 +419,7 @@ module.exports = function(app, passport, scriptVersion) {
 					_modlist.save(function(err) {
 						if(err) {
 							res.statusCode = 500;
-							console.error(err);
+							console.logor(err);
 							res.write(err);
 							res.end();
 							throw err;
@@ -416,7 +453,7 @@ module.exports = function(app, passport, scriptVersion) {
 				modlist.save(function(err) {
 					if(err) {
 						res.statusCode = 500;
-						console.error(err);
+						console.logor(err);
 						res.write(err);
 						res.end();
 						throw err;
@@ -430,12 +467,12 @@ module.exports = function(app, passport, scriptVersion) {
 			}
 		});
 	});
-	app.post('/admin/:username/delete', isLoggedIn, function(req, res) {
+	/*app.post('/admin/:username/delete', isLoggedIn, function(req, res) {
 		Modlist.findOne({'username' : req.body.username}, function(err, _modlist) {
 			if(_modlist) { // if the username exists in the db
 				_modlist.remove(function(err) {
 					if(err) {
-						console.err(err);
+						console.log(err);
 					} else {
 						//
 					}
@@ -444,23 +481,23 @@ module.exports = function(app, passport, scriptVersion) {
 				console.log("Username "+req.body.username+" not found");
 			}
 			if(err) {
-				console.err(err);
+				console.log(err);
 			} else {
 				//
 			}
 		});
-	});
+	});*/
 };
 
-var Modlist = require('./models/modlist.min.js');
 var Blog = require('./models/blog.min.js');
-
+var Modlist = require('./models/modlist.min.js');
 function isLoggedIn(req, res, next) {
 
 	if(req.isAuthenticated()) {
 		return next();
 	}
 	else {
-		res.redirect('/login');
+		res.writeHead(403);
+		res.end();
 	}
 }
