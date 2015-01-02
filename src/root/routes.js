@@ -170,6 +170,7 @@ module.exports = function(app, passport, scriptVersion) {
 			if(_modlist) {
 				if(_modlist.plugins.length < 1)
 					_modlist.UpdateOldStyleModlist();
+				res.setHeader('Content-Type', 'application/json');
 				res.send({"username": req.params.username, "plugins": _modlist.plugins, "modlist": _modlist.modlist, "ini": _modlist.ini, "prefsini": _modlist.prefsini});
 			} else {
 				res.writeHead('404');
