@@ -126,6 +126,9 @@ modlistSchema.methods.UpdateOldStyleModlist = function() {
 
 modlistSchema.methods.GetGPU = function() {
 	var _gpu = '';
+	if(this.plugins.length < 1) {
+		this.UpdateOldStyleModlist();
+	}
 	for(var i = 0; i < this.prefsini.length; i++) {
 		if(this.prefsini[i].name.indexOf('sD3DDevice') >= 0) {
 			gpu = this.prefsini[i].name.split('=')[1].trim();

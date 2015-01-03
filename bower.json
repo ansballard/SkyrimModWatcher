@@ -1,0 +1,24 @@
+{
+  "name": "SkyrimModWatcher",
+  "version": "0.0.0",
+  "homepage": "https://github.com/ansballard/SkyrimModWatcher",
+  "authors": [
+    "PeanutofDeath <ans.ballard@gmail.com>"
+  ],
+  "main": "app.min.js",
+  "moduleType": [
+    "node"
+  ],
+  "license": "Apache",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.1"
+  }
+}

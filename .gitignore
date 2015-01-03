@@ -2,3 +2,4 @@
 /config/*
 /node_modules/*
 /python/auth.dat
+/public/bower_components/*

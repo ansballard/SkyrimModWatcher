@@ -7,7 +7,15 @@
     <meta name="viewport" content="width=device-width">
     <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/stylesheets/home.min.css" rel="stylesheet">
-    <title>Modwat.ch</title>
+    <title>Charts!</title>
+
+    <style type="text/css">
+    	.update-block {
+    		width: 100%;
+    		height: 100%;
+    	}
+    </style>
+
 </head>
 <body>
 	<div id="full-wrapper">
@@ -17,11 +25,8 @@
 				<p id="download-header"><a href="http://www.nexusmods.com/skyrim/mods/56640/?tab=2&navtag=http%3A%2F%2Fwww.nexusmods.com%2Fskyrim%2Fajax%2Fmodfiles%2F%3Fid%3D56640&pUp=1#content">Download Here!</a></p>
 			</div>
 			<div class="update-block">
-				<div class="post-header">
-					<h3 class="post-title"><%- title %></h3>
-				</div>
-				<p class="post-body"><%- content %></p>
-				<p class="post-sig">-<%-author %>, <%-date%></p>
+				<h1>NVIDIA VS AMD</h1>
+				<div id="piechart" style="width:325px;height:325px"></div>
 			</div>
 		</span>
 		<span id="sidebar-wrapper">
@@ -67,15 +72,50 @@
 
 </script>
 
-<script type="text/javascript">
-	$(document).ready(function() {
-		$.getJSON("/userlist", function(data) {
-			$('#userlist').empty();
-	      for(var i = 0; i < data.usernames.length; i++) {
-	        $('#userlist').append('<option value="'+data.usernames[i]+'">'+data.usernames[i]+'</option>');
-	      }
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+    	var gpuData = {};
+    	var nVSaData = [['Brand','Percentage']];
+
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+
+        var data = google.visualization.arrayToDataTable(nVSaData);
+
+        var options = {
+          backgroundColor: '#D0D0D0',
+          legend: 'none',
+          colors: ['#76b900','#EA2026']
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+        chart.draw(data, options);
+
+        function resizeHandler () {
+	        chart.draw(data, options);
+	    }
+	    if (window.addEventListener) {
+	        window.addEventListener('resize', resizeHandler, false);
+	    }
+	    else if (window.attachEvent) {
+	        window.attachEvent('onresize', resizeHandler);
+	    }
+      }
+
+      $(document).ready(function() {
+		$.getJSON("/GPUList", function(data) {
+			gpuData = data;
+			console.log(data);
+
+			nVSaData.push(['NVIDIA',gpuData.NVIDIA / (gpuData.NVIDIA + gpuData.AMD)]);
+			nVSaData.push(['AMD',gpuData.AMD / (gpuData.NVIDIA + gpuData.AMD)]);
+			console.log(nVSaData);
+			drawChart();
 	    });
 	});
-</script>
+    </script>
 </body>
 </html>
