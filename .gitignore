@@ -2,3 +2,6 @@
 /config/*
 /node_modules/*
 /python/auth.dat
+/.c9/*
+/data/*
+/mongod
