@@ -16,7 +16,8 @@
     "node_modules",
     "bower_components",
     "test",
-    "tests"
+    "tests",
+    "data"
   ],
   "dependencies": {
     "bootstrap": "~3.3.1"

@@ -30,7 +30,7 @@ app.configure(function() {
 	app.use(express.methodOverride());
 	app.use(express.cookieParser());
   	app.use(express.bodyParser());
-	app.use(express.session({secret: 'ilovescotchscotchyscotchscotch'}));
+	app.use(express.session({secret: process.env.DBEXPRESSSECRET}));
 	app.use(passport.initialize());
 	app.use(passport.session());
 	app.use(app.router);
