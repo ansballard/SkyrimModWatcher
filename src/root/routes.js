@@ -212,6 +212,17 @@ module.exports = function(app, passport, scriptVersion) {
 			}
 		});
 	});
+	app.get('/api/users/count', function(req, res) {
+		Modlist.find(function(err, _modlists) {
+			if(_modlists) {
+				res.set('Content-Type','text/plain');
+				res.send(''+_modlists.length);
+			} else {
+				res.writeHead(404);
+				res.end();
+			}
+		})
+	})
 	app.get('/api/:username/:filename', function(req, res) {
 		Modlist.findOne({username: req.param("username")}, function(err, _list) {
 			if(!_list) {
