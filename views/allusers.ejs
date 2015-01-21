@@ -7,72 +7,45 @@
     <meta name="viewport" content="width=475, initial-scale=1">
     <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/stylesheets/users.min.css" rel="stylesheet">
+    
     <title>All Uploads</title>
 
   </head>
 
   <body>
+    
+    <script src="/bower_components/angular/angular.min.js"></script>
+    <!-- Local angular files -->
+    <script src="/angular/users/app.min.js"></script>
+    <script src="/angular/users/controller.min.js"></script>
+    <script src="/angular/users/services.min.js"></script>
 
-    <div id="main-container">
+    <div id="main-container" ng-app="modwatchApp" ng-controller="MainCtrl">
       <h1 id="header"><a href="/">MODWAT.CH</a></h1>
       <span id="list-container">
         <span id="search-container">
-          <input type="text" class="form-control" id="filter-mods" placeholder="Filter by..."/>
-          <span id="count"></span>
+          <input type="text" class="form-control" ng-model="userfilter" id="filter-mods" placeholder="Filter by..."/>
+          <span id="count">{{users.length}}</span>
         </span>
-        <img id="ajaxloadergif" src="/images/ajax-loader.gif"/>
-        <ul class="" id="users">
+        <img ng-show="loading" id="ajaxloadergif" src="/images/ajax-loader.gif"/>
+        <ul id="users">
+          <li ng-repeat="username in users | filter:userfilter"><a href="/{{username}}">{{username}}</a></li>
         </ul>
       </span>
             
     </div>
 
-    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script type="text/javascript">
-
-      $(document).ready(function() {
-
-        $.getJSON("/userlist", function(data) {
-          $('#count').html(data.usernames.length + ' users');
-          for(var i = 0; i < data.usernames.length; i++) {
-            $('#ajaxloadergif').hide();
-            $('#users').append('<li class="user"><a href="/'+data.usernames[i]+'">'+data.usernames[i]+'</a></li>');
-          }
-        });
-
-        $('#filter-mods').keyup(function() {
-          var filterText = $(this).val();
-          var iterator = 0;
-          $('#users > li').each(function(){
-            var text = $(this).text().toLowerCase();
-            if(filterText[0] == '^') {
-              (text.indexOf(filterText.substr(1)) == 0) ? $(this).slideDown() : $(this).slideUp();
-            } else {
-              if(text.indexOf(filterText.toLowerCase()) >= 0) {
-                iterator++;
-                $(this).slideDown();
-              } else {
-                $(this).slideUp();
-              }
-            }
-          });
-        });
-        $('.row-body').css('max-width', ($('#plugins').width() - 110)+'px');
-      });
-
-    </script>
-
     <script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-53199250-1', 'auto');
-  ga('send', 'pageview');
-
-</script>
+    
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    
+      ga('create', 'UA-53199250-1', 'auto');
+      ga('send', 'pageview');
+    
+    </script>
         
   </body>
 </html>

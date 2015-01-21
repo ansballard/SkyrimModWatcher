@@ -1,17 +1,10 @@
 module.exports = function(app, passport, scriptVersion) {
 
 	app.get('/', function(req, res) {
-		Blog.findOne({'newest': true}, function(err, _blog) {
-			res.render('home.ejs', {
-				title : _blog.title,
-				author: _blog.author,
-				thumbnailurl: _blog.thumbnail,
-				date: (_blog.date.getMonth()+1)+"/"+_blog.date.getDate()+"/"+_blog.date.getFullYear(),
-				content: _blog.body,
-				login: false,
-				admin: false,
-				user: (req.user != undefined) ? req.user.username : ""
-			});
+		res.render('home.ejs', {
+			login: false,
+			admin: false,
+			user: (req.user != undefined) ? req.user.username : ""
 		});
 	});
 	app.get('/charts', function(req, res) {

@@ -44,6 +44,27 @@ module.exports = function(grunt) {
             ext: '.min.js'
           }  
         ]
+      },
+      angular: {
+        options: {
+          banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
+        },
+        files: [
+          {
+            expand: true,
+            cwd: 'src/angular/users/',
+            src: ['*.js'],
+            dest: 'public/angular/users/',
+            ext: '.min.js'
+          },
+          {
+            expand: true,
+            cwd: 'src/angular/home/',
+            src: ['*.js'],
+            dest: 'public/angular/home/',
+            ext: '.min.js'
+          }
+        ]
       }
     },
     cssmin: {
@@ -88,6 +109,10 @@ module.exports = function(grunt) {
       models: {
         files: ['src/models/*.js'],
         tasks: ['uglify:models']
+      },
+      angular: {
+        files: ['src/angular/**/*.js'],
+        tasks: ['uglify:angular']
       }
     }
   });

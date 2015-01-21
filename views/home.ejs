@@ -10,7 +10,15 @@
     <title>Modwat.ch</title>
 </head>
 <body>
+	
+	<script src="/bower_components/angular/angular.min.js"></script>
+    <!-- Local angular files -->
+    <script src="/angular/home/app.min.js"></script>
+    <script src="/angular/home/controller.min.js"></script>
+    <script src="/angular/home/services.min.js"></script>
+    
 	<div id="full-wrapper">
+		<div id="ng-app" ng-app="modwatchApp" ng-controller="MainCtrl">
 		<h1 id="header"><a href="/">MODWAT.CH</a></h1>
 		<span id="content-wrapper">
 			<div>
@@ -18,10 +26,11 @@
 			</div>
 			<div class="update-block">
 				<div class="post-header">
-					<h3 class="post-title"><%- title %></h3>
+					<h3 class="post-title">{{blog.title}}</h3>
 				</div>
-				<p class="post-body"><%- content %></p>
-				<p class="post-sig">-<%-author %>, <%-date%></p>
+				<img ng-show="blogloading" src="/images/ajax-loader.gif"/>
+				<p class="post-body">{{blog.body}}</p>
+				<p class="post-sig">-{{blog.author}}, {{blog.date | date}}</p>
 			</div>
 		</span>
 		<span id="sidebar-wrapper">
@@ -45,7 +54,7 @@
 			</form>
 			<br />
 			<form class="form-group" action="/usersearch" method="post">
-				<select class="form-control" id="userlist" name="username"><option disabled>Loading...</option></select>
+				<select class="form-control" id="userlist" name="username"><option ng-repeat="username in users">{{username}}</option></select>
 				<button type="submit" class="btn btn-default vert-margin">Go</button>
 			</form>
 			<div id="sidebar-links">
@@ -54,28 +63,16 @@
 			</div>
 		</span>
 	</div>
-	<script src="/bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-53199250-1', 'auto');
-  ga('send', 'pageview');
-
-</script>
-
-<script type="text/javascript">
-	$(document).ready(function() {
-		$.getJSON("/userlist", function(data) {
-			$('#userlist').empty();
-	      for(var i = 0; i < data.usernames.length; i++) {
-	        $('#userlist').append('<option value="'+data.usernames[i]+'">'+data.usernames[i]+'</option>');
-	      }
-	    });
-	});
-</script>
+	<script>
+    	
+	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	
+	  ga('create', 'UA-53199250-1', 'auto');
+	  ga('send', 'pageview');
+		
+	</script>
 </body>
 </html>
