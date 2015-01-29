@@ -2,6 +2,7 @@
 /config/*
 /node_modules/*
 /python/auth.dat
-/.c9/*
+/public/bower_components/*
 /data/*
 /mongod
+/.c9/*
