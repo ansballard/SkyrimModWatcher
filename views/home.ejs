@@ -55,7 +55,7 @@
 			<br />
 			<form class="form-group" action="/usersearch" method="post">
 				<select class="form-control" id="userlist" name="username"><option ng-repeat="username in users">{{username}}</option></select>
-				<button type="submit" class="btn btn-default vert-margin">Go</button>
+				<button type="submit" ng-disabled="users.length==1" class="btn btn-default vert-margin">Go</button>
 			</form>
 			<div id="sidebar-links">
 				<a href="https://github.com/ansballard/SkyrimModWatcher" target="_blank"><img id="github-link" src="/images/GitHub-Logo_invert.png" class="sidebar-link" alt="Github repository link" title="Github Repo"/></a>
