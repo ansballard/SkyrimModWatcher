@@ -2,3 +2,8 @@
 /config/*
 /node_modules/*
 /python/auth.dat
+/public/*
+/data/*
+/mongod
+/.c9/*
+/*.min.js
