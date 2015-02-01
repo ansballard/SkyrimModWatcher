@@ -3,6 +3,7 @@
 /node_modules/*
 /python/auth.dat
 /public/*
+/models/*
 /data/*
 /mongod
 /.c9/*
