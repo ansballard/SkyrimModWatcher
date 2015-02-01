@@ -11,7 +11,7 @@ var passport = require('passport');
 var bcrypt = require('bcrypt-nodejs');
 var mongoose = require('mongoose/'); 
 
-var configDB = require('./config/db.js').url;
+var configDB = require('./config/db.js').dev3url;
 mongoose.connect(configDB);
 
 var Schema = mongoose.Schema;
@@ -30,7 +30,7 @@ app.configure(function() {
 	app.use(express.methodOverride());
 	app.use(express.cookieParser());
   	app.use(express.bodyParser());
-	app.use(express.session({secret: 'ilovescotchscotchyscotchscotch'}));
+	app.use(express.session({secret: process.env.DBEXPRESSSECRET}));
 	app.use(passport.initialize());
 	app.use(passport.session());
 	app.use(app.router);

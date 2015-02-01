@@ -7,38 +7,77 @@ module.exports = function(grunt) {
         options: {
           banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
         },
-        files: {
-          'public/javascripts/profile.min.js': ['src/javascripts/profile.js']
-        }
+        files: [
+          {
+            expand: true,
+            cwd: 'src/javascripts/',
+            src: ['*.js'],
+            dest: 'public/javascripts/',
+            ext: '.min.js'
+          }  
+        ]
       },
       back: {
         options: {
           banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
         },
-        files: {
-          'routes.min.js': ['src/root/routes.js'],
-          'app.min.js': ['src/root/app.js'],
-          'passport.min.js': ['src/root/passport.js']
-        }
+        files: [
+          {
+            expand: true,
+            cwd: 'src/root/',
+            src: ['*.js'],
+            dest: './',
+            ext: '.min.js'
+          }  
+        ]
       },
       models: {
         options: {
           banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
         },
-        files: {
-          'models/admin.min.js': ['src/models/admin.js'],
-          'models/modlist.min.js': ['src/models/modlist.js'],
-          'models/blog.min.js': ['src/models/blog.js']
-        }
+        files: [
+          {
+            expand: true,
+            cwd: 'src/models/',
+            src: ['*.js'],
+            dest: 'public/models/',
+            ext: '.min.js'
+          }  
+        ]
+      },
+      angular: {
+        options: {
+          banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
+        },
+        files: [
+          {
+            expand: true,
+            cwd: 'src/angular/users/',
+            src: ['*.js'],
+            dest: 'public/angular/users/',
+            ext: '.min.js'
+          },
+          {
+            expand: true,
+            cwd: 'src/angular/home/',
+            src: ['*.js'],
+            dest: 'public/angular/home/',
+            ext: '.min.js'
+          }
+        ]
       }
     },
     cssmin: {
       target: {
-        files: {
-          'public/stylesheets/profile.min.css': ['src/stylesheets/profile.css'],
-          'public/stylesheets/home.min.css': ['src/stylesheets/home.css'],
-          'public/stylesheets/users.min.css': ['src/stylesheets/users.css']
-        }
+        files: [
+          {
+            expand: true,
+            cwd: 'src/stylesheets/',
+            src: ['*.css'],
+            dest: 'public/stylesheets/',
+            ext: '.min.css'
+          }  
+        ]
       }
     },
     imagemin: {
@@ -70,6 +109,10 @@ module.exports = function(grunt) {
       models: {
         files: ['src/models/*.js'],
         tasks: ['uglify:models']
+      },
+      angular: {
+        files: ['src/angular/**/*.js'],
+        tasks: ['uglify:angular']
       }
     }
   });

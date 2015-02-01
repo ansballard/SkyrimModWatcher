@@ -1,17 +1,15 @@
 module.exports = function(app, passport, scriptVersion) {
 
 	app.get('/', function(req, res) {
-		Blog.findOne({'newest': true}, function(err, _blog) {
-			res.render('home.ejs', {
-				title : _blog.title,
-				author: _blog.author,
-				thumbnailurl: _blog.thumbnail,
-				date: (_blog.date.getMonth()+1)+"/"+_blog.date.getDate()+"/"+_blog.date.getFullYear(),
-				content: _blog.body,
-				login: false,
-				admin: false,
-				user: (req.user != undefined) ? req.user.username : ""
-			});
+		res.render('home.ejs', {
+			login: false,
+			admin: false,
+			user: (req.user != undefined) ? req.user.username : ""
+		});
+	});
+	app.get('/charts', function(req, res) {
+		res.render('charts.ejs', {
+			user: (req.user != undefined) ? req.user.username : ""
 		});
 	});
 	app.get('/api/blog/newest', function(req, res) {
@@ -96,7 +94,7 @@ module.exports = function(app, passport, scriptVersion) {
 			}
 		});
 	});*/
-	/*app.get('/GPUList', function(req, res) {
+	app.get('/GPUList', function(req, res) {
 		Modlist.find({}, function(err, _modlists) {
 			if(_modlists) {
 				var amd = 0;
@@ -139,7 +137,7 @@ module.exports = function(app, passport, scriptVersion) {
 				res.end();
 			}
 		});
-	});*/
+	});
 	app.get('/logout', function(req, res) {
 		req.logout();
 		res.redirect('/');
@@ -207,6 +205,17 @@ module.exports = function(app, passport, scriptVersion) {
 			}
 		});
 	});
+	app.get('/api/users/count', function(req, res) {
+		Modlist.find(function(err, _modlists) {
+			if(_modlists) {
+				res.set('Content-Type','text/plain');
+				res.send(''+_modlists.length);
+			} else {
+				res.writeHead(404);
+				res.end();
+			}
+		})
+	})
 	app.get('/api/:username/:filename', function(req, res) {
 		Modlist.findOne({username: req.param("username")}, function(err, _list) {
 			if(!_list) {
