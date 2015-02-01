@@ -1,0 +1,16 @@
+*.private
+/config/*
+/node_modules/*
+/python/auth.dat
+<<<<<<< HEAD
+/public/*
+/data/*
+/mongod
+/.c9/*
+/*.min.js
+=======
+/public/bower_components/*
+/data/*
+/mongod
+/.c9/*
+>>>>>>> 2671f30d1eb08093e8acabb6e0db5a128e88f9c2
