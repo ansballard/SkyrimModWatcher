@@ -94,7 +94,7 @@ module.exports = function(app, passport, scriptVersion) {
 			}
 		});
 	});*/
-	app.get('/GPUList', function(req, res) {
+	/*app.get('/GPUList', function(req, res) {
 		Modlist.find({}, function(err, _modlists) {
 			if(_modlists) {
 				var amd = 0;
@@ -137,7 +137,7 @@ module.exports = function(app, passport, scriptVersion) {
 				res.end();
 			}
 		});
-	});
+	});*/
 	app.get('/logout', function(req, res) {
 		req.logout();
 		res.redirect('/');
@@ -476,25 +476,15 @@ module.exports = function(app, passport, scriptVersion) {
 			}
 		});
 	});
-	/*app.post('/admin/:username/delete', isLoggedIn, function(req, res) {
-		Modlist.findOne({'username' : req.body.username}, function(err, _modlist) {
-			if(_modlist) { // if the username exists in the db
-				_modlist.remove(function(err) {
-					if(err) {
-						console.log(err);
-					} else {
-						//
-					}
-				});
-			} else {
-				console.log("Username "+req.body.username+" not found");
-			}
-			if(err) {
-				console.log(err);
-			} else {
-				//
-			}
-		});
+	/*app.post('/api/:username/delete', isLoggedIn, function(req, res) {
+		if(req.user != undefined && req.user.username == req.params["username"]) {
+			Modlist.findOne({'username':req.user.username}).remove(function() {
+				res.send(req.user.username);
+			});
+		} else {
+			res.writeHead(403);
+			res.end();
+		}
 	});*/
 };
 
