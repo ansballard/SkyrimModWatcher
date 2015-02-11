@@ -1,7 +1,7 @@
 var LocalStrategy = require('passport-local').Strategy;
 
-var Admin = require('./models/admin.min.js');
-var Modlist = require('./models/modlist.min.js');
+var Admin = require('./public/models/admin.min.js');
+var Modlist = require('./public/models/modlist.min.js');
 
 module.exports = function(passport) {
 
@@ -14,7 +14,7 @@ module.exports = function(passport) {
 	    done(err, user);
 	  });
 	});
-	
+
 	// Register
 	passport.use('register', new LocalStrategy({
 		usernameField : 'username',
@@ -46,7 +46,7 @@ module.exports = function(passport) {
 			});
 		});
 	}));
-	
+
 	// Login
 	passport.use('login', new LocalStrategy({
 		usernameField : 'username',

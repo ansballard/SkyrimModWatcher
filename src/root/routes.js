@@ -47,7 +47,7 @@ module.exports = function(app, passport, scriptVersion) {
 		res.render('allusers.ejs');
 	});
 	app.get('/userlist', function(req, res) {
-		Modlist.find({}, function(err, _mods) {
+		Modlist.find({}, {username:1}, function(err, _mods) {
 			var mods_ = [];
 			for(var i = _mods.length-1, j = 0; i >= 0; i--, j++) {
 				mods_[j] = _mods[i].username;
@@ -206,7 +206,7 @@ module.exports = function(app, passport, scriptVersion) {
 		});
 	});
 	app.get('/api/users/count', function(req, res) {
-		Modlist.find(function(err, _modlists) {
+		Modlist.find({}, {_id:1}, function(err, _modlists) {
 			if(_modlists) {
 				res.set('Content-Type','text/plain');
 				res.send(''+_modlists.length);
@@ -214,33 +214,56 @@ module.exports = function(app, passport, scriptVersion) {
 				res.writeHead(404);
 				res.end();
 			}
-		})
-	})
-	app.get('/api/:username/:filename', function(req, res) {
-		Modlist.findOne({username: req.param("username")}, function(err, _list) {
+		});
+	});
+	/**
+	 *  Routes can be optimized if they're split by filename
+	 */
+	app.get('/api/:username/plugins', function(req, res) {
+		Modlist.findOne({username: req.param("username")}, {plugins:1}, function(err, _list) {
 			if(!_list) {
 				res.writeHead(404);
 				res.end();
 			} else {
-				if(_list.plugins.length < 1)
-					_list.UpdateOldStyleModlist();
 				res.setHeader('Content-Type', 'application/json');
 
-				if(req.param("filename") == 'plugins') {
-					res.end(JSON.stringify(_list.plugins));
-				}
-				else if(req.param("filename") == 'modlist') {
-					res.end(JSON.stringify(_list.modlist));
-				}
-				else if(req.param("filename") == 'ini') {
-					res.end(JSON.stringify(_list.ini));
-				}
-				else if(req.param("filename") == 'prefsini') {
-					res.end(JSON.stringify(_list.prefsini));
-				}
-				else {
-					res.end(JSON.stringify([]));
-				}
+				res.end(JSON.stringify(_list.plugins));
+			}
+		});
+	});
+	app.get('/api/:username/:modlist', function(req, res) {
+		Modlist.findOne({username: req.param("username")}, {modlist:1}, function(err, _list) {
+			if(!_list) {
+				res.writeHead(404);
+				res.end();
+			} else {
+				res.setHeader('Content-Type', 'application/json');
+
+				res.end(JSON.stringify(_list.modlist));
+			}
+		});
+	});
+	app.get('/api/:username/ini', function(req, res) {
+		Modlist.findOne({username: req.param("username")}, {ini:1}, function(err, _list) {
+			if(!_list) {
+				res.writeHead(404);
+				res.end();
+			} else {
+				res.setHeader('Content-Type', 'application/json');
+
+				res.end(JSON.stringify(_list.ini));
+			}
+		});
+	});
+	app.get('/api/:username/prefsini', function(req, res) {
+		Modlist.findOne({username: req.param("username")}, {prefsini:1}, function(err, _list) {
+			if(!_list) {
+				res.writeHead(404);
+				res.end();
+			} else {
+				res.setHeader('Content-Type', 'application/json');
+
+				res.end(JSON.stringify(_list.prefsini));
 			}
 		});
 	});
@@ -498,8 +521,8 @@ module.exports = function(app, passport, scriptVersion) {
 	});*/
 };
 
-var Blog = require('./models/blog.min.js');
-var Modlist = require('./models/modlist.min.js');
+var Blog = require('./public/models/blog.min.js');
+var Modlist = require('./public/models/modlist.min.js');
 function isLoggedIn(req, res, next) {
 
 	if(req.isAuthenticated()) {
