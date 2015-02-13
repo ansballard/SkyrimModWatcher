@@ -11,14 +11,9 @@
 </head>
 <body>
 
-	<script src="/bower_components/angular/angular.min.js"></script>
-    <!-- Local angular files -->
-    <script src="/angular/home/app.min.js"></script>
-    <script src="/angular/home/controller.min.js"></script>
-    <script src="/angular/home/services.min.js"></script>
-
 	<div id="full-wrapper">
 		<div id="ng-app" ng-app="modwatchApp" ng-controller="MainCtrl">
+		<div ng-init="setBadge('<%= user %>')"></div>
 		<h1 id="header"><a href="/">MODWAT.CH</a></h1>
 		<span id="content-wrapper">
 			<div>
@@ -87,5 +82,12 @@
 	  ga('send', 'pageview');
 
 	</script>
+
+	<script src="/bower_components/angular/angular.min.js"></script>
+  <!-- Local angular files -->
+  <script src="/angular/home/app.min.js"></script>
+  <script src="/angular/home/controller.min.js"></script>
+  <script src="/angular/home/services.min.js"></script>
+
 </body>
 </html>

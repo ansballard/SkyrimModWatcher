@@ -185,22 +185,17 @@ module.exports = function(app, passport, scriptVersion) {
 		failureRedirect: '/login'
 	}));
 	app.get('/:username', function(req, res) {
-		Modlist.findOne({username: req.param("username")}, function(err, _list) {
+		Modlist.findOne({username: req.param("username")},{username:1}, function(err, _list) {
 			if(!_list) {
 				res.redirect('/');
 			}
 			else {
-				if(_list.list.length > 0) {
+				/*if(_list.list && _list.list.length > 0) {
 					_list.UpdateOldStyleModlist();
-				}
+				}*/
 				res.render('profile.ejs', {
 					username: _list.username,
-					timestamp: (_list.timestamp.getMonth()+1) + "/" + _list.timestamp.getDate() + "/" + _list.timestamp.getFullYear(),
-					enb: _list.enb,
-					game: _list.game,
-					owner: (req.user != undefined && req.user.username == req.param("username")) ? true : false,
-					enb: _list.enb != undefined ? _list.enb : "",
-					tag: _list.tag != undefined ? _list.tag : ""
+					owner: (req.user != undefined && req.user.username == req.param("username")) ? true : false
 				});
 			}
 		});
@@ -231,7 +226,7 @@ module.exports = function(app, passport, scriptVersion) {
 			}
 		});
 	});
-	app.get('/api/:username/:modlist', function(req, res) {
+	app.get('/api/:username/modlist', function(req, res) {
 		Modlist.findOne({username: req.param("username")}, {modlist:1}, function(err, _list) {
 			if(!_list) {
 				res.writeHead(404);
@@ -266,6 +261,38 @@ module.exports = function(app, passport, scriptVersion) {
 				res.end(JSON.stringify(_list.prefsini));
 			}
 		});
+	});
+	app.get('/api/:username/profile', function(req, res) {
+	  Modlist.findOne({username: req.param("username")}, {tag:1,enb:1,badge:1,timestamp:1,game:1,_id:0}, function(err, _list) {
+	    if(!_list) {
+				res.writeHead(404);
+				res.end();
+			} else {
+				res.setHeader('Content-Type', 'application/json');
+				res.end(JSON.stringify(_list));
+			}
+	  });
+	});
+	app.get('/api/:username/files', function(req, res) {
+	  Modlist.findOne({username: req.param("username")}, {plugins:1,modlist:1,ini:1,prefsini:1,_id:0}, function(err, _list) {
+	    if(!_list) {
+				res.writeHead(404);
+				res.end();
+			} else {
+				res.setHeader('Content-Type', 'application/json');
+				var _arr = [];
+				if(_list.plugins.length > 0) {
+				  _arr.push("plugins");
+				} if(_list.modlist.length > 0) {
+				  _arr.push("modlist");
+				} if(_list.ini.length > 0) {
+				  _arr.push("ini");
+				} if(_list.prefsini.length > 0) {
+				  _arr.push("prefsini");
+				}
+				res.end(JSON.stringify(_arr));
+			}
+	  });
 	});
 	// COMMENT OUT, ONLY NEED 1 ADMIN FOR NOW
 	/*app.post('/register', passport.authenticate('register', {
