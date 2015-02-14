@@ -9,6 +9,11 @@
         $scope.ini = {};
         $scope.prefsini = {};
 
+        $scope.hasPlugins = false;
+        $scope.hasModlist = false;
+        $scope.hasIni = false;
+        $scope.hasPrefsIni = false;
+
         var files = [];
 
         $scope.currentFilename = "plugins";
@@ -22,6 +27,15 @@
               files = res;
               for(var i = 0; i < files.length; i++) {
                 $scope.currentFilename = ($location.path().substr(1) === files[i]) ? files[i] : $scope.currentFilename;
+                if(files[i] === 'plugins') {
+                  $scope.hasPlugins = true;
+                } else if(files[i] === 'modlist') {
+                  $scope.hasModlist = true;
+                } else if(files[i] === 'ini') {
+                  $scope.hasIni = true;
+                } else if(files[i] === 'prefsini') {
+                  $scope.hasPrefsIni = true;
+                }
               }
               $location.path($scope.currentFilename);
 
@@ -75,29 +89,25 @@
         };
 
         $scope.newTag = function() {
-          if($scope.tag !== "") {
-            Main.setTag($scope.username, $scope.tag,
-              function(res) {
-                //
-              },
-              function(res) {
-                console.log(res);
-              }
-            );
-          }
+          Main.setTag($scope.username, $scope.tag,
+            function(res) {
+              //console.log(res)
+            },
+            function(res) {
+              console.log(res);
+            }
+          );
         };
 
         $scope.newENB = function() {
-          if($scope.enb !== "") {
-            Main.setENB($scope.username, $scope.enb,
-              function(res) {
-                //
-              },
-              function(res) {
-                console.log(res);
-              }
-            );
-          }
+          Main.setENB($scope.username, $scope.enb,
+            function(res) {
+              //
+            },
+            function(res) {
+              console.log(res);
+            }
+          );
         };
 
     }])
@@ -133,7 +143,7 @@
         }
       };
     })
-    .filter('capitalize', function() {
+    .filter('capitalize', function() {//
       return function(input) {
         return input ? input[0].toUpperCase() + input.substr(1).toLowerCase() : input;
       };

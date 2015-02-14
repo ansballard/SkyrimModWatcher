@@ -11,7 +11,7 @@ var passport = require('passport');
 var bcrypt = require('bcrypt-nodejs');
 var mongoose = require('mongoose/');
 
-var configDB = require('./config/db.js').dev3url;
+var configDB = require('./config/db.js').dev2url;
 mongoose.connect(configDB);
 
 var Schema = mongoose.Schema;
@@ -27,7 +27,7 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(express.cookieParser());
-	app.use(express.bodyParser());
+app.use(express.bodyParser());
 app.use(express.session({secret: process.env.DBEXPRESSSECRET}));
 app.use(passport.initialize());
 app.use(passport.session());

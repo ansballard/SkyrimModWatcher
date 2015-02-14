@@ -7,11 +7,11 @@ module.exports = function(app, passport, scriptVersion) {
 			user: (req.user != undefined) ? req.user.username : ""
 		});
 	});
-	app.get('/charts', function(req, res) {
+	/*app.get('/charts', function(req, res) {
 		res.render('charts.ejs', {
 			user: (req.user != undefined) ? req.user.username : ""
 		});
-	});
+	});*/
 	app.get('/api/blog/newest', function(req, res) {
 		Blog.findOne({'newest': true}, function(err, _blog) {
 			if(_blog) {
@@ -94,7 +94,7 @@ module.exports = function(app, passport, scriptVersion) {
 			}
 		});
 	});*/
-	app.get('/GPUList', function(req, res) {
+	/*app.get('/GPUList', function(req, res) {
 		Modlist.find({}, function(err, _modlists) {
 			if(_modlists) {
 				var amd = 0;
@@ -137,7 +137,7 @@ module.exports = function(app, passport, scriptVersion) {
 				res.end();
 			}
 		});
-	});
+	});*/
 	app.get('/logout', function(req, res) {
 		req.logout();
 		res.redirect('/');

@@ -32,10 +32,10 @@
           </div>
           <h1 ng-if="enb" id="enbText">{{ enb }}</h1>
           <h1 ng-if="tag" id="tagText">"{{ tag }}"</h1>
-          <span><button class="btn" id="pluginsNav" ng-click="switchFiles('plugins')">Plugins</button></span>
-          <span><button class="btn" id="modlistNav" ng-click="switchFiles('modlist')">Modlist</button></span>
-          <span><button class="btn" id="iniNav" ng-click="switchFiles('ini')">{{ game | capitalize}}</button></span>
-          <span><button class="btn" id="prefsiniNav" ng-click="switchFiles('prefsini')">{{ game | capitalize}}Prefs</button></span>
+          <span><button class="btn" ng-if="hasPlugins" id="pluginsNav" ng-click="switchFiles('plugins')">Plugins</button></span>
+          <span><button class="btn" ng-if="hasModlist" id="modlistNav" ng-click="switchFiles('modlist')">Modlist</button></span>
+          <span><button class="btn" ng-if="hasIni" id="iniNav" ng-click="switchFiles('ini')">{{ game | capitalize}}</button></span>
+          <span><button class="btn" ng-if="hasPrefsIni" id="prefsiniNav" ng-click="switchFiles('prefsini')">{{ game | capitalize}}Prefs</button></span>
         </div>
         <span id="search-container" style="position:relative;">
           <h3 id="username">
