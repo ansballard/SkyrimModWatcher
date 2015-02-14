@@ -1,6 +1,7 @@
 *.private
 /config/*
 /node_modules/*
+/bower_components/*
 /python/auth.dat
 /public/*
 /models/*

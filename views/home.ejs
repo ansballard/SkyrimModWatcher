@@ -10,13 +10,7 @@
     <title>Modwat.ch</title>
 </head>
 <body>
-	
-	<script src="/bower_components/angular/angular.min.js"></script>
-    <!-- Local angular files -->
-    <script src="/angular/home/app.min.js"></script>
-    <script src="/angular/home/controller.min.js"></script>
-    <script src="/angular/home/services.min.js"></script>
-    
+
 	<div id="full-wrapper">
 		<div id="ng-app" ng-app="modwatchApp" ng-controller="MainCtrl">
 		<h1 id="header"><a href="/">MODWAT.CH</a></h1>
@@ -25,12 +19,32 @@
 				<p id="download-header"><a href="http://www.nexusmods.com/skyrim/mods/56640/?tab=2&navtag=http%3A%2F%2Fwww.nexusmods.com%2Fskyrim%2Fajax%2Fmodfiles%2F%3Fid%3D56640&pUp=1#content">Download Here!</a></p>
 			</div>
 			<div class="update-block">
-				<div class="post-header">
-					<h3 class="post-title">{{blog.title}}</h3>
-				</div>
 				<img ng-show="blogloading" src="/images/ajax-loader.gif"/>
-				<p class="post-body">{{blog.body}}</p>
-				<p class="post-sig">-{{blog.author}}, {{blog.date | date}}</p>
+			  <div class="post-header">
+					<h3 class="post-title">What is Modwatch?</h3>
+				</div>
+			  <p class="post-body">
+			    Modwatch is a site for uploading and sharing modlists for Skyrim (and eventually other games). If you want to view some of the 1000+ modlists, you can look through the dropdown to the right. Or if you have one in mind, you can view it at modwat.ch/username.
+			  </p>
+			  <div class="post-header">
+					<h3 class="post-title">Uploading Your Mods!</h3>
+				</div>
+			  <p class="post-body">
+			    If you want to upload your own modlist, you can download the script via the gigantic orange button at the top of the page. Instructions for uploading are detailed on the nexus page.
+			  </p>
+			  <div class="post-header">
+					<h3 class="post-title">Logging In!</h3>
+				</div>
+			  <p class="post-body">
+			    Finally, if you've uploaded your modlist, your can log in with the same username and password you used in the uploader to log in to the right. While logged in, you can go to your profile and add an ENB and tag to your modlist. Eventually you'll have more options to customize, so stay tuned!
+			  </p>
+			  <div class="post-header">
+					<h3 class="post-title">Do You Even Mod?</h3>
+				</div>
+			  <p class="post-body">
+			    Also want to give some attention to the <a href="http://www.reddit.com/r/skyrimmods/comments/2vbwtq/skyrim_modding_contest_1_build_a_home/">modding contest</a> currently being hosted by /r/skyrimmods. Whether you're a seasoned creator itching to get your next castle uploaded or have never made anything before, it's a great way to get a little attention for your hard work, and also keep the modding community thriving. And if you win, you'll get a full spotlight video from none other than <a href="https://www.youtube.com/user/Brodual">Brodual</a>! as well as a fancy little tag next to your name here on modwatch, and anything else the community decides to chip in. So get creating, the upload window ends March 9th! =D
+			  </p>
+			  <p class="post-sig">-Peanut</p>
 			</div>
 		</span>
 		<span id="sidebar-wrapper">
@@ -64,15 +78,22 @@
 		</span>
 	</div>
 	<script>
-    	
+
 	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-	
+
 	  ga('create', 'UA-53199250-1', 'auto');
 	  ga('send', 'pageview');
-		
+
 	</script>
+
+	<script src="/bower_components/angular/angular.min.js"></script>
+  <!-- Local angular files -->
+  <script src="/angular/home/app.min.js"></script>
+  <script src="/angular/home/controller.min.js"></script>
+  <script src="/angular/home/services.min.js"></script>
+
 </body>
 </html>

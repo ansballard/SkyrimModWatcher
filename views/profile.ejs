@@ -10,55 +10,60 @@
     <title><%= username %>'s Load Order</title>
   </head>
   <body>
-    <div id="main-container">
+
+    <div id="main-container" ng-app="modwatchApp" ng-controller="MainCtrl">
+    <div ng-init="init('<%=username%>')"></div>
       <h1 id="header"><a href="/">MODWAT.CH</a></h1>
       <span id="list-container">
         <div id="nav-wrapper">
-          <h1 id="timestamp">Updated: <%-timestamp%></h1>
-          <% if(owner) { %>
-            <form class="form-inline" id="enbPost" action="/newENB/<%= username %>" method="post">
-              <label class="sr-only" for="enb">Your ENB</label><input type="text" id="enb" class="form-control" name="enb" placeholder="Your ENB">
-              <button type="submit" class="btn btn-default vert-margin">Update</button>
-            </form>
-            <form class="form-inline" id="tagPost" action="/newTag/<%= username %>" method="post">
-              <label class="sr-only" for="tag">Your Tag</label><input type="text" id="tag" class="form-control" name="tag" placeholder="Your Tag">
-              <button type="submit" class="btn btn-default vert-margin">Update</button>
-            </form>
-            <a href="/logout"><button type="submit" class="btn btn-default" style="margin-top:5px">Logout</button></a>
-          <% } %>
-          <h1 id="enbText"><% if (enb != "") { %>ENB: <%= enb %><% } %></h1>
-          <h1 id="tagText"><% if (tag != "") { %>"<%= tag %>"<% } %></h1>
-          <span><button class="btn" id="pluginsNav" onclick="NavigateLists('plugins')">Plugins</button></span>
-          <span><button class="btn" id="modlistNav" onclick="NavigateLists('modlist')">Modlist</button></span>
-          <span><button class="btn" id="iniNav" onclick="NavigateLists('ini')"><%= game.charAt(0).toUpperCase() + game.substring(1) %></button></span>
-          <span><button class="btn" id="prefsiniNav" onclick="NavigateLists('prefsini')"><%= game.charAt(0).toUpperCase() + game.substring(1) %>Prefs</button></span>
+          <h1 id="timestamp">Updated: {{timestamp|date:'shortDate'}}</h1>
+          <div style="margin-bottom:10px">
+            <% if(owner) { %>
+              <form class="form-inline" id="enbPost">
+                <label class="sr-only" for="enb">Your ENB</label><input type="text" ng-model="enb" id="enb" class="form-control" name="enb" placeholder="Your ENB">
+                <button type="submit" class="btn btn-default vert-margin" ng-click="newENB()">Update</button>
+              </form>
+              <form class="form-inline" id="tagPost">
+                <label class="sr-only" for="tag">Your Tag</label><input ng-model="tag" type="text" id="tag" class="form-control" name="tag" placeholder="Your Tag">
+                <button type="submit" class="btn btn-default vert-margin" ng-click="newTag()">Update</button>
+              </form>
+              <a href="/logout"><button type="submit" class="btn btn-default" style="margin-top:5px">Logout</button></a>
+            <% } %>
+          </div>
+          <h1 ng-if="enb" id="enbText">{{ enb }}</h1>
+          <h1 ng-if="tag" id="tagText">"{{ tag }}"</h1>
+          <span><button class="btn" ng-if="hasPlugins" id="pluginsNav" ng-click="switchFiles('plugins')">Plugins</button></span>
+          <span><button class="btn" ng-if="hasModlist" id="modlistNav" ng-click="switchFiles('modlist')">Modlist</button></span>
+          <span><button class="btn" ng-if="hasIni" id="iniNav" ng-click="switchFiles('ini')">{{ game | capitalize}}</button></span>
+          <span><button class="btn" ng-if="hasPrefsIni" id="prefsiniNav" ng-click="switchFiles('prefsini')">{{ game | capitalize}}Prefs</button></span>
         </div>
-        <span id="search-container">
-          <h3 id="username"><%= username %></h3>
-          <input type="text" class="form-control" id="filter-mods" placeholder="Filter by..."/>
-          <button class="btn" id="filter-checked">Show Only Running Mods</button>
+        <span id="search-container" style="position:relative;">
+          <h3 id="username">
+            <span ng-if="badge && badge !== 'dev'" title="Winner of the /r/skyrimmods {{badge}} Mod Competition!" class="glyphicon glyphicon-tag modwatch-badge" aria-hidden="true"></span>
+            <span ng-if="badge === 'dev'" title="Hi, I'm the Modwatch Developer!" class="glyphicon glyphicon-wrench modwatch-badge" style="background-color:rgba(0,140,0,.25)" aria-hidden="true"></span>
+            {{ username }}
+          </h3>
+          <input type="text" class="form-control" ng-model="filterMods" id="filter-mods" placeholder="Filter by..."/>
+          <button ng-show="!modlistChecked && currentFilename == 'modlist'" ng-click="modlistChecked = true" class="btn" id="filter-checked">Show Only Running Mods</button>
+          <button ng-show="modlistChecked && currentFilename == 'modlist'" ng-click="modlistChecked = false" class="btn" id="filter-checked">Show All Mods</button>
         </span>
-        <ul class="" id="plugins"></ul>
-        <ul class="" id="modlist"></ul>
-        <ul class="" id="ini"></ul>
-        <ul class="" id="prefsini"></ul>
+        <div style="min-height:500px">
+          <ul id="plugins" ng-show="currentFilename == 'plugins'">
+            <li ng-repeat="item in plugins | stripedList:filterMods" ng-class="item.class"><span class='row-header'>{{$index+1}}.</span><span class='row-body'>{{item.name}}</span><span class='row-footer {{item.name|limitTo:-3}}'>{{item.name|limitTo:-3}}</span></li>
+          </ul>
+          <ul class="" id="modlist" ng-show="currentFilename == 'modlist'">
+            <li ng-repeat="item in modlist | checked:modlistChecked | stripedList:filterMods" ng-class="item.class"><span class='row-header'>{{$index+1}}.</span><span class='row-body'>{{item.name}}</span></li>
+          </ul>
+          <ul class="" id="ini" ng-show="currentFilename == 'ini'">
+            <li ng-repeat="item in ini | stripedList:filterMods" ng-class="item.class"><span class='row-header'>{{$index+1}}.</span><span class='row-body'>{{item.name}}</span></li>
+          </ul>
+          <ul class="" id="prefsini" ng-show="currentFilename == 'prefsini'">
+            <li ng-repeat="item in prefsini | stripedList:filterMods" ng-class="item.class"><span class='row-header'>{{$index+1}}.</span><span class='row-body'>{{item.name}}</span></li>
+          </ul>
+        </div>
       </span>
-      
+
     </div>
-
-    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script type="text/javascript">
-
-      var username = "<%- username %>";
-      var game = "<%- game %>";
-
-      /*
-       *  Dat AJAX doh
-       */
-      $.getScript('/javascripts/profile.min.js');
-
-    </script>
 
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -70,6 +75,12 @@
       ga('send', 'pageview');
 
     </script>
-        
+
+    <script src="/bower_components/angular/angular.min.js"></script>
+    <!-- Local angular files -->
+    <script src="/angular/profile/app.min.js"></script>
+    <script src="/angular/profile/controller.min.js"></script>
+    <script src="/angular/profile/services.min.js"></script>
+
   </body>
 </html>

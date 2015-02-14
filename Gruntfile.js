@@ -14,7 +14,7 @@ module.exports = function(grunt) {
             src: ['*.js'],
             dest: 'public/javascripts/',
             ext: '.min.js'
-          }  
+          }
         ]
       },
       back: {
@@ -28,7 +28,7 @@ module.exports = function(grunt) {
             src: ['*.js'],
             dest: './',
             ext: '.min.js'
-          }  
+          }
         ]
       },
       models: {
@@ -42,7 +42,7 @@ module.exports = function(grunt) {
             src: ['*.js'],
             dest: 'public/models/',
             ext: '.min.js'
-          }  
+          }
         ]
       },
       angular: {
@@ -55,6 +55,13 @@ module.exports = function(grunt) {
             cwd: 'src/angular/users/',
             src: ['*.js'],
             dest: 'public/angular/users/',
+            ext: '.min.js'
+          },
+          {
+            expand: true,
+            cwd: 'src/angular/profile/',
+            src: ['*.js'],
+            dest: 'public/angular/profile/',
             ext: '.min.js'
           },
           {
@@ -76,7 +83,7 @@ module.exports = function(grunt) {
             src: ['*.css'],
             dest: 'public/stylesheets/',
             ext: '.min.css'
-          }  
+          }
         ]
       }
     },
@@ -120,6 +127,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-contrib-imagemin');
+  grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-ng-annotate');
+  grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-watch');
 
   grunt.registerTask('default', ['uglify','cssmin']);

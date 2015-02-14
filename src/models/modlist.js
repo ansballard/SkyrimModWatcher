@@ -18,6 +18,7 @@ var modlistSchema = new Schema({
 	enb: String,
 	game: String,
 	pic: String,
+	badge: String,
 	timestamp: Date
 }, {
 	collection: 'modlist'
