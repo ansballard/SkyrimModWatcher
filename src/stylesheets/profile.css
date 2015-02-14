@@ -111,3 +111,11 @@ h1#timestamp, h1#enbText, h1#tagText {
 #filter-checked {
   background-color: #C0C0C0;
 }
+.modwatch-badge {
+  position:absolute;
+  left:50px;
+  top:25px;
+  border-radius:50%;
+  padding:5px;
+  background-color:rgba(0,0,140,.25);
+}

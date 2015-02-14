@@ -37,8 +37,12 @@
           <span><button class="btn" id="iniNav" ng-click="switchFiles('ini')">{{ game | capitalize}}</button></span>
           <span><button class="btn" id="prefsiniNav" ng-click="switchFiles('prefsini')">{{ game | capitalize}}Prefs</button></span>
         </div>
-        <span id="search-container">
-          <h3 id="username">{{ username }}</h3>
+        <span id="search-container" style="position:relative;">
+          <h3 id="username">
+            <span ng-if="badge && badge !== 'dev'" title="Winner of the /r/skyrimmods {{badge}} Mod Competition!" class="glyphicon glyphicon-tag modwatch-badge" aria-hidden="true"></span>
+            <span ng-if="badge === 'dev'" title="Hi, I'm the Modwatch Developer!" class="glyphicon glyphicon-wrench modwatch-badge" style="background-color:rgba(0,140,0,.25)" aria-hidden="true"></span>
+            {{ username }}
+          </h3>
           <input type="text" class="form-control" ng-model="filterMods" id="filter-mods" placeholder="Filter by..."/>
           <button ng-show="!modlistChecked && currentFilename == 'modlist'" ng-click="modlistChecked = true" class="btn" id="filter-checked">Show Only Running Mods</button>
           <button ng-show="modlistChecked && currentFilename == 'modlist'" ng-click="modlistChecked = false" class="btn" id="filter-checked">Show All Mods</button>
