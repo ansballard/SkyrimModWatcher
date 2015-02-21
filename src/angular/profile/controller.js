@@ -68,7 +68,11 @@
           if($scope.currentFilename === 'plugins') {
             $scope.plugins = res;
           } else if($scope.currentFilename === 'modlist') {
-            $scope.modlist = res;
+            var reversed = [];
+            for (var i = 0, j = res.length-1; i < res.length; i++,j--) {
+              reversed[i] = res[j];
+            }
+            $scope.modlist = reversed;
           } else if($scope.currentFilename === 'ini') {
             $scope.ini = res;
           } else if($scope.currentFilename === 'prefsini') {
@@ -135,7 +139,7 @@
         } else {
           var filtered = [];
           for(var i = 0; i < input.length; i++) {
-            if(input[i].name.indexOf('+') === 0) {
+            if(input[i].name.indexOf('-') !== 0) {
               filtered.push(input[i]);
             }
           }

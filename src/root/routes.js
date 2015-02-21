@@ -7,6 +7,9 @@ module.exports = function(app, passport, scriptVersion) {
 			user: (req.user != undefined) ? req.user.username : ""
 		});
 	});
+	app.post('/api/:username/testing', function(req, res) {
+	  Modlist.findOne()
+	});
 	/*app.get('/charts', function(req, res) {
 		res.render('charts.ejs', {
 			user: (req.user != undefined) ? req.user.username : ""
