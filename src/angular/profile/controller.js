@@ -68,13 +68,32 @@
           if($scope.currentFilename === 'plugins') {
             $scope.plugins = res;
           } else if($scope.currentFilename === 'modlist') {
-            $scope.modlist = res;
+            var reversed = [];
+            for (var i = 0, j = res.length-1; i < res.length; i++,j--) {
+              reversed[i] = res[j];
+            }
+            $scope.modlist = reversed;
           } else if($scope.currentFilename === 'ini') {
+            addDesc(res);
             $scope.ini = res;
           } else if($scope.currentFilename === 'prefsini') {
+            addDesc(res);
             $scope.prefsini = res;
           }
         }
+
+        var addDesc = function(res) {
+          for(var i = 0; i < res.length; i++) {
+            if(res[i].name.indexOf(';') >= 0) {
+              console.log(res[i].name.indexOf(';'));
+              res[i].desc = res[i].name.substr(res[i].name.indexOf(';'));
+              res[i].name = res[i].name.substr(0, res[i].name.indexOf(';')-1);
+              res[i].style = {"color":"rgb(0,0,180)"};
+            } else {
+              res[i].style = {};
+            }
+          }
+        };
 
         $scope.switchFiles = function(filename) {
           $scope.filterMods = undefined;
@@ -135,7 +154,7 @@
         } else {
           var filtered = [];
           for(var i = 0; i < input.length; i++) {
-            if(input[i].name.indexOf('+') === 0) {
+            if(input[i].name.indexOf('-') !== 0) {
               filtered.push(input[i]);
             }
           }
@@ -146,6 +165,11 @@
     .filter('capitalize', function() {//
       return function(input) {
         return input ? input[0].toUpperCase() + input.substr(1).toLowerCase() : input;
+      };
+    })
+    .filter('modwatchLimitTo', function() {
+      return function(input, limit) {
+        return (input && input.length > limit) ? (input.substr(0,limit) + '...') : input;
       };
     });
 
