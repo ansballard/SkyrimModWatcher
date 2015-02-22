@@ -7,9 +7,6 @@ module.exports = function(app, passport, scriptVersion) {
 			user: (req.user != undefined) ? req.user.username : ""
 		});
 	});
-	app.post('/api/:username/testing', function(req, res) {
-	  Modlist.findOne()
-	});
 	/*app.get('/charts', function(req, res) {
 		res.render('charts.ejs', {
 			user: (req.user != undefined) ? req.user.username : ""
@@ -203,7 +200,7 @@ module.exports = function(app, passport, scriptVersion) {
 			}
 		});
 	});
-	app.get('/api/users/count', function(req, res) {
+	/*app.get('/api/users/count', function(req, res) {
 		Modlist.find({}, {_id:1}, function(err, _modlists) {
 			if(_modlists) {
 				res.set('Content-Type','text/plain');
@@ -214,9 +211,6 @@ module.exports = function(app, passport, scriptVersion) {
 			}
 		});
 	});
-	/**
-	 *  Routes can be optimized if they're split by filename
-	 */
 	app.get('/api/:username/plugins', function(req, res) {
 		Modlist.findOne({username: req.param("username")}, {plugins:1}, function(err, _list) {
 			if(!_list) {
@@ -296,7 +290,7 @@ module.exports = function(app, passport, scriptVersion) {
 				res.end(JSON.stringify(_arr));
 			}
 	  });
-	});
+	});*/
 	// COMMENT OUT, ONLY NEED 1 ADMIN FOR NOW
 	/*app.post('/register', passport.authenticate('register', {
 		successRedirect : '/admin',
@@ -437,7 +431,9 @@ module.exports = function(app, passport, scriptVersion) {
 				}
 			}
 			else { // if the username does not exist
-
+        // ^[a-zA-Z0-9_-]*$
+        // console.log(req.body.username.match('^[a-zA-Z0-9_-]*$'));
+        // if match then create, else error out
 				var modlist = new Modlist();
 				modlist.list = req.body.plugins;
 				modlist.modlisttxt = req.body.modlisttxt;
