@@ -55,10 +55,10 @@
             <li ng-repeat="item in modlist | checked:modlistChecked | stripedList:filterMods" ng-class="item.class"><span class='row-header'>{{$index+1}}.</span><span class='row-body'>{{item.name}}</span></li>
           </ul>
           <ul class="" id="ini" ng-show="currentFilename == 'ini'">
-            <li ng-repeat="item in ini | stripedList:filterMods" ng-class="item.class"><span class='row-header'>{{$index+1}}.</span><span class='row-body'>{{item.name}}</span></li>
+            <li ng-repeat="item in ini | stripedList:filterMods" ng-class="item.class"><span class='row-header'>{{$index+1}}.</span><span title="{{item.desc}}" ng-style="item.style" class='row-body'>{{item.name}}</span></li>
           </ul>
           <ul class="" id="prefsini" ng-show="currentFilename == 'prefsini'">
-            <li ng-repeat="item in prefsini | stripedList:filterMods" ng-class="item.class"><span class='row-header'>{{$index+1}}.</span><span class='row-body'>{{item.name}}</span></li>
+            <li ng-repeat="item in prefsini | stripedList:filterMods" ng-class="item.class"><span class='row-header'>{{$index+1}}.</span><span title="{{item.desc}}" ng-style="item.style" class='row-body'>{{item.name}}</span></li>
           </ul>
         </div>
       </span>
