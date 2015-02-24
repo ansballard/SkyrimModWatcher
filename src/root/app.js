@@ -13,7 +13,7 @@ var passport = require('passport');
 var bcrypt = require('bcrypt-nodejs');
 var mongoose = require('mongoose/');
 
-var configDB = require('./config/db.js').dev2url;
+var configDB = require('./config/db.js').dev3url;
 mongoose.connect(configDB);
 var Schema = mongoose.Schema;
 
