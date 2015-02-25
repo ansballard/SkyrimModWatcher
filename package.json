@@ -1,6 +1,6 @@
 {
   "name": "Skyrim-Mod-Watcher",
-  "version": "0.0.1-37",
+  "version": "0.0.1-38",
   "private": true,
   "scripts": {
     "start": "node app.min.js"
@@ -35,6 +35,6 @@
     "www.modwat.ch"
   ],
   "engines": {
-    "node": "^0.12.x"
+    "node": "^0.10.x"
   }
 }
