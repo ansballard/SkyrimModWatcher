@@ -21,6 +21,9 @@ module.exports = function(app, passport, scriptVersion) {
 	app.get('/users', function(req, res) {
 		res.render('allusers.ejs');
 	});
+	/**
+	 *  DEPRECATED, moved to apiRoutes.js
+	 */
 	app.get('/userlist', function(req, res) {
 		Modlist.find({}, {username:1}, function(err, _mods) {
 			var mods_ = [];
@@ -31,6 +34,9 @@ module.exports = function(app, passport, scriptVersion) {
 			res.send({"usernames":mods_});
 		});
 	});
+	/**
+	 *  DEPRECATED, moved to apiRoutes.js
+	 */
 	app.get('/scriptversion', function(req, res) {
 		res.set('Content-Type','text');
 		res.send(scriptVersion);
