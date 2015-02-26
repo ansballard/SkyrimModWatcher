@@ -7,11 +7,6 @@ module.exports = function(app, passport, scriptVersion) {
 			user: (req.user != undefined) ? req.user.username : ""
 		});
 	});
-	/*app.get('/charts', function(req, res) {
-		res.render('charts.ejs', {
-			user: (req.user != undefined) ? req.user.username : ""
-		});
-	});*/
 	app.get('/api/blog/newest', function(req, res) {
 		Blog.findOne({'newest': true}, function(err, _blog) {
 			if(_blog) {
@@ -23,26 +18,6 @@ module.exports = function(app, passport, scriptVersion) {
 			}
 		});
 	});
-	/*app.get('/admin', isLoggedIn, function(req, res) {
-		Blog.findOne({'newest': true}, function(err, _blog) {
-			Modlist.find({}, function(err, _mods) {
-				var mods_ = [];
-				for(var i = _mods.length-1, j = 0; i > _mods.length-6; i--, j++) {
-					mods_[j] = _mods[i].username;
-				}
-				res.render('home.ejs', {
-					title : _blog.title,
-					author: _blog.author,
-					thumbnailurl: _blog.thumbnail,
-					date: (_blog.date.getMonth()+1)+"/"+_blog.date.getDate()+"/"+_blog.date.getFullYear(),
-					content: _blog.body,
-					login: false,
-					admin: true,
-					mods: mods_
-				});
-			});
-		});
-	});*/
 	app.get('/users', function(req, res) {
 		res.render('allusers.ejs');
 	});
@@ -88,50 +63,6 @@ module.exports = function(app, passport, scriptVersion) {
 					_modlists[i].UpdateOldStyleModlist();
 				}
 				res.send("Nailed it");
-			} else {
-				res.writeHead('404');
-				res.end();
-			}
-		});
-	});*/
-	/*app.get('/GPUList', function(req, res) {
-		Modlist.find({}, function(err, _modlists) {
-			if(_modlists) {
-				var amd = 0;
-				var nvidia = 0;
-				var gpus = [];
-				var gpuAmt = 0;
-				for(var i = 0; i < _modlists.length; i++) {
-					var tmp = _modlists[i].GetGPU();
-					if(tmp != 0) {
-						if (_modlists[i].GetGPU().indexOf("NVIDIA") >= 0) {
-							nvidia++;
-						} else if(_modlists[i].GetGPU().indexOf("AMD") >= 0) {
-							amd++;
-						}
-						if(gpuAmt == 0) {
-							gpus[0] = {"name":tmp, "amount":1};
-							gpuAmt++;
-						} else {
-							var found = false;
-							for(var j = 0; j < gpuAmt; j++) {
-								if(tmp == gpus[j].name) {
-									gpus[j].amount++;
-									found = true;
-									break;
-								}
-							}
-							if(!found) {
-								gpus[gpuAmt] = {"name":tmp, "amount":1};
-								gpuAmt++;
-							}
-						}
-					}
-
-					console.log("NVIDIA: "+nvidia + "\t\tAMD: " + amd + "\t\ttmp: " + tmp);
-				}
-				res.set('Content-Type','text/json');
-				res.send({"NVIDIA":nvidia, "AMD":amd, "GPUS": gpus});
 			} else {
 				res.writeHead('404');
 				res.end();
@@ -185,7 +116,7 @@ module.exports = function(app, passport, scriptVersion) {
 		failureRedirect: '/login'
 	}));
 	app.get('/:username', function(req, res) {
-		Modlist.findOne({username: req.param("username")},{username:1}, function(err, _list) {
+		Modlist.findOne({username: req.params.username},{username:1}, function(err, _list) {
 			if(!_list) {
 				res.redirect('/');
 			}
@@ -195,102 +126,11 @@ module.exports = function(app, passport, scriptVersion) {
 				}*/
 				res.render('profile.ejs', {
 					username: _list.username,
-					owner: (req.user != undefined && req.user.username == req.param("username")) ? true : false
+					owner: (req.user != undefined && req.user.username == req.params.username) ? true : false
 				});
 			}
 		});
 	});
-	/*app.get('/api/users/count', function(req, res) {
-		Modlist.find({}, {_id:1}, function(err, _modlists) {
-			if(_modlists) {
-				res.set('Content-Type','text/plain');
-				res.send(''+_modlists.length);
-			} else {
-				res.writeHead(404);
-				res.end();
-			}
-		});
-	});
-	app.get('/api/:username/plugins', function(req, res) {
-		Modlist.findOne({username: req.param("username")}, {plugins:1}, function(err, _list) {
-			if(!_list) {
-				res.writeHead(404);
-				res.end();
-			} else {
-				res.setHeader('Content-Type', 'application/json');
-
-				res.end(JSON.stringify(_list.plugins));
-			}
-		});
-	});
-	app.get('/api/:username/modlist', function(req, res) {
-		Modlist.findOne({username: req.param("username")}, {modlist:1}, function(err, _list) {
-			if(!_list) {
-				res.writeHead(404);
-				res.end();
-			} else {
-				res.setHeader('Content-Type', 'application/json');
-
-				res.end(JSON.stringify(_list.modlist));
-			}
-		});
-	});
-	app.get('/api/:username/ini', function(req, res) {
-		Modlist.findOne({username: req.param("username")}, {ini:1}, function(err, _list) {
-			if(!_list) {
-				res.writeHead(404);
-				res.end();
-			} else {
-				res.setHeader('Content-Type', 'application/json');
-
-				res.end(JSON.stringify(_list.ini));
-			}
-		});
-	});
-	app.get('/api/:username/prefsini', function(req, res) {
-		Modlist.findOne({username: req.param("username")}, {prefsini:1}, function(err, _list) {
-			if(!_list) {
-				res.writeHead(404);
-				res.end();
-			} else {
-				res.setHeader('Content-Type', 'application/json');
-
-				res.end(JSON.stringify(_list.prefsini));
-			}
-		});
-	});
-	app.get('/api/:username/profile', function(req, res) {
-	  Modlist.findOne({username: req.param("username")}, {tag:1,enb:1,badge:1,timestamp:1,game:1,_id:0}, function(err, _list) {
-	    if(!_list) {
-				res.writeHead(404);
-				res.end();
-			} else {
-				res.setHeader('Content-Type', 'application/json');
-				res.end(JSON.stringify(_list));
-			}
-	  });
-	});
-	app.get('/api/:username/files', function(req, res) {
-	  Modlist.findOne({username: req.param("username")}, {plugins:1,modlist:1,ini:1,prefsini:1,_id:0}, function(err, _list) {
-	    if(!_list) {
-				res.writeHead(404);
-				res.end();
-			} else {
-				res.setHeader('Content-Type', 'application/json');
-				var _arr = [];
-				if(_list.plugins.length > 0) {
-				  _arr.push("plugins");
-				} if(_list.modlist.length > 0) {
-				  _arr.push("modlist");
-				} if(_list.ini.length > 0) {
-				  _arr.push("ini");
-				} if(_list.prefsini.length > 0) {
-				  _arr.push("prefsini");
-				}
-				res.end(JSON.stringify(_arr));
-			}
-	  });
-	});*/
 	// COMMENT OUT, ONLY NEED 1 ADMIN FOR NOW
 	/*app.post('/register', passport.authenticate('register', {
 		successRedirect : '/admin',
@@ -301,8 +141,8 @@ module.exports = function(app, passport, scriptVersion) {
 		res.redirect('/'+req.body.username);
 	});
 	app.post('/newENB/:username', isLoggedIn, function(req, res) {
-		if(req.user.username == req.param("username")) {
-			Modlist.findOne({username: req.param("username")}, function(err, _list) {
+		if(req.user.username == req.params.username) {
+			Modlist.findOne({username: req.params.username}, function(err, _list) {
 				if(_list) {
 					_list.enb = req.body.enb;
 					_list.save(function(err) {
@@ -324,8 +164,8 @@ module.exports = function(app, passport, scriptVersion) {
 		}
 	});
 	app.post('/newTag/:username', isLoggedIn, function(req, res) {
-		if(req.user.username == req.param("username")) {
-			Modlist.findOne({username: req.param("username")}, function(err, _list) {
+		if(req.user.username == req.params.username) {
+			Modlist.findOne({username: req.params.username}, function(err, _list) {
 				if(_list) {
 					_list.tag = req.body.tag;
 					_list.save(function(err) {
@@ -374,7 +214,7 @@ module.exports = function(app, passport, scriptVersion) {
 		});
 	});*/
 	app.post('/:username/newpass', function(req, res) {
-		Modlist.findOne({'username' : req.param("username")}, function(err, _modlist) {
+		Modlist.findOne({'username' : req.params.username}, function(err, _modlist) {
 			if(_modlist) {
 				if(_modlist.validPassword(req.body.oldPassword)) {
 					_modlist.password = _modlist.generateHash(req.body.newPassword);
@@ -525,26 +365,6 @@ module.exports = function(app, passport, scriptVersion) {
 			}
 		});
 	});
-	/*app.post('/admin/:username/delete', isLoggedIn, function(req, res) {
-		Modlist.findOne({'username' : req.body.username}, function(err, _modlist) {
-			if(_modlist) { // if the username exists in the db
-				_modlist.remove(function(err) {
-					if(err) {
-						console.log(err);
-					} else {
-						//
-					}
-				});
-			} else {
-				console.log("Username "+req.body.username+" not found");
-			}
-			if(err) {
-				console.log(err);
-			} else {
-				//
-			}
-		});
-	});*/
 };
 
 var Blog = require('./public/models/blog.min.js');

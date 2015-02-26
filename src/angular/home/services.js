@@ -7,7 +7,7 @@
         return {
 
             getUsers: function(success, error) {
-                $http.get('/userlist')
+                $http.get('/api/users/list')
                     .success(success)
                     .error(error)
                 ;
