@@ -7,19 +7,19 @@
         return {
 
             getFile: function(username, filename, success, error) {
-                $http.get('/api/'+username+'/'+filename)
+                $http.get('/api/user/'+username+'/'+filename)
                     .success(success)
                     .error(error)
                 ;
             },
             getProfile: function(username, success, error) {
-              $http.get('/api/'+username+'/profile')
+              $http.get('/api/user/'+username+'/profile')
                 .success(success)
                 .error(error)
               ;
             },
             getFileNames: function(username, success, error) {
-              $http.get('/api/'+username+'/files')
+              $http.get('/api/user/'+username+'/files')
                 .success(success)
                 .error(error)
               ;
