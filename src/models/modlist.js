@@ -14,6 +14,8 @@ var modlistSchema = new Schema({
 	modlist: [],
 	ini: [],
 	prefsini: [],
+	skse: [],
+	enblocal: [],
 	tag: String,
 	enb: String,
 	game: String,

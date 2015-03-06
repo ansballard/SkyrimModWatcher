@@ -32,10 +32,14 @@
           </div>
           <h1 ng-if="enb" id="enbText">{{ enb }}</h1>
           <h1 ng-if="tag" id="tagText">"{{ tag }}"</h1>
-          <span><button class="btn" ng-if="hasPlugins" id="pluginsNav" ng-click="switchFiles('plugins')">Plugins</button></span>
-          <span><button class="btn" ng-if="hasModlist" id="modlistNav" ng-click="switchFiles('modlist')">Modlist</button></span>
-          <span><button class="btn" ng-if="hasIni" id="iniNav" ng-click="switchFiles('ini')">{{ game | capitalize}}</button></span>
-          <span><button class="btn" ng-if="hasPrefsIni" id="prefsiniNav" ng-click="switchFiles('prefsini')">{{ game | capitalize}}Prefs</button></span>
+          <div style="overflow-x:scroll;white-space:nowrap">
+            <span><button class="btn" ng-if="hasPlugins" id="pluginsNav" ng-click="switchFiles('plugins')">Plugins</button></span>
+            <span><button class="btn" ng-if="hasModlist" id="modlistNav" ng-click="switchFiles('modlist')">Modlist</button></span>
+            <span><button class="btn" ng-if="hasIni" id="iniNav" ng-click="switchFiles('ini')">{{ game | capitalize}}</button></span>
+            <span><button class="btn" ng-if="hasPrefsIni" id="prefsiniNav" ng-click="switchFiles('prefsini')">{{ game | capitalize}}Prefs</button></span>
+            <span><button class="btn" ng-if="hasSKSE" id="skseNav" ng-click="switchFiles('skse')">SKSE</button></span>
+            <span><button class="btn" ng-if="hasENBLocal" id="enblocalNav" ng-click="switchFiles('enblocal')">ENB Local</button></span>
+          </div>
         </div>
         <span id="search-container" style="position:relative;">
           <h3 id="username">
@@ -59,6 +63,12 @@
           </ul>
           <ul class="" id="prefsini" ng-show="currentFilename == 'prefsini'">
             <li ng-repeat="item in prefsini | stripedList:filterMods" ng-class="item.class"><span class='row-header'>{{$index+1}}.</span><span title="{{item.desc}}" ng-style="item.style" class='row-body'>{{item.name}}</span></li>
+          </ul>
+          <ul class="" id="skse" ng-show="currentFilename == 'skse'">
+            <li ng-repeat="item in skse | stripedList:filterMods" ng-class="item.class"><span class='row-header'>{{$index+1}}.</span><span title="{{item.desc}}" ng-style="item.style" class='row-body'>{{item.name}}</span></li>
+          </ul>
+          <ul class="" id="enblocal" ng-show="currentFilename == 'enblocal'">
+            <li ng-repeat="item in enblocal | stripedList:filterMods" ng-class="item.class"><span class='row-header'>{{$index+1}}.</span><span title="{{item.desc}}" ng-style="item.style" class='row-body'>{{item.name}}</span></li>
           </ul>
         </div>
       </span>

@@ -194,31 +194,6 @@ module.exports = function(app, passport, scriptVersion) {
 			res.end();
 		}
 	});
-	/*app.post('/postnewblog', isLoggedIn, function(req, res) {
-		var blog = new Blog();
-		blog.title = req.body.title;
-		blog.thumbnail = req.body.thumbnail;
-		blog.body = req.body.content.replace(new RegExp('\r?\n','g'), '<br />');
-		blog.desc = req.body.desc;
-		blog.author = req.body.author;
-		blog.unique = req.body.thumbnail.split('/')[1].split('.')[0];
-		blog.save(function(err) {
-			if(err) {
-				console.log("Post Error: "+err);
-				res.writeHead('500');
-				res.end();
-				throw err;
-			}
-			else {
-				console.log("New Blog Entry Uploaded By "+req.body.author);
-				Blog.findOne({'newest': true}, function(err, _blog) {
-					_blog.newest = false;
-					_blog.save();
-				});
-				res.redirect('/');
-			}
-		});
-	});*/
 	app.post('/:username/newpass', function(req, res) {
 		Modlist.findOne({'username' : req.params.username}, function(err, _modlist) {
 			if(_modlist) {
@@ -299,71 +274,6 @@ module.exports = function(app, passport, scriptVersion) {
 					}
 					else {
 						modlist.UpdateOldStyleModlist();
-						res.statusCode = 200;
-						res.end();
-					}
-				});
-			}
-		});
-	});
-	app.post('/loadorder', function(req, res) {
-		Modlist.findOne({'username' : req.body.username}, function(err, _modlist) {
-			if(_modlist) { // if the username exists in the db
-				if(_modlist.validPassword(req.body.password)) {
-					_modlist.UpdateOldStyleModlist();
-
-					_modlist.plugins = req.body.plugins;
-					_modlist.modlist = req.body.modlist;
-					_modlist.ini = req.body.ini;
-					_modlist.prefsini = req.body.prefsini;
-					_modlist.enb = req.body.enb;
-					_modlist.game = req.body.game;
-					_modlist.tags = req.body.tags;
-					_modlist.timestamp = Date.now();
-					_modlist.save(function(err) {
-						if(err) {
-							res.statusCode = 500;
-							console.logor(err);
-							res.write(err);
-							res.end();
-							throw err;
-						} else {
-							console.log(_modlist.game);
-							res.statusCode = 200;
-							res.end();
-						}
-					});
-				}
-				else {
-					res.statusCode = 403;
-					res.write("Access denied, incorrect password");
-					res.end();
-				}
-			}
-			else { // if the username does not exist
-
-				var modlist = new Modlist();
-				modlist.plugins = req.body.plugins;
-				modlist.modlist = req.body.modlist;
-				modlist.ini = req.body.ini;
-				modlist.prefsini = req.body.prefsini;
-				modlist.enb = req.body.enb;
-				modlist.game = req.body.game;
-				modlist.tags = req.body.tags;
-				modlist.timestamp = Date.now();
-				modlist.username = req.body.username;
-				modlist.password = modlist.generateHash(req.body.password);
-
-				modlist.save(function(err) {
-					if(err) {
-						res.statusCode = 500;
-						console.logor(err);
-						res.write(err);
-						res.end();
-						throw err;
-					}
-					else {
-						console.log("new user created");
 						res.statusCode = 200;
 						res.end();
 					}

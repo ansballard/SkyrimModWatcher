@@ -8,11 +8,15 @@
         $scope.modlist = {};
         $scope.ini = {};
         $scope.prefsini = {};
+        $scope.skse = {};
+        $scope.enblocal = {};
 
         $scope.hasPlugins = false;
         $scope.hasModlist = false;
         $scope.hasIni = false;
         $scope.hasPrefsIni = false;
+        $scope.skse = false;
+        $scope.enblocal = false;
 
         var files = [];
 
@@ -35,6 +39,10 @@
                   $scope.hasIni = true;
                 } else if(files[i] === 'prefsini') {
                   $scope.hasPrefsIni = true;
+                } else if(files[i] === 'skse') {
+                  $scope.hasSKSE = true;
+                } else if(files[i] === 'enblocal') {
+                  $scope.hasENBLocal = true;
                 }
               }
               $location.path($scope.currentFilename);
@@ -79,6 +87,12 @@
           } else if($scope.currentFilename === 'prefsini') {
             addDesc(res);
             $scope.prefsini = res;
+          } else if($scope.currentFilename === 'skse') {
+            addDesc(res);
+            $scope.skse = res;
+          } else if($scope.currentFilename === 'enblocal') {
+            addDesc(res);
+            $scope.enblocal = res;
           }
         }
 

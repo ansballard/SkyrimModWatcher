@@ -48,7 +48,7 @@ div#main-container {
   margin: auto;
   text-align: center;
 }
-ul#plugins, ul#modlist, ul#ini, ul#prefsini {
+ul#plugins, ul#modlist, ul#ini, ul#prefsini, ul#skse, ul#enblocal {
   list-style-type: none;
   padding: 0px 40px 40px 40px;
 }
