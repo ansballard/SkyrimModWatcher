@@ -137,6 +137,21 @@ module.exports = function(app, cors, corsOptions) {
 			}
 	  });
 	});
+	app.get('/api/search/modlist/:querystring', cors(corsOptions), function(req, res) {
+    Modlist.find({}, { modlist: 1, username: 1}, function(err, users) {
+        var toReturn = [];
+        for(var i = 0; users && i < users.length; i++) {
+          for(var j = 0; j < users[i].modlist.length; j++) {
+            if(users[i].modlist[j].name.indexOf(req.params.querystring) >= 0) {
+              toReturn.push(users[i].username);
+              break;
+            }
+          }
+        }
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({users: toReturn, length: toReturn.length}));
+    });
+  });
 
 	app.post('/loadorder', cors(corsOptions), function(req, res) {
 		Modlist.findOne({'username' : req.body.username}, function(err, _modlist) {
