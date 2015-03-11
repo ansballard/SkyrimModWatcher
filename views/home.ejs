@@ -68,7 +68,9 @@
 			</form>
 			<br />
 			<form class="form-group" action="/usersearch" method="post">
-				<select class="form-control" id="userlist" name="username"><option ng-repeat="username in users">{{username}}</option></select>
+				<select class="form-control" id="userlist" name="username">
+					<option ng-repeat="username in users">{{::username}}</option>
+				</select>
 				<button type="submit" ng-disabled="users.length==1" class="btn btn-default vert-margin">Go</button>
 			</form>
 			<div id="sidebar-links">
@@ -89,11 +91,9 @@
 
 	</script>
 
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.27/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
   <!-- Local angular files -->
   <script src="/angular/home/app.min.js"></script>
-  <script src="/angular/home/controller.min.js"></script>
-  <script src="/angular/home/services.min.js"></script>
 
 </body>
 </html>

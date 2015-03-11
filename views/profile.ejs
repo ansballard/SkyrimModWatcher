@@ -16,7 +16,7 @@
       <h1 id="header"><a href="/">MODWAT.CH</a></h1>
       <span id="list-container">
         <div id="nav-wrapper">
-          <h1 id="timestamp">Updated: {{timestamp|date:'shortDate'}}</h1>
+          <h1 id="timestamp">Updated: {{::timestamp|date:'shortDate'}}</h1>
           <div style="margin-bottom:10px">
             <% if(owner) { %>
               <form class="form-inline" id="enbPost">
@@ -35,8 +35,8 @@
           <div style="overflow-x:scroll;white-space:nowrap">
             <span><button class="btn" ng-if="hasPlugins" id="pluginsNav" ng-click="switchFiles('plugins')">Plugins</button></span>
             <span><button class="btn" ng-if="hasModlist" id="modlistNav" ng-click="switchFiles('modlist')">Modlist</button></span>
-            <span><button class="btn" ng-if="hasIni" id="iniNav" ng-click="switchFiles('ini')">{{ game | capitalize}}</button></span>
-            <span><button class="btn" ng-if="hasPrefsIni" id="prefsiniNav" ng-click="switchFiles('prefsini')">{{ game | capitalize}}Prefs</button></span>
+            <span><button class="btn" ng-if="hasIni" id="iniNav" ng-click="switchFiles('ini')">{{ ::game | capitalize}}</button></span>
+            <span><button class="btn" ng-if="hasPrefsIni" id="prefsiniNav" ng-click="switchFiles('prefsini')">{{ ::game | capitalize}}Prefs</button></span>
             <span><button class="btn" ng-if="hasSKSE" id="skseNav" ng-click="switchFiles('skse')">SKSE</button></span>
             <span><button class="btn" ng-if="hasENBLocal" id="enblocalNav" ng-click="switchFiles('enblocal')">ENB Local</button></span>
           </div>
@@ -45,7 +45,7 @@
           <h3 id="username">
             <span ng-if="badge && badge !== 'dev'" title="Winner of the /r/skyrimmods {{badge}} Mod Competition!" class="glyphicon glyphicon-tag modwatch-badge" aria-hidden="true"></span>
             <span ng-if="badge === 'dev'" title="Hi, I'm the Modwatch Developer!" class="glyphicon glyphicon-wrench modwatch-badge" style="background-color:rgba(0,140,0,.25)" aria-hidden="true"></span>
-            {{ username }}
+            {{ ::username }}
           </h3>
           <input type="text" class="form-control" ng-model="filterMods" id="filter-mods" placeholder="Filter by..."/>
           <button ng-show="!modlistChecked && currentFilename == 'modlist'" ng-click="modlistChecked = true" class="btn" id="filter-checked">Show Only Running Mods</button>
@@ -53,22 +53,22 @@
         </span>
         <div style="min-height:500px">
           <ul id="plugins" ng-show="currentFilename == 'plugins'">
-            <li ng-repeat="item in plugins | stripedList:filterMods" ng-class="item.class"><span class='row-header'>{{$index+1}}.</span><span class='row-body'>{{item.name}}</span><span class='row-footer {{item.name|limitTo:-3}}'>{{item.name|limitTo:-3}}</span></li>
+            <li ng-repeat="item in plugins | stripedList:filterMods" ng-class="item.class"><span class='row-header'>{{$index+1}}.</span><span class='row-body'>{{::item.name}}</span><span class='row-footer {{item.name|limitTo:-3}}'>{{item.name|limitTo:-3}}</span></li>
           </ul>
           <ul class="" id="modlist" ng-show="currentFilename == 'modlist'">
-            <li ng-repeat="item in modlist | checked:modlistChecked | stripedList:filterMods" ng-class="item.class"><span class='row-header'>{{$index+1}}.</span><span class='row-body'>{{item.name}}</span></li>
+            <li ng-repeat="item in modlist | checked:modlistChecked | stripedList:filterMods" ng-class="item.class"><span class='row-header'>{{$index+1}}.</span><span class='row-body'>{{::item.name}}</span></li>
           </ul>
           <ul class="" id="ini" ng-show="currentFilename == 'ini'">
-            <li ng-repeat="item in ini | stripedList:filterMods" ng-class="item.class"><span class='row-header'>{{$index+1}}.</span><span title="{{item.desc}}" ng-style="item.style" class='row-body'>{{item.name}}</span></li>
+            <li ng-repeat="item in ini | stripedList:filterMods" ng-class="item.class"><span class='row-header'>{{$index+1}}.</span><span title="{{item.desc}}" ng-style="item.style" class='row-body'>{{::item.name}}</span></li>
           </ul>
           <ul class="" id="prefsini" ng-show="currentFilename == 'prefsini'">
-            <li ng-repeat="item in prefsini | stripedList:filterMods" ng-class="item.class"><span class='row-header'>{{$index+1}}.</span><span title="{{item.desc}}" ng-style="item.style" class='row-body'>{{item.name}}</span></li>
+            <li ng-repeat="item in prefsini | stripedList:filterMods" ng-class="item.class"><span class='row-header'>{{$index+1}}.</span><span title="{{item.desc}}" ng-style="item.style" class='row-body'>{{::item.name}}</span></li>
           </ul>
           <ul class="" id="skse" ng-show="currentFilename == 'skse'">
-            <li ng-repeat="item in skse | stripedList:filterMods" ng-class="item.class"><span class='row-header'>{{$index+1}}.</span><span title="{{item.desc}}" ng-style="item.style" class='row-body'>{{item.name}}</span></li>
+            <li ng-repeat="item in skse | stripedList:filterMods" ng-class="item.class"><span class='row-header'>{{$index+1}}.</span><span title="{{item.desc}}" ng-style="item.style" class='row-body'>{{::item.name}}</span></li>
           </ul>
           <ul class="" id="enblocal" ng-show="currentFilename == 'enblocal'">
-            <li ng-repeat="item in enblocal | stripedList:filterMods" ng-class="item.class"><span class='row-header'>{{$index+1}}.</span><span title="{{item.desc}}" ng-style="item.style" class='row-body'>{{item.name}}</span></li>
+            <li ng-repeat="item in enblocal | stripedList:filterMods" ng-class="item.class"><span class='row-header'>{{$index+1}}.</span><span title="{{item.desc}}" ng-style="item.style" class='row-body'>{{::item.name}}</span></li>
           </ul>
         </div>
       </span>
@@ -86,11 +86,9 @@
 
     </script>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.27/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
     <!-- Local angular files -->
     <script src="/angular/profile/app.min.js"></script>
-    <script src="/angular/profile/controller.min.js"></script>
-    <script src="/angular/profile/services.min.js"></script>
 
   </body>
 </html>

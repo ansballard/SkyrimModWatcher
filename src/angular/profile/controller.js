@@ -76,6 +76,7 @@
           if($scope.currentFilename === 'plugins') {
             $scope.plugins = res;
           } else if($scope.currentFilename === 'modlist') {
+            console.log(res);
             var reversed = [];
             for (var i = 0, j = res.length-1; i < res.length; i++,j--) {
               reversed[i] = res[j];
@@ -176,7 +177,7 @@
         }
       };
     })
-    .filter('capitalize', function() {//
+    .filter('capitalize', function() {
       return function(input) {
         return input ? input[0].toUpperCase() + input.substr(1).toLowerCase() : input;
       };

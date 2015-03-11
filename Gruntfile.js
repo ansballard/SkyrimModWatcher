@@ -3,21 +3,7 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     uglify: {
-      front: {
-        options: {
-          banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
-        },
-        files: [
-          {
-            expand: true,
-            cwd: 'src/javascripts/',
-            src: ['*.js'],
-            dest: 'public/javascripts/',
-            ext: '.min.js'
-          }
-        ]
-      },
-      back: {
+      backend: {
         options: {
           banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
         },
@@ -51,25 +37,16 @@ module.exports = function(grunt) {
         },
         files: [
           {
-            expand: true,
-            cwd: 'src/angular/users/',
-            src: ['*.js'],
-            dest: 'public/angular/users/',
-            ext: '.min.js'
+            src: 'tmp/angular/users/app.concat.js',
+            dest: 'public/angular/users/app.min.js'
           },
           {
-            expand: true,
-            cwd: 'src/angular/profile/',
-            src: ['*.js'],
-            dest: 'public/angular/profile/',
-            ext: '.min.js'
+            src: 'tmp/angular/profile/app.concat.js',
+            dest: 'public/angular/profile/app.min.js',
           },
           {
-            expand: true,
-            cwd: 'src/angular/home/',
-            src: ['*.js'],
-            dest: 'public/angular/home/',
-            ext: '.min.js'
+            src: 'tmp/angular/home/app.concat.js',
+            dest: 'public/angular/home/app.min.js'
           }
         ]
       }
@@ -100,18 +77,68 @@ module.exports = function(grunt) {
         }
       }
     },
-    watch: {
-      javascript: {
-        files: ['src/javascripts/*.js'],
-        tasks: ['uglify:front']
+    ngAnnotate: {
+      options: {
+        remove: true,
+        add: true
       },
+      dist: {
+        files: [
+          {
+            expand: true,
+            cwd: 'src/angular/home/',
+            src: ['*.js'],
+            dest: 'tmp/angular/home/',
+            ext: '.annotated.js'
+          },
+          {
+            expand: true,
+            cwd: 'src/angular/users/',
+            src: ['*.js'],
+            dest: 'tmp/angular/users/',
+            ext: '.annotated.js'
+          },
+          {
+            expand: true,
+            cwd: 'src/angular/profile/',
+            src: ['*.js'],
+            dest: 'tmp/angular/profile/',
+            ext: '.annotated.js'
+          }
+        ]
+      }
+    },
+    concat: {
+      options: {
+        separator: ';',
+        stripBanners: true
+      },
+      dist: {
+        files: [
+          {
+            src: ['tmp/angular/home/app.annotated.js','tmp/angular/home/*.annotated.js'],
+            dest: 'tmp/angular/home/app.concat.js'
+          },
+          {
+            src: ['tmp/angular/users/app.annotated.js','tmp/angular/users/*.annotated.js'],
+            dest: 'tmp/angular/users/app.concat.js'
+          },
+          {
+            src: ['tmp/angular/profile/app.annotated.js','tmp/angular/profile/*.annotated.js'],
+            dest: 'tmp/angular/profile/app.concat.js'
+          }
+        ]
+      }
+    },
+    clean: ['tmp'],
+    watch: {
       css: {
         files: ['src/stylesheets/*.css'],
         tasks: ['cssmin']
       },
       backend: {
         files: ['src/root/*.js'],
-        tasks: ['uglify:back']
+        tasks: ['uglify:backend']
       },
       models: {
         files: ['src/models/*.js'],
@@ -119,7 +146,7 @@ module.exports = function(grunt) {
       },
       angular: {
         files: ['src/angular/**/*.js'],
-        tasks: ['uglify:angular']
+        tasks: ['ngAnnotate','concat','uglify:angular','clean']
       }
     }
   });
@@ -132,5 +159,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-watch');
 
-  grunt.registerTask('default', ['uglify','cssmin']);
+  grunt.registerTask('default', ['ngAnnotate','concat','uglify:angular','clean','uglify:backend','uglify:models','cssmin']);
+  grunt.registerTask('angularMin', ['ngAnnotate','concat','uglify:angular'])
 };
