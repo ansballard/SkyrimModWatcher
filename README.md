@@ -1,5 +1,10 @@
 [![Build Status](https://travis-ci.org/ansballard/SkyrimModWatcher.svg?branch=master)](https://travis-ci.org/ansballard/SkyrimModWatcher)
 
+This repo is no longer live, see https://github.com/ansballard/modwatch, https://github.com/ansballard/modwatchapi, and https://github.com/ansballard/modwatchuploader.
+
+Links
+==
+
 http://modwat.ch
 
 http://nexusmods.com/skyrim/mods/56640
